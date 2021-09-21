@@ -13,11 +13,13 @@ from app02.models.student import Student  # noqa
 # 教师表
 from app02.models.teacher import Teacher  # noqa
 # 管理员表
-from app02.models.administrator import Administrator  # noqa
+from app02.models.admin import Admin  # noqa
 # 课程表
 from app02.models.course import Course  # noqa
 # 选课表
 from app02.models.selectCourse import SelectCourse  # noqa
 # 控制表
 from app02.models.control import Control  # noqa
+# 调试表
+# from app02.models.user import User  # noqa
 

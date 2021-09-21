@@ -3,16 +3,9 @@
 # @Time : 2021/9/19 17:13
 # @Author : 小四先生
 # @desc : user表(调试)
-import enum
-
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, text, CheckConstraint
 
-from app01.db.base_class import Base
-
-
-class SexEnum(enum.Enum):
-    male = '男'
-    female = '女'
+from app02.db.base_class import Base
 
 
 class User(Base):
@@ -27,12 +20,21 @@ class User(Base):
     # CheckConstraint check约束
 
     # CURRENT_TIMESTAMP 当前时间
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    full_name = Column(String(10), index=True, doc='全名', nullable=False, unique=True)
-    email = Column(String(18), index=True)
+
+    id = Column(Integer,
+                primary_key=True,
+                autoincrement=True,
+                index=True)
+
+    full_name = Column(String(10),
+                       unique=True,
+                       nullable=False,
+                       index=True,
+                       doc='全名')
+
+    email = Column(String(18))
     sex = Column(String(2), CheckConstraint("sex in ('男', '女')"), nullable=False)
     birthday = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
     hashed_password = Column(String(20), nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-

@@ -42,7 +42,7 @@
 		|-- session.py			# 创建数据库连接会话
 	|-- models
 		|-- init.py			    
-		|-- administrator.py	# 管理员表
+		|-- admin.py	# 管理员表
 		|-- control.py			# 控制表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
