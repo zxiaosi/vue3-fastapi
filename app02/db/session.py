@@ -11,8 +11,10 @@ from app02.core.config import settings
 engine = create_engine(
     # sqlite的url
     settings.SQLALCHEMY_DATABASE_URI,
+
     # sqlite默认是单线程,开启多线程
-    connect_args={"check_same_thread": False},
+    # connect_args={"check_same_thread": False},
+
     # 打印日志
     echo=True
 )

@@ -16,6 +16,8 @@
    pip install fastapi
    pip install uvicorn
    pip install SQLAlchemy
+   # mysql
+   pip install mysqlclient
    
    # 或者
    pip install requirements.txt
@@ -23,7 +25,7 @@
 
 3. 启动服务（未做）
 
-   + 进入到 `app` 项目下
+   + 进入到 `app02` 项目下
    + 找到 `main.py` 右键运行
 
    >接口文档：http://127.0.0.1:8000/docs
@@ -40,9 +42,9 @@
 		|-- base.py				# 配置创建的表
 		|-- base_class.py		# 自动生成 表名
 		|-- session.py			# 创建数据库连接会话
-	|-- models
+	|-- models                  # ORM模型
 		|-- init.py			    
-		|-- admin.py	# 管理员表
+		|-- admin.py			# 管理员表
 		|-- control.py			# 控制表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
@@ -51,9 +53,19 @@
 		|-- student.py			# 学生表
 		|-- teacher.py			# 教师表
 		|-- user.py				# 调试表
+	|-- schemas                 # 通过api接收数据的数据验证
+		|-- init.py			    
+		|-- admin.py			# 管理员数据验证
+		|-- control.py			# 控制表数据验证
+		|-- course.py			# 课程表数据验证
+		|-- department.py		# 院系表数据验证
+		|-- major.py			# 专业表数据验证
+		|-- selectCourse.py		# 选课表数据验证
+		|-- student.py			# 学生表数据验证
+		|-- teacher.py			# 教师表数据验证
+		|-- user.py				# 调试表数据验证
 	|-- init.py
 	|-- main.py					# 主程序
 	|-- requirements.txt		# 所需的包
 ```
-
 

@@ -21,5 +21,5 @@ from app02.models.selectCourse import SelectCourse  # noqa
 # 控制表
 from app02.models.control import Control  # noqa
 # 调试表
-# from app02.models.user import User  # noqa
+from app02.models.user import User  # noqa
 

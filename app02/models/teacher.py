@@ -3,10 +3,15 @@
 # @Time : 2021/9/19 22:24
 # @Author : 小四先生
 # @desc : 教师表
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, String, ForeignKey, CheckConstraint, DateTime, text
 from sqlalchemy.orm import relationship
 
 from app02.db.base_class import Base
+
+if TYPE_CHECKING:
+    from .department import Department  # noqa
 
 
 class Teacher(Base):

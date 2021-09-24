@@ -21,10 +21,11 @@ class User(Base):
 
     # CURRENT_TIMESTAMP 当前时间
 
-    id = Column(Integer,
-                primary_key=True,
-                autoincrement=True,
-                index=True)
+    user_id = Column(Integer,
+                     primary_key=True,
+                     autoincrement=True,
+                     index=True,
+                     doc='主键')
 
     full_name = Column(String(10),
                        unique=True,
@@ -32,9 +33,15 @@ class User(Base):
                        index=True,
                        doc='全名')
 
-    email = Column(String(18))
-    sex = Column(String(2), CheckConstraint("sex in ('男', '女')"), nullable=False)
-    birthday = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
-    hashed_password = Column(String(20), nullable=False)
-    is_active = Column(Boolean(), default=True)
-    is_superuser = Column(Boolean(), default=False)
+    # sex = Column(String(2),
+    #              CheckConstraint("sex in ('男', '女')"),
+    #              nullable=False)
+    #
+    # birthday = Column(DateTime,
+    #                   nullable=False,
+    #                   server_default=text('CURRENT_TIMESTAMP')
+    #                   )
+    password = Column(String(20), nullable=False)
+
+    # is_active = Column(Boolean(), default=True)
+    # is_superuser = Column(Boolean(), default=False)

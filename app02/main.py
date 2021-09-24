@@ -19,6 +19,7 @@ app = FastAPI(
 # 创建 db/base 下的所有表
 base.Base.metadata.create_all(bind=engine)
 
+
 if __name__ == '__main__':
     import uvicorn
 

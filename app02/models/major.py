@@ -3,10 +3,15 @@
 # @Time : 2021/9/19 22:23
 # @Author : 小四先生
 # @desc : 专业表
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from app02.db.base_class import Base
+
+if TYPE_CHECKING:
+    from .department import Department  # noqa
 
 
 class Major(Base):

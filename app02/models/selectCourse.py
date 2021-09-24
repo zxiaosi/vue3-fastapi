@@ -3,10 +3,17 @@
 # @Time : 2021/9/19 22:24
 # @Author : 小四先生
 # @desc : 选课表
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, String, ForeignKey, Integer, SmallInteger
 from sqlalchemy.orm import relationship
 
 from app02.db.base_class import Base
+
+if TYPE_CHECKING:
+    from .student import Student  # noqa
+    from .teacher import Teacher  # noqa
+    from .course import Course  # noqa
 
 
 class SelectCourse(Base):
@@ -20,17 +27,17 @@ class SelectCourse(Base):
                    default='',
                    doc='成绩')
 
-    stu_id = Column(String(10),
-                    ForeignKey('student.student_id'),
-                    nullable=True,
-                    doc='学号')
+    student_id = Column(String(10),
+                        ForeignKey('student.student_id'),
+                        nullable=True,
+                        doc='学号')
 
     student = relationship("Student", back_populates="selectCourse_fk_student")
 
-    teach_id = Column(String(10),
-                      ForeignKey('teacher.teacher_id'),
-                      nullable=True,
-                      doc='职工号')
+    teacher_id = Column(String(10),
+                        ForeignKey('teacher.teacher_id'),
+                        nullable=True,
+                        doc='职工号')
 
     teacher = relationship("Teacher", back_populates="selectCourse_fk_teacher")
 
