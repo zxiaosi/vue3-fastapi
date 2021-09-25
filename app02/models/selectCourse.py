@@ -32,18 +32,18 @@ class SelectCourse(Base):
                         nullable=True,
                         doc='学号')
 
-    student = relationship("Student", back_populates="selectCourse_fk_student")
+    student = relationship("Student", backref="selectCourse")
 
     teacher_id = Column(String(10),
                         ForeignKey('teacher.teacher_id'),
                         nullable=True,
                         doc='职工号')
 
-    teacher = relationship("Teacher", back_populates="selectCourse_fk_teacher")
+    teacher = relationship("Teacher", backref="selectCourse")
 
     course_id = Column(String(6),
                        ForeignKey('course.course_id'),
                        nullable=True,
                        doc='课程编号')
 
-    course = relationship("Course", back_populates="selectCourse_fk_course")
+    course = relationship("Course", backref="selectCourse")

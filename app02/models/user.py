@@ -30,7 +30,6 @@ class User(Base):
     full_name = Column(String(10),
                        unique=True,
                        nullable=False,
-                       index=True,
                        doc='全名')
 
     # sex = Column(String(2),

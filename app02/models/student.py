@@ -39,4 +39,4 @@ class Student(Base):
 
     major_id = Column(String(6), ForeignKey('major.major_id'), doc='专业编号')
 
-    major = relationship("Major", back_populates="student_fk_major")
+    major = relationship("Major", backref="student")

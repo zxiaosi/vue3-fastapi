@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from app02.core.config import settings
 
 engine = create_engine(
-    # sqlite的url
+    # 数据库url
     settings.SQLALCHEMY_DATABASE_URI,
 
     # sqlite默认是单线程,开启多线程
@@ -20,4 +20,4 @@ engine = create_engine(
 )
 
 # 创建本地会话
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)

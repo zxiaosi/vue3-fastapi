@@ -44,4 +44,4 @@ class Teacher(Base):
 
     department_id = Column(String(4), ForeignKey('department.department_id'), doc='院系编号')
 
-    department = relationship("Department", back_populates="teacher_fk_department")
+    department = relationship("Department", backref="teacher")
