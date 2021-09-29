@@ -11,8 +11,13 @@
 + `V1.0` FastAPI学习
 + `V2.0` 搭建FastAPI脚手架
 + `V2.1` 创建所需的表
-+ `V2.2` 数据库的多种选择Mysql、Sqlite、Postgresql(未调试)
-+ `V2.3` 初始化表数据
++ `V2.2` 已成功调试Mysql、Sqlite, 未调试Postgresql
++ `V2.3` 初始化表数据(调试)
++ `V2.4` 优化创建表问题
++ `V2.5` 初始化所有表数据
+
+1. `V2.6` 优化代码
+2. `V3.0` 接口的调试
 
 ## 安装
 
@@ -83,7 +88,7 @@
     	|-- init.py				# 测试文件夹
     	|-- db_init				
     		|-- init.py			# 调试初始化表数据
-    		|-- data.py			# 需要初始化数据
+    		|-- data_core.py			# 需要初始化数据
     		|-- initial_data.py	# 初始化的方法
 	|-- init.py
 	|-- main.py					# 主程序

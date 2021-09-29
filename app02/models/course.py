@@ -9,7 +9,7 @@ from app02.db.base_class import Base
 
 
 class Course(Base):
-    course_id = Column(String(6),
+    course_id = Column(String(4),
                        primary_key=True,
                        index=True,
                        doc='课程编号')
@@ -19,10 +19,6 @@ class Course(Base):
                          index=True,
                          doc='课程名字')
 
-    course_credit = Column(Float,
-                           nullable=False,
-                           doc='学分')
+    course_credit = Column(Float, nullable=False, doc='学分')
 
-    course_period = Column(SmallInteger,
-                           nullable=False,
-                           doc='课时')
+    course_period = Column(SmallInteger, nullable=False, doc='课时')

@@ -9,6 +9,7 @@ from app02.db.session import engine
 
 # 创建 base 下的所有表
 def init_db():
+    drop_db()
     base.Base.metadata.create_all(bind=engine)
 
 

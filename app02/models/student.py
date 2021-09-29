@@ -5,7 +5,7 @@
 # @desc : 学生表
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, String, ForeignKey, CheckConstraint, DateTime, text
+from sqlalchemy import Column, String, ForeignKey, CheckConstraint, Date, text
 from sqlalchemy.orm import relationship
 
 from app02.db.base_class import Base
@@ -30,8 +30,8 @@ class Student(Base):
                          nullable=False,
                          doc='学生性别')
 
-    student_birthday = Column(DateTime,
-                              server_default=text('CURRENT_TIMESTAMP'),
+    student_birthday = Column(Date,
+                              server_default='2012-01-01',
                               nullable=False,
                               doc='学生生日')
 

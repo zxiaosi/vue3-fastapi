@@ -3,7 +3,7 @@
 # @Time : 2021/9/19 22:24
 # @Author : 小四先生
 # @desc : 管理员表
-from sqlalchemy import Column, Integer, String, CheckConstraint, DateTime, text
+from sqlalchemy import Column, Integer, String, CheckConstraint, Date
 
 from app02.db.base_class import Base
 
@@ -25,8 +25,8 @@ class Admin(Base):
                        nullable=False,
                        doc='管理员性别')
 
-    admin_birthday = Column(DateTime,
-                            server_default=text('CURRENT_TIMESTAMP'),
+    admin_birthday = Column(Date,
+                            server_default='2012-01-01',
                             nullable=False,
                             doc='管理员生日')
 

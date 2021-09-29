@@ -14,6 +14,11 @@ class Base:
     id: Any
     __name__: str
 
+    # 设置表的字符集
+    __table_args__ = {
+        "mysql_charset": "utf8"
+    }
+
     # 将类名小写并转化为表名 __tablename__
     @declared_attr
     def __tablename__(cls) -> str:

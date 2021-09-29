@@ -14,10 +14,10 @@ class Settings(BaseSettings):
     # 接口文档的 版本
     PROJECT_VERSION = "2.0"
     # 数据库链接
-    # SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-    # SQLALCHEMY_DATABASE_URL = "mysql://user:password@hostname/dbname?charset=utf8"
-    # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
-    SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/test?charset=utf8"
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"
+    # SQLALCHEMY_DATABASE_URI = "mysql://user:password@hostname/dbname?charset=utf8"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://user:password@postgresserver/db"
+    SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"
 
 
 settings = Settings()

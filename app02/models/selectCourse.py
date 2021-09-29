@@ -23,27 +23,16 @@ class SelectCourse(Base):
                 index=True,
                 doc='编号')
 
-    grade = Column(SmallInteger,
-                   default='',
-                   doc='成绩')
+    grade = Column(SmallInteger, server_default='0', doc='成绩')
 
-    student_id = Column(String(10),
-                        ForeignKey('student.student_id'),
-                        nullable=True,
-                        doc='学号')
+    student_id = Column(String(10), ForeignKey('student.student_id'), doc='学号')
 
     student = relationship("Student", backref="selectCourse")
 
-    teacher_id = Column(String(10),
-                        ForeignKey('teacher.teacher_id'),
-                        nullable=True,
-                        doc='职工号')
+    teacher_id = Column(String(6), ForeignKey('teacher.teacher_id'), doc='职工号')
 
     teacher = relationship("Teacher", backref="selectCourse")
 
-    course_id = Column(String(6),
-                       ForeignKey('course.course_id'),
-                       nullable=True,
-                       doc='课程编号')
+    course_id = Column(String(4), ForeignKey('course.course_id'), doc='课程编号')
 
     course = relationship("Course", backref="selectCourse")
