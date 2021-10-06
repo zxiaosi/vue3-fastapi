@@ -9,14 +9,14 @@ from sqlalchemy.orm import sessionmaker
 from app02.core.config import settings
 
 engine = create_engine(
-    # 数据库url
+    # 数据库uri
     settings.SQLALCHEMY_DATABASE_URI,
 
     # sqlite默认是单线程,开启多线程
     # connect_args={"check_same_thread": False},
 
     # 打印日志
-    echo=True
+    echo=settings.SQLALCHEMY_DATABASE_ECHO
 )
 
 # 创建本地会话

@@ -3,9 +3,6 @@
 # @Time : 2021/9/25 20:48
 # @Author : 小四先生
 # @desc : SQLAlchemy_ORM_Initial 的数据加工
-"""
-  免责声明: 数据来自网络，如有冲突，请联系删除！！！
-"""
 from app02.initial_data.data_core import userData, departmentData, majorData, studentData, teacherData, adminData, \
     courseData, selectCourseData
 from app02.models.admin import Admin

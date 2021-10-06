@@ -5,7 +5,6 @@
 # @desc : 封装 创建表名 的函数
 from typing import Any
 
-from sqlalchemy import event
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
 

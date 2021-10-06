@@ -13,11 +13,21 @@ class Settings(BaseSettings):
     PROJECT_DESCRIPTION = "创建数据库"
     # 接口文档的 版本
     PROJECT_VERSION = "2.0"
+
+    # 日志文件夹名
+    LOGGER_FOLDER = "logs"
+    # 临时日志文件名
+    LOGGER_NAME = "log"
+    # 日志等级
+    LOGGER_LEVER = "debug"  # debug | info [ warning | error | critical ]
+
     # 数据库链接
     # SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"
     # SQLALCHEMY_DATABASE_URI = "mysql://user:password@hostname/dbname?charset=utf8"
     # SQLALCHEMY_DATABASE_URI = "postgresql://user:password@postgresserver/db"
     SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"
+    # 数据库日志
+    SQLALCHEMY_DATABASE_ECHO = False
 
 
 settings = Settings()

@@ -4,6 +4,7 @@
 # @Author : 小四先生
 # @desc : 两种初始化表数据的方式
 from app02.db import base
+from app02.db.init_db import logger
 from app02.db.session import Session
 from app02.initial_data.data_orm import data
 from app02.initial_data.data_core import userData, departmentData, majorData, studentData, teacherData, adminData, \
@@ -15,7 +16,6 @@ from app02.models.major import Major
 from app02.models.selectCourse import SelectCourse
 from app02.models.student import Student
 from app02.models.teacher import Teacher
-
 from app02.models.user import User
 
 
@@ -32,7 +32,7 @@ def db_conn(func):
             # 如果出现错误，回滚事务
             db.rollback()
             # 打印报错信息
-            print(f'运行时{str(func(db))}时出现错误，错误代码: {e}')
+            logger.warning(f"运行时{str(func(db))}时出现错误，错误代码: \n{e}")
         finally:
             # 关闭数据库连接
             db.close()
@@ -49,8 +49,8 @@ def clear_db(db):
             f"TRUNCATE TABLE {table};"
             f"SET FOREIGN_KEY_CHECKS = 0;"
         )
-        print(f'{table} 表数据已清空！！！')
-    print('所有表数据已清空！！！')
+        # print(f"{table} 表数据已清空！！！")
+    logger.info("所有表数据已清空！！！")
 
 
 # 速度欠佳 性能正常
@@ -62,7 +62,7 @@ def sqlalchemy_orm_initial(db):
     # 将 data 添加到 db
     # db.add_all(data)
     db.bulk_save_objects(data)
-    print('数据已添加完成！！！')
+    logger.info("成功初始化所有表数据！！！")
 
 
 # 速度与性能并行
@@ -86,8 +86,9 @@ def sqlalchemy_core_initial(db):
     db.execute(Course.__table__.insert(), [course for course in courseData]),
     db.execute(SelectCourse.__table__.insert(), [selectCourse for selectCourse in selectCourseData])
 
+    logger.info("成功初始化所有表数据！！！")
 
-if __name__ == '__main__':
-    # sqlalchemy_orm_initial()
-    sqlalchemy_core_initial()
-    # print(clear_db())
+# if __name__ == '__main__':
+#     # sqlalchemy_orm_initial()
+#     sqlalchemy_core_initial()
+#     # clear_db()

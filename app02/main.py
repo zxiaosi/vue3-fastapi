@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 from app02.core.config import settings
 from app02.db.init_db import init_db, drop_db
-from app02.initial_data.init_data import sqlalchemy_orm_initial, sqlalchemy_core_initial
+from app02.initial_data.init_data import sqlalchemy_orm_initial, sqlalchemy_core_initial, logger
 
 # 配置接口文档信息
 app = FastAPI(
@@ -18,6 +18,9 @@ app = FastAPI(
 )
 
 if __name__ == '__main__':
+    # 日志初始化
+    logger.info("日志初始化成功！！！")
+
     # 表的初始化
     init_db()
 
