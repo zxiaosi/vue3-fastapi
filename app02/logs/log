@@ -1,0 +1,410 @@
+2021-10-07 00:26:17 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:26:17 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:26:17 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:26:17 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:26:17 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:26:17 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:26:17 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:26:17 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:26:17 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:26:17 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:26:17 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:26:17 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:26:17 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:26:17 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:26:17 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:30:14 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:30:14 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:30:14 - main.py[line:24] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:30:14 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:30:14 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:30:14 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:30:14 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:30:14 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:30:14 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:30:14 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:30:14 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:30:14 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:30:14 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:30:14 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:30:14 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:31:01 - main.py[line:22] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:31:01 - main.py[line:22] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:31:01 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:31:01 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:31:01 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:31:01 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:31:01 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:31:01 - init_data.py[line:56] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:31:01 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:31:01 - init_data.py[line:92] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:32:40 - main.py[line:22] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:32:40 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:32:41 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:32:41 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:32:41 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:33:10 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:33:10 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:33:10 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:33:10 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:33:10 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:33:10 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:33:10 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:33:10 - basereload.py[line:56] - INFO: Started reloader process [10404] using statreload 
+
+2021-10-07 00:33:11 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:33:11 - server.py[line:84] - INFO: Started server process [10588] 
+
+2021-10-07 00:33:11 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:33:11 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:33:57 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:33:57 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:33:57 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:33:57 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:33:57 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:33:57 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:33:57 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:33:57 - basereload.py[line:56] - INFO: Started reloader process [6968] using statreload 
+
+2021-10-07 00:33:58 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:33:58 - server.py[line:84] - INFO: Started server process [15072] 
+
+2021-10-07 00:33:58 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:33:58 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:35:13 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:35:14 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:35:14 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:35:14 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:35:14 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:35:14 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:35:14 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:35:14 - basereload.py[line:56] - INFO: Started reloader process [6840] using statreload 
+
+2021-10-07 00:35:15 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:35:15 - server.py[line:84] - INFO: Started server process [12208] 
+
+2021-10-07 00:35:15 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:35:15 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:35:21 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:35:21 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:35:21 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:35:21 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:35:21 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:35:21 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:35:21 - server.py[line:84] - INFO: Started server process [4904] 
+
+2021-10-07 00:35:21 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:35:21 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:35:21 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:35:31 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:35:32 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:35:32 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:35:32 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:35:32 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:35:32 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:35:32 - server.py[line:84] - INFO: Started server process [15304] 
+
+2021-10-07 00:35:32 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:35:32 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:35:32 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:35:50 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:35:50 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:35:50 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:35:50 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:35:50 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:35:50 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:35:50 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:35:50 - basereload.py[line:56] - INFO: Started reloader process [9508] using statreload 
+
+2021-10-07 00:35:51 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:35:51 - server.py[line:84] - INFO: Started server process [636] 
+
+2021-10-07 00:35:51 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:35:51 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:36:03 - main.py[line:21] - INFO: 日志初始化成功！！！ 
+
+2021-10-07 00:36:03 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:36:04 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:36:04 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:36:04 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:36:04 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:36:04 - server.py[line:84] - INFO: Started server process [5092] 
+
+2021-10-07 00:36:04 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:36:04 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:36:04 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:36:34 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:36:35 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:36:35 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:36:35 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:36:35 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:36:35 - server.py[line:84] - INFO: Started server process [13952] 
+
+2021-10-07 00:36:35 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:36:35 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:36:35 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:37:17 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:37:18 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:37:18 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:37:18 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:37:18 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:37:18 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:37:18 - basereload.py[line:56] - INFO: Started reloader process [9348] using statreload 
+
+2021-10-07 00:37:18 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:37:18 - server.py[line:84] - INFO: Started server process [4304] 
+
+2021-10-07 00:37:18 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:37:18 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:38:25 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:38:26 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:38:26 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:38:26 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:38:26 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:38:26 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:38:26 - basereload.py[line:56] - INFO: Started reloader process [2984] using statreload 
+
+2021-10-07 00:38:26 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:38:26 - server.py[line:84] - INFO: Started server process [7400] 
+
+2021-10-07 00:38:26 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:38:26 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:38:56 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:38:56 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:38:56 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:38:56 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:38:56 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:38:56 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:38:56 - basereload.py[line:56] - INFO: Started reloader process [7276] using statreload 
+
+2021-10-07 00:38:57 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:38:57 - server.py[line:84] - INFO: Started server process [10228] 
+
+2021-10-07 00:38:57 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:38:57 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:39:03 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:39:04 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:39:04 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:39:04 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:39:04 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:39:04 - server.py[line:84] - INFO: Started server process [13844] 
+
+2021-10-07 00:39:04 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:39:04 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:39:04 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:39:15 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:39:15 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:39:15 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:39:15 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:39:15 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:39:15 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:39:15 - basereload.py[line:56] - INFO: Started reloader process [9456] using statreload 
+
+2021-10-07 00:39:16 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:39:16 - server.py[line:84] - INFO: Started server process [6392] 
+
+2021-10-07 00:39:16 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:39:16 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:39:23 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:39:24 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:39:24 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:39:24 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:39:24 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:39:24 - server.py[line:84] - INFO: Started server process [13472] 
+
+2021-10-07 00:39:24 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:39:24 - on.py[line:59] - INFO: Application startup complete. 
+
+2021-10-07 00:39:24 - server.py[line:217] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:39:41 - init_db.py[line:28] - INFO: 删除表成功!!! 
+
+2021-10-07 00:39:41 - init_db.py[line:18] - INFO: 创建表成功!!! 
+
+2021-10-07 00:39:41 - init_data.py[line:53] - INFO: 所有表数据已清空！！！ 
+
+2021-10-07 00:39:41 - init_data.py[line:89] - INFO: 成功初始化所有表数据！！！ 
+
+2021-10-07 00:39:41 - config.py[line:332] - INFO: Will watch for changes in these directories: ['D:\\Pycharm\\FastAPI\\app02'] 
+
+2021-10-07 00:39:41 - config.py[line:554] - INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+
+2021-10-07 00:39:41 - basereload.py[line:56] - INFO: Started reloader process [11544] using statreload 
+
+2021-10-07 00:39:42 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-07 00:39:42 - server.py[line:84] - INFO: Started server process [9652] 
+
+2021-10-07 00:39:42 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-07 00:39:42 - on.py[line:59] - INFO: Application startup complete. 
+
