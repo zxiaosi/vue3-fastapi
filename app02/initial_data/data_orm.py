@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/25 20:48
 # @Author : 小四先生
-# @desc : SQLAlchemy_ORM_Initial 的数据加工
+# @desc : data_core中数据的加工(被 sqlalchemy_orm_initial函数 使用)
 from app02.initial_data.data_core import userData, departmentData, majorData, studentData, teacherData, adminData, \
     courseData, selectCourseData
 from app02.models.admin import Admin

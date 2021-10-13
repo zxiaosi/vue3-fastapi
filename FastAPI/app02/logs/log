@@ -1,0 +1,8 @@
+2021-10-09 19:39:57 - selector_events.py[line:59] - DEBUG: Using selector: SelectSelector 
+
+2021-10-09 19:39:57 - server.py[line:84] - INFO: Started server process [6812] 
+
+2021-10-09 19:39:57 - on.py[line:45] - INFO: Waiting for application startup. 
+
+2021-10-09 19:39:57 - on.py[line:59] - INFO: Application startup complete. 
+

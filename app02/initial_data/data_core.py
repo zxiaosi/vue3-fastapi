@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/25 23:00
 # @Author : 小四先生
-# @desc : 所有数据
+# @desc : 所有数据(被 sqlalchemy_core_initial函数 使用)
 """
   免责声明: 数据来自网络，如有冲突，请联系删除！！！
 """

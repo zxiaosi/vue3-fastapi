@@ -3,8 +3,8 @@
 # @Time : 2021/9/25 20:50
 # @Author : 小四先生
 # @desc : 两种初始化表数据的方式
+from app02.core.config import logger
 from app02.db import base
-from app02.db.init_db import logger
 from app02.db.session import Session
 from app02.initial_data.data_orm import data
 from app02.initial_data.data_core import userData, departmentData, majorData, studentData, teacherData, adminData, \
@@ -19,6 +19,7 @@ from app02.models.teacher import Teacher
 from app02.models.user import User
 
 
+# 连接数据库的装饰器
 def db_conn(func):
     def run():
         # 创建连接会话
@@ -40,7 +41,7 @@ def db_conn(func):
     return run
 
 
-# 清空 base 下表的数据(待优化)
+# 清空 base 下表的数据(MySQL使用)
 @db_conn
 def clear_db(db):
     # 将表倒叙排列
@@ -57,7 +58,7 @@ def clear_db(db):
 @db_conn
 def sqlalchemy_orm_initial(db):
     # 清空表数据
-    clear_db()
+    # clear_db()
 
     # 将 data 添加到 db
     # db.add_all(data)
@@ -69,7 +70,7 @@ def sqlalchemy_orm_initial(db):
 @db_conn
 def sqlalchemy_core_initial(db):
     # 清空表数据
-    clear_db()
+    # clear_db()
 
     # 插入数据
     db.execute(
@@ -88,7 +89,8 @@ def sqlalchemy_core_initial(db):
 
     logger.info("成功初始化所有表数据！！！")
 
-# if __name__ == '__main__':
-#     # sqlalchemy_orm_initial()
-#     sqlalchemy_core_initial()
-#     # clear_db()
+
+if __name__ == '__main__':
+    # sqlalchemy_orm_initial()
+    sqlalchemy_core_initial()
+    # clear_db()

@@ -50,26 +50,30 @@
 
 ```sh
 |-- app
-	|-- core					
-		|-- init.py			    # 核心内容
+	|-- core					# 核心内容
+		|-- init.py			    
 		|-- config.py			# 配置文件
-		|-- logger.py			# 日志模块
- 	|-- db						
- 		|-- init.py			    # 数据库相关
+		|-- logger.py		    # 封装日志模块
+		
+ 	|-- db						# 数据库相关
+ 		|-- init.py			    
 		|-- base.py				# 配置需要创建的表
 		|-- base_class.py		# 自动生成 表名
-		|-- init_db.py			# 创建base中的表
+		|-- init_db.py			# 创建和删除base中的表
 		|-- session.py			# 创建数据库连接会话
-	|-- initial_data
-    	|-- init.py			    # 初始化表数据
-    	|-- data_core.py		# SQLAlchemy_Core 的数据
-    	|-- data_orm.py			# SQLAlchemy_ORM 的数据
+		
+	|-- initial_data            # 初始化表数据
+    	|-- init.py			    
+    	|-- data_core.py		# 所有数据
+    	|-- data_orm.py			# 加工 data_core 中的数据
     	|-- init_data.py		# 两种初始化表数据的方式
+    	
     |-- logs                    # 日志模块(自动生成)
         |-- log                 # 当前时间段暂存的日志
         |-- 2021-10-06_23-46-45.log			    
         |-- 2021-10-06_23-46-47.log			    
-        |-- 2021-10-06_23-46-49.log			    
+        |-- 2021-10-06_23-46-49.log		
+        	    
 	|-- models                  
 		|-- init.py			    # ORM模型
 		|-- admin.py			# 管理员表
@@ -81,8 +85,9 @@
 		|-- student.py			# 学生表
 		|-- teacher.py			# 教师表
 		|-- user.py				# 调试表
-	|-- schemas                 
-		|-- init.py			    # 通过api接收数据的数据验证
+		
+	|-- schemas                 # 通过api接收数据的数据验证
+		|-- init.py			    
 		|-- admin.py			# 管理员数据验证
 		|-- control.py			# 控制表数据验证
 		|-- course.py			# 课程表数据验证
@@ -92,17 +97,21 @@
 		|-- student.py			# 学生表数据验证
 		|-- teacher.py			# 教师表数据验证
 		|-- user.py				# 调试表数据验证
-	|-- test   
-    	|-- init.py				# 测试文件夹
-    	|-- db_init				
-    		|-- init.py			# 调试初始化表数据
+		
+	|-- test                    # 测试文件夹
+    	|-- init.py				
+    	|-- db_init				# 调试初始化表数据
+    		|-- init.py			
     		|-- data_core.py	# 需要初始化数据
     		|-- initial_data.py	# 初始化的方法
-    	|-- logger
-    	    |-- init.py			# 调试日志模块
+    		
+    	|-- logger              # 调试日志模块
+    	    |-- init.py			
     	    |-- logger_01.py	# 创建单个日志
     	    |-- logger_02.py	# 创建日志文件夹
     	    |-- logger_03.py	# 创建日志文件夹(自动删除)
+    	    |-- logger_04.py	# 创建日志(单线程)
+    	    
 	|-- init.py
 	|-- main.py					# 主程序
 	|-- requirements.txt		# 所需的包

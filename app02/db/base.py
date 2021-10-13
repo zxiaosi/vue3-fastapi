@@ -2,7 +2,8 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/19 9:53
 # @Author : 小四先生
-# @desc : 声明需要 创建的表
+# @desc : 需要创建的表
+"""(# nopa) 不可省略"""
 from app02.db.base_class import Base  # noqa
 # 院系表
 from app02.models.department import Department  # noqa
@@ -22,4 +23,3 @@ from app02.models.selectCourse import SelectCourse  # noqa
 from app02.models.control import Control  # noqa
 # 调试表
 from app02.models.user import User  # noqa
-
