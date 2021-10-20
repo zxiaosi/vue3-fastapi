@@ -1,3 +1,9 @@
 .idea
 __pycache__
 *.log*
+frontend/node_modules
+frontend/.DS_Store
+frontend/dist*
+frontend/dist-ssr
+*.local
+frontend/src/assets/sprites/*.*
