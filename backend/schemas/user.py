@@ -10,6 +10,7 @@ from pydantic.schema import datetime
 
 # 共享属性
 class UserBase(BaseModel):
+    id: Optional[int] = None
     full_name: Optional[str] = None
     # sex: Optional[str] = None
     # birthday: Optional[datetime] = datetime.now()
@@ -29,8 +30,6 @@ class UserUpdate(UserBase):
 
 # 创建数据库
 class UserInDBBase(UserBase):
-    user_id: Optional[int] = None
-
     class Config:
         orm_mode = True  # 是否为orm模型
 
@@ -42,4 +41,4 @@ class User(UserInDBBase):
 
 # 存储在DB中的附加属性
 class UserInDB(UserInDBBase):
-    password: str
+    hashed_password: str

@@ -5,6 +5,8 @@
 # @desc : 需要创建的表
 """(# nopa) 不可省略"""
 from backend.db.base_class import Base  # noqa
+# 调试表
+from backend.models.user import User  # noqa
 # 院系表
 from backend.models.department import Department  # noqa
 # 专业表
@@ -21,5 +23,3 @@ from backend.models.course import Course  # noqa
 from backend.models.selectCourse import SelectCourse  # noqa
 # 控制表
 from backend.models.control import Control  # noqa
-# 调试表
-from backend.models.user import User  # noqa

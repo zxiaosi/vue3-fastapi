@@ -15,6 +15,12 @@ from logging.handlers import TimedRotatingFileHandler
 
 # 创建日志文件夹
 def create_folder(folder_name):
+    """
+    创建日志文件夹
+
+    :param folder_name: 文件名
+    :return: 日志路径
+    """
     # 获取当前文件夹
     current_path = os.path.dirname(__file__)
 
@@ -52,6 +58,20 @@ class MyTimedRotatingFileHandler(TimedRotatingFileHandler):
 
 # log日志
 class MyLogger:
+    """
+    封装 log日志
+
+    :param folderName: 文件夹名
+    :param logname: 临时日志文件名
+    :param level: 日志级别
+    :param datefmt: 时间格式化
+    :param fmt: 格式化
+    :param console: 是否输出到控制台
+    :param file: 保存的日志文件名
+    :param when: 日志按时间切分(默认天)
+    :param backCount: 备份文件最大个数,超过删除
+    :return: 日志对象
+    """
     # 使用线程锁保证单例模式线程安全
     _instance_lock = threading.Lock()
 
@@ -60,7 +80,7 @@ class MyLogger:
         self.folderName = (kwargs["folderName"] if kwargs.get("folderName") else "logs")  # 日志文件夹名
         self.logname = (kwargs["tempName"] if kwargs.get("tempName") else "log")  # 临时日志文件名
         self.level = (kwargs["level"] if kwargs.get("level") else "debug")  # 日志级别
-        self.datefmt = (kwargs["datefmt"] if kwargs.get("datefmt") else None)
+        self.datefmt = (kwargs["datefmt"] if kwargs.get("datefmt") else None)  # 时间格式化
         self.fmt = (kwargs["format"] if kwargs.get("format")
                     else "%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")  # 格式化
         self.console = (kwargs["console"] if kwargs.get("console") else True)  # 是否输出到控制台

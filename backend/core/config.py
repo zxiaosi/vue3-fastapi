@@ -9,12 +9,15 @@ from backend.core.logger import MyLogger
 
 # 配置信息
 class Settings(BaseSettings):
+    # api 前缀
+    API_V1_STR: str = "/api/v1"
+
     # 接口文档的 名字
     PROJECT_NAME = "FastAPI"
     # 接口文档的 描述
-    PROJECT_DESCRIPTION = "创建数据库"
+    PROJECT_DESCRIPTION = "FastAPI接口"
     # 接口文档的 版本
-    PROJECT_VERSION = "2.0"
+    PROJECT_VERSION = "3.0"
 
     # 数据库链接
     # SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"  # (可开启 db/session 下的多线程)

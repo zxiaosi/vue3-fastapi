@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from backend.core.config import settings
 
+# 数据库引擎
 engine = create_engine(
     # 数据库uri
     settings.SQLALCHEMY_DATABASE_URI,
@@ -20,4 +21,4 @@ engine = create_engine(
 )
 
 # 创建本地会话
-Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

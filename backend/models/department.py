@@ -9,16 +9,17 @@ from backend.db.base_class import Base
 
 
 class Department(Base):
-    department_id = Column(String(4),
-                           primary_key=True,
-                           index=True,
-                           doc='院系编号')
+    """ 院系表 """
+    id = Column(String(4),
+                primary_key=True,
+                index=True,
+                doc='院系编号')
 
-    department_name = Column(String(20),
-                             nullable=False,
-                             index=True,
-                             doc='院系名字')
+    name = Column(String(20),
+                  nullable=False,
+                  index=True,
+                  doc='院系名字')
 
-    department_chairman = Column(String(10), nullable=False, doc='院系主任')
+    chairman = Column(String(10), nullable=False, doc='院系主任')
 
-    department_phone = Column(String(11), nullable=False, doc='主任手机号')
+    phone = Column(String(11), nullable=False, doc='主任手机号')

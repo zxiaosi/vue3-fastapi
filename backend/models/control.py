@@ -9,6 +9,7 @@ from backend.db.base_class import Base
 
 
 class Control(Base):
+    """ 控制表 """
     id = Column(Integer,
                 primary_key=True,
                 autoincrement=True,

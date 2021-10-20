@@ -9,6 +9,7 @@ from backend.db.base_class import Base
 
 
 class User(Base):
+    """ 调试表 """
     # primary_key 主键
     # index 索引
     # autoincrement 自增
@@ -21,11 +22,11 @@ class User(Base):
 
     # CURRENT_TIMESTAMP 当前时间
 
-    user_id = Column(Integer,
-                     primary_key=True,
-                     autoincrement=True,
-                     index=True,
-                     doc='主键')
+    id = Column(Integer,
+                primary_key=True,
+                autoincrement=True,
+                index=True,
+                doc='主键')
 
     full_name = Column(String(10),
                        unique=True,
@@ -40,7 +41,7 @@ class User(Base):
     #                   nullable=False,
     #                   server_default=text('CURRENT_TIMESTAMP')
     #                   )
-    password = Column(String(20), nullable=False)
+    hashed_password = Column(String(60), nullable=False)
 
     # is_active = Column(Boolean(), default=True)
     # is_superuser = Column(Boolean(), default=False)

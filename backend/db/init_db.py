@@ -8,8 +8,9 @@ from backend.db import base
 from backend.db.session import engine
 
 
-# 创建 base 下的所有表
+# 创建 db/base 下的所有表
 def init_db():
+    """ 创建 db/base 下的所有表 """
     try:
         # 删除所有的表
         drop_db()
@@ -21,8 +22,9 @@ def init_db():
         logger.warning(f"创建表失败!!! -- 错误信息如下:\n{e}")
 
 
-# 删除 base 下的所有表
+# 删除 db/base 下的所有表
 def drop_db():
+    """ 删除 db/base 下的所有表 """
     try:
         base.Base.metadata.drop_all(bind=engine)
         logger.info("删除表成功!!!")

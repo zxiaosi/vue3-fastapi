@@ -15,20 +15,21 @@ if TYPE_CHECKING:
 
 
 class Major(Base):
-    major_id = Column(String(6),
-                      primary_key=True,
-                      index=True,
-                      doc='专业编号')
+    """ 专业表 """
+    id = Column(String(6),
+                primary_key=True,
+                index=True,
+                doc='专业编号')
 
-    major_name = Column(String(20),
-                        nullable=False,
-                        index=True,
-                        doc='专业名字')
+    name = Column(String(20),
+                  nullable=False,
+                  index=True,
+                  doc='专业名字')
 
-    major_assistant = Column(String(10), nullable=False, doc='辅导员')
+    assistant = Column(String(10), nullable=False, doc='辅导员')
 
-    major_phone = Column(String(11), nullable=False, doc='辅导员手机号')
+    phone = Column(String(11), nullable=False, doc='辅导员手机号')
 
-    department_id = Column(String(4), ForeignKey('department.department_id'), doc='院系编号')
+    department_id = Column(String(4), ForeignKey('department.id'), doc='院系编号')
 
     department = relationship("Department", backref="major")
