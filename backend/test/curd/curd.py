@@ -7,8 +7,8 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend.db.session import SessionLocal
-from backend.models import user
+from db.session import SessionLocal
+from models import user
 
 
 def get_user(db: Session, user_id: int):

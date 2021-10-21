@@ -5,7 +5,7 @@
 # @desc : 接口汇总
 from fastapi import APIRouter
 
-from backend.api.api_v1.endpoints import users
+from api.api_v1.endpoints import users
 
 api_router = APIRouter()
 api_router.include_router(users.router, prefix="/users", tags=["users"])

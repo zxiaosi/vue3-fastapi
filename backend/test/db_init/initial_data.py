@@ -3,9 +3,9 @@
 # @Time : 2021/9/23 19:38
 # @Author : 小四先生
 # @desc : 初始化表数据尝试
-from backend.test.db_init.data import userData, data
-from backend.db.session import SessionLocal
-from backend.models.user import User
+from test.db_init.data import userData, data
+from db.session import SessionLocal
+from models.user import User
 
 
 # 速度略慢,性能正确

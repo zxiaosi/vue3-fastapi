@@ -6,8 +6,8 @@
 # 依赖项
 from fastapi import FastAPI, Depends
 
-from backend.schemas import user
-from backend.db.session import SessionLocal
+from schemas import user
+from db.session import SessionLocal
 
 app = FastAPI()
 

@@ -1,65 +1,62 @@
 <template>
-    <div class="notfound">
-        <svg-icon name="404" />
-        <div class="content">
-            <h1>404</h1>
-            <div class="desc">抱歉，你访问的页面不存在</div>
-            <el-button type="primary" @click="goBack">{{ countdown }}秒后，返回首页</el-button>
+    <div class="error-page">
+        <div class="error-code">4<span>0</span>4</div>
+        <div class="error-desc">啊哦~ 你所访问的页面不存在</div>
+        <div class="error-handle">
+            <router-link to="/">
+                <el-button type="primary" size="large">返回首页</el-button>
+            </router-link>
+            <el-button class="error-btn" type="primary" size="large" @click="goBack">返回上一页</el-button>
         </div>
     </div>
 </template>
 
 <script>
+import { useRouter } from "vue-router";
 export default {
-    beforeRouteLeave(to, from, next) {
-        clearInterval(this.inter)
-        next()
-    },
-    data() {
+    name: "404",
+    setup() {
+        const router = useRouter();
+        const goBack = () => {
+            router.go(-1);
+        };
         return {
-            inter: null,
-            countdown: 5
-        }
+            goBack,
+        };
     },
-    mounted() {
-        this.inter = setInterval(() => {
-            this.countdown--
-            if (this.countdown == 0) {
-                clearInterval(this.inter)
-                this.goBack()
-            }
-        }, 1000)
-    },
-    methods: {
-        goBack() {
-            this.$router.push('/')
-        }
-    }
-}
+};
 </script>
 
-<style lang="scss" scoped>
-.notfound {
+
+<style scoped>
+.error-page {
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    width: 700px;
-    @include position-center(xy);
-    .svg-icon {
-        width: 400px;
-        height: 400px;
-    }
-    .content {
-        h1 {
-            margin: 0;
-            font-size: 72px;
-            color: #303133;
-        }
-        .desc {
-            margin: 20px 0 30px;
-            font-size: 20px;
-            color: #606266;
-        }
-    }
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f3;
+    box-sizing: border-box;
+}
+.error-code {
+    line-height: 1;
+    font-size: 250px;
+    font-weight: bolder;
+    color: #2d8cf0;
+}
+.error-code span {
+    color: #00a854;
+}
+.error-desc {
+    font-size: 30px;
+    color: #777;
+}
+.error-handle {
+    margin-top: 30px;
+    padding-bottom: 200px;
+}
+.error-btn {
+    margin-left: 100px;
 }
 </style>

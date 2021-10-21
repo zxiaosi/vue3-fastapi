@@ -5,7 +5,7 @@
 # @desc : user表(调试)
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, text, CheckConstraint
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 
 class User(Base):

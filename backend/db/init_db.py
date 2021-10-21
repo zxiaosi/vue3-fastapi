@@ -3,9 +3,9 @@
 # @Time : 2021/9/25 22:08
 # @Author : 小四先生
 # @desc : 创建与删除所有表
-from backend.core.config import logger
-from backend.db import base
-from backend.db.session import engine
+from core.config import logger
+from db import base
+from db.session import engine
 
 
 # 创建 db/base 下的所有表

@@ -7,7 +7,7 @@
 # * 表示 [userData, departmentData, majorData, studentData, teacherData, adminData, courseData, selectCourseData]
 from .data_core import *
 # * 表示 [User, Department, Major, Student, Teacher, Admin, Course, SelectCourse]
-from backend.models import *
+from models import *
 
 data = []
 

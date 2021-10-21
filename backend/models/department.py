@@ -5,7 +5,7 @@
 # @desc : 院系表
 from sqlalchemy import Column, String
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 
 class Department(Base):

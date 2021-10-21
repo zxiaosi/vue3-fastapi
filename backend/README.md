@@ -18,7 +18,7 @@
 
 ## 安装
 
-1. 配置Python3.6(及以上)的虚拟环境
+1. 配置Python3.9(及以上)的虚拟环境
 
 2. 安装运行所需的包
 
@@ -46,7 +46,17 @@
 
    > 接口文档：http://127.0.0.1:8000/docs
 
-## 文档目录
+## 项目截图
+
++ 成功运行的图片
+
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/image-20211021164103094.png)
+
++ 接口图
+
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/backend-%E6%8E%A5%E5%8F%A3.png)
+
+## 项目目录
 
 ```sh
 |-- backend

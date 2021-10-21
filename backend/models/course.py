@@ -5,7 +5,7 @@
 # @desc : 课程表
 from sqlalchemy import Column, String, Float, SmallInteger
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 
 class Course(Base):

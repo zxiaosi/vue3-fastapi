@@ -7,10 +7,10 @@ from typing import Any, Dict, Union
 
 from sqlalchemy.orm import Session
 
-from backend.core.security import get_password_hash
-from backend.crud.base import CRUDBase
-from backend.models.user import User
-from backend.schemas.user import UserCreate, UserUpdate
+from core.security import get_password_hash
+from crud.base import CRUDBase
+from models.user import User
+from schemas.user import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):

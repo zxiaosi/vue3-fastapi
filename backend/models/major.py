@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 if TYPE_CHECKING:
     from .department import Department  # noqa

@@ -5,7 +5,7 @@
 # @desc : 控制表
 from sqlalchemy import Column, Integer, String, CheckConstraint
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 
 class Control(Base):

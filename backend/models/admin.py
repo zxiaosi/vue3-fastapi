@@ -7,7 +7,7 @@ from datetime import date
 
 from sqlalchemy import Column, Integer, String, CheckConstraint, Date
 
-from backend.db.base_class import Base
+from db.base_class import Base
 
 
 class Admin(Base):

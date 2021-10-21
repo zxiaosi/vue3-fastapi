@@ -3,7 +3,7 @@
 # @Time : 2021/9/24 19:40
 # @Author : 小四先生
 # @desc : 数据
-from backend.models.user import User
+from models.user import User
 
 userData = [
     User(user_id='4', full_name='小二', password='123'),

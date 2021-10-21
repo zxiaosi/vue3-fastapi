@@ -3,14 +3,14 @@
 # @Time : 2021/9/25 20:50
 # @Author : 小四先生
 # @desc : 两种初始化表数据的方式
-from backend.core.config import logger
-from backend.db import base, init_db
-from backend.db.session import SessionLocal
-from backend.initial_data.data_orm import data
+from core.config import logger
+from db import base, init_db
+from db.session import SessionLocal
+from initial_data.data_orm import data
 # * 表示 [userData, departmentData, majorData, studentData, teacherData, adminData, courseData, selectCourseData]
-from backend.initial_data.data_core import *
+from initial_data.data_core import *
 # * 表示 [User, Department, Major, Student, Teacher, Admin, Course, SelectCourse]
-from backend.models import *
+from models import *
 
 
 # 连接数据库的装饰器

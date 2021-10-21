@@ -4,7 +4,7 @@
 # @Author : 小四先生
 # @desc : 配置文件
 from pydantic import BaseSettings
-from backend.core.logger import MyLogger
+from core.logger import MyLogger
 
 
 # 配置信息
