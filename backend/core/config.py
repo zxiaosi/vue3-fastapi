@@ -3,7 +3,9 @@
 # @Time : 2021/9/19 17:02
 # @Author : 小四先生
 # @desc : 配置文件
-from pydantic import BaseSettings
+from typing import List, Union, Optional
+
+from pydantic import BaseSettings, AnyHttpUrl, validator, HttpUrl
 from core.logger import MyLogger
 
 
@@ -11,6 +13,20 @@ from core.logger import MyLogger
 class Settings(BaseSettings):
     # api 前缀
     API_V1_STR: str = "/api/v1"
+
+    # 跨域请求
+    # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
+    # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
+    # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost", "http://localhost:3000"]
+
+    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
 
     # 接口文档的 名字
     PROJECT_NAME = "FastAPI"
@@ -20,10 +36,10 @@ class Settings(BaseSettings):
     PROJECT_VERSION = "3.0"
 
     # 数据库链接
-    # SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"  # (可开启 db/session 下的多线程)
+    SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"  # (可开启 db/session 下的多线程)
     # SQLALCHEMY_DATABASE_URI = "mysql://user:password@hostname/dbname?charset=utf8"
     # SQLALCHEMY_DATABASE_URI = "postgresql://user:password@postgresserver/db"
-    SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"
+    # SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8" # (关闭 db/session 下的多线程)
     # 数据库日志 (可看到创建表、表数据增删改查的信息)
     SQLALCHEMY_DATABASE_ECHO = False
 

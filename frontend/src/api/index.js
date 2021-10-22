@@ -7,3 +7,12 @@ export const fetchData = query => {
         params: query
     });
 };
+
+// 用户测试数据
+export const userData = () => {
+    return request({
+        url: './api/v1/users/?skip=0&limit=100',
+        method: 'get'
+    });
+};
+

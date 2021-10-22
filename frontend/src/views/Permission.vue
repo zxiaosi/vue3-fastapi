@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-warn"></i> 权限测试
+                    <i class="el-icon-ali-warn"></i> 权限测试
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>

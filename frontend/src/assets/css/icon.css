@@ -1,4 +1,12 @@
-[class*=" el-icon-lx"],
+/* 修改图标见 https://www.jianshu.com/p/59dd28f0b9c9 */
+/* [class*=" el-icon-lx"],
 [class^=el-icon-lx] {
     font-family: lx-iconfont !important;
+} */
+
+[class*=" el-icon-ali"],
+[class^=el-icon-ali] {
+    font-family: "iconfont" !important;
+    /* 图标整体上移 */
+    padding-bottom: 3px;
 }

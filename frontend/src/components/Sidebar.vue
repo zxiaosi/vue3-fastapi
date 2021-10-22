@@ -39,22 +39,22 @@ export default {
     setup() {
         const items = [
             {
-                icon: "el-icon-lx-home",
+                icon: "el-icon-ali-home",
                 index: "/dashboard",
                 title: "系统首页",
             },
             {
-                icon: "el-icon-lx-cascades",
+                icon: "el-icon-ali-cascades",
                 index: "/table",
-                title: "基础表格",
+                title: "学生信息表格",
             },
             {
-                icon: "el-icon-lx-copy",
+                icon: "el-icon-ali-copy",
                 index: "/tabs",
                 title: "tab选项卡",
             },
             {
-                icon: "el-icon-lx-calendar",
+                icon: "el-icon-ali-calendar",
                 index: "3",
                 title: "表单相关",
                 subs: [
@@ -79,7 +79,7 @@ export default {
                 ],
             },
             {
-                icon: "el-icon-lx-emoji",
+                icon: "el-icon-ali-emoji",
                 index: "/icon",
                 title: "自定义图标",
             },
@@ -89,12 +89,12 @@ export default {
                 title: "schart图表",
             },
             {
-                icon: "el-icon-lx-global",
+                icon: "el-icon-ali-global",
                 index: "/i18n",
                 title: "国际化功能",
             },
             {
-                icon: "el-icon-lx-warn",
+                icon: "el-icon-ali-warn",
                 index: "7",
                 title: "错误处理",
                 subs: [
@@ -109,9 +109,9 @@ export default {
                 ],
             },
             {
-                icon: "el-icon-lx-redpacket_fill",
+                icon: "el-icon-ali-test",
                 index: "/donate",
-                title: "支持作者",
+                title: "测试页面",
             },
         ];
 

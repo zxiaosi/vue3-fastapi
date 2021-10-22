@@ -3,24 +3,24 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-emoji"></i> 自定义图标
+                    <i class="el-icon-ali-emoji"></i> 自定义图标
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <h2>使用方法</h2>
-            <p style="line-height: 50px;">直接通过设置类名为 el-icon-lx-iconName 来使用即可。例如：（共{{iconList.length}}个图标）</p>
+            <p style="line-height: 50px;">直接通过设置类名为 el-icon-ali-iconName 来使用即可。例如：（共{{iconList.length}}个图标）</p>
             <p class="example-p">
-                <i class="el-icon-lx-redpacket_fill" style="font-size: 30px;color: #ff5900"></i>
-                <span>&lt;i class=&quot;el-icon-lx-redpacket_fill&quot;&gt;&lt;/i&gt;</span>
+                <i class="el-icon-ali-test" style="font-size: 30px;color: #ff5900"></i>
+                <span>&lt;i class=&quot;el-icon-ali-test&quot;&gt;&lt;/i&gt;</span>
             </p>
             <p class="example-p">
-                <i class="el-icon-lx-weibo" style="font-size: 30px;color:#fd5656"></i>
-                <span>&lt;i class=&quot;el-icon-lx-weibo&quot;&gt;&lt;/i&gt;</span>
+                <i class="el-icon-ali-weibo" style="font-size: 30px;color:#fd5656"></i>
+                <span>&lt;i class=&quot;el-icon-ali-weibo&quot;&gt;&lt;/i&gt;</span>
             </p>
             <p class="example-p">
-                <i class="el-icon-lx-emojifill" style="font-size: 30px;color: #ffc300"></i>
-                <span>&lt;i class=&quot;el-icon-lx-emojifill&quot;&gt;&lt;/i&gt;</span>
+                <i class="el-icon-ali-emojifill" style="font-size: 30px;color: #ffc300"></i>
+                <span>&lt;i class=&quot;el-icon-ali-emojifill&quot;&gt;&lt;/i&gt;</span>
             </p>
             <br />
             <h2>图标</h2>
@@ -30,7 +30,7 @@
             <ul>
                 <li class="icon-li" v-for="(item,index) in list" :key="index">
                     <div class="icon-li-content">
-                        <i :class="`el-icon-lx-${item}`"></i>
+                        <i :class="`el-icon-ali-${item}`"></i>
                         <span>{{item}}</span>
                     </div>
                 </li>
@@ -45,131 +45,17 @@ export default {
     name: "icon",
     setup() {
         const iconList = [
-            "attentionforbid",
-            "attentionforbidfill",
-            "attention",
-            "attentionfill",
-            "tag",
-            "tagfill",
-            "people",
-            "peoplefill",
-            "notice",
-            "noticefill",
-            "mobile",
-            "mobilefill",
-            "voice",
-            "voicefill",
-            "unlock",
-            "lock",
-            "home",
-            "homefill",
-            "delete",
-            "deletefill",
-            "notification",
-            "notificationfill",
-            "notificationforbidfill",
-            "like",
-            "likefill",
-            "comment",
-            "commentfill",
-            "camera",
-            "camerafill",
-            "warn",
-            "warnfill",
-            "time",
-            "timefill",
-            "location",
-            "locationfill",
-            "favor",
-            "favorfill",
-            "skin",
-            "skinfill",
-            "news",
-            "newsfill",
-            "record",
-            "recordfill",
-            "emoji",
             "emojifill",
-            "message",
-            "messagefill",
-            "goods",
-            "goodsfill",
-            "crown",
-            "crownfill",
-            "move",
-            "add",
-            "hot",
-            "hotfill",
-            "service",
-            "servicefill",
-            "present",
-            "presentfill",
-            "pic",
-            "picfill",
-            "rank",
-            "rankfill",
-            "male",
-            "female",
-            "down",
-            "top",
-            "recharge",
-            "rechargefill",
-            "forward",
-            "forwardfill",
-            "info",
-            "infofill",
-            "redpacket",
-            "redpacket_fill",
-            "roundadd",
-            "roundaddfill",
-            "friendadd",
-            "friendaddfill",
-            "cart",
-            "cartfill",
-            "more",
-            "moreandroid",
-            "back",
-            "right",
-            "shop",
-            "shopfill",
-            "question",
-            "questionfill",
-            "roundclose",
-            "roundclosefill",
-            "roundcheck",
-            "roundcheckfill",
-            "global",
-            "mail",
-            "punch",
-            "exit",
-            "upload",
-            "read",
-            "file",
-            "link",
-            "full",
-            "group",
-            "friend",
-            "profile",
-            "addressbook",
-            "calendar",
-            "text",
-            "copy",
-            "share",
-            "wifi",
-            "vipcard",
             "weibo",
-            "remind",
-            "refresh",
-            "filter",
-            "settings",
-            "scan",
-            "qrcode",
+            "camerafill",
+            "test",
+            "warn",
+            "copy",
+            "calendar",
+            "global",
+            "emoji",
             "cascades",
-            "apps",
-            "sort",
-            "searchlist",
-            "search",
-            "edit",
+            "home",
         ];
         const keyword = ref("");
         const list = computed(() => {

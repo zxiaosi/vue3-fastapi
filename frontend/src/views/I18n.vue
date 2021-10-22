@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-global"></i>
+                    <i class="el-icon-ali-global"></i>
                     {{$t('i18n.breadcrumb')}}
                 </el-breadcrumb-item>
             </el-breadcrumb>

@@ -49,7 +49,7 @@ const routes = [
                 path: "/donate",
                 name: "donate",
                 meta: {
-                    title: '鼓励作者'
+                    title: '测试页面'
                 },
                 component: () => import ( /* webpackChunkName: "donate" */ "../views/Donate.vue")
             }, {

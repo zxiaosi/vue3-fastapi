@@ -5,7 +5,11 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
+
+        <!-- logo名 -->
         <div class="logo">学生选课系统</div>
+
+        <!-- 头部右侧 -->
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 消息中心 -->
@@ -17,10 +21,12 @@
                     </el-tooltip>
                     <span class="btn-bell-badge" v-if="message"></span>
                 </div>
+
                 <!-- 用户头像 -->
                 <div class="user-avator">
                     <img src="../assets/img/img.jpg" />
                 </div>
+
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
@@ -41,6 +47,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -84,6 +91,7 @@ export default {
     },
 };
 </script>
+
 <style scoped>
 .header {
     position: relative;
