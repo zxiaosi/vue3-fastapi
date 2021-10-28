@@ -110,7 +110,7 @@ export default {
             },
             {
                 icon: "el-icon-ali-test",
-                index: "/donate",
+                index: "/test",
                 title: "测试页面",
             },
         ];

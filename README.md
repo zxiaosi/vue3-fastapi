@@ -11,6 +11,10 @@
 + **后端**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md
 + **前端**：[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system) --> `frontend` --> README.md
 
+## 版本
+
++ `1.0` 测试数据的增上改查已完成
+
 ## 开启服务
 
 1. 后端
@@ -39,7 +43,14 @@
   
     ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/frontend-login.png)
   
-+ 接口调试如图
++ 测试数据的`增`
 
-  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/frontend-%E8%B0%83%E8%AF%95%E6%8E%A5%E5%8F%A3.png)
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E5%A2%9E.gif)
+  
++ 测试数据的`删`
 
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E6%94%B9.gif)
+
++ 测试数据的`改`
+
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E5%88%A0.gif)

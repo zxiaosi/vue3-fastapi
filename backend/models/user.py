@@ -24,12 +24,10 @@ class User(Base):
 
     id = Column(Integer,
                 primary_key=True,
-                autoincrement=True,
                 index=True,
                 doc='主键')
 
     full_name = Column(String(10),
-                       unique=True,
                        nullable=False,
                        doc='全名')
 
