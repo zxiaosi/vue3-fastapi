@@ -11,9 +11,10 @@ from pydantic import BaseModel
 
 # 共享属性
 class DepartmentBase(BaseModel):
-    department_name: Optional[str] = None
-    department_chairman: Optional[str] = None
-    department_phone: Optional[str] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    chairman: Optional[str] = None
+    phone: Optional[str] = None
 
 
 # 属性在创建时通过API接收
@@ -28,8 +29,6 @@ class DepartmentUpdate(DepartmentBase):
 
 # 创建数据库
 class DepartmentInDBBase(DepartmentBase):
-    department_id: Optional[str] = None
-
     class Config:
         orm_mode = True  # 是否为orm模型
 

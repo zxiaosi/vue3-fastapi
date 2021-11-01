@@ -80,7 +80,7 @@
 <script>
 import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { fetchData } from "../api/index";
+import { fetchData } from "../../api/index";
 
 export default {
     name: "basetable",

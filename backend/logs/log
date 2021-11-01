@@ -1,3 +1,2 @@
-2021-10-28 14:43:21 - users.py[line:72] - INFO: 添加了 id 为 3 的用户.
-2021-10-28 14:43:43 - users.py[line:95] - INFO: 更新了 id 为 2 的用户.
-2021-10-28 14:44:13 - users.py[line:117] - INFO: 删除了 id 为 3 的用户.
+2021-11-01 12:44:32 - department.py[line:30] - INFO: 查询了从 0 到 100 之间的院系.
+2021-11-01 12:44:55 - department.py[line:30] - INFO: 查询了从 0 到 100 之间的院系.

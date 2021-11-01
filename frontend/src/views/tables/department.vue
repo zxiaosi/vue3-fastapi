@@ -1,0 +1,364 @@
+<template>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <i class="el-icon-ali-test"></i> 院系表
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+
+    <div class="container">
+      <!-- 搜索 -->
+      <div class="handle-box">
+        <el-select v-model="query.sort" placeholder="排序" class="handle-select mr10">
+          <el-option key="1" label="升序" value="up"></el-option>
+          <el-option key="2" label="降序" value="down"></el-option>
+        </el-select>
+        <el-button type="primary"
+          :icon="`${query.sort === 'up' ?  'el-icon-sort-up' : 'el-icon-sort-down'}`"
+          @click="handleSort">排序
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
+      </div>
+
+      <!-- 表格信息 -->
+      <el-table
+        :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
+        border class="table" ref="multipleTable" header-cell-class-name="table-header">
+        <el-table-column type="index" width="80" label="序号" align="center">
+          <template #default="scope">
+            <span>{{scope.$index+((query.pageIndex) - 1) * (query.pageSize) + 1}} </span>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="id" label="院系编号" width="120" align="center"></el-table-column>
+        <el-table-column prop="name" label="院系名字" width="140" align="center"></el-table-column>
+        <el-table-column prop="chairman" label="主任名" width="140" align="center"></el-table-column>
+        <el-table-column prop="phone" label="主任手机号" align="center"></el-table-column>
+
+        <!-- 操作 -->
+        <el-table-column label="操作" width="180" align="center">
+          <template #default="scope">
+            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
+              编辑
+            </el-button>
+            <el-button type="text" icon="el-icon-delete" class="red"
+              @click="handleDelete(scope.$index, scope.row)">删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 页码 -->
+      <div class="pagination">
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+          :current-page="query.pageIndex" :page-sizes="[10]" :page-size="query.pageSize"
+          :total="pageTotal" @size-change="handleSizeChange" @current-change="handlePageChange">
+        </el-pagination>
+      </div>
+    </div>
+
+    <!-- 编辑弹出框 -->
+    <el-dialog :title="`${addOrUpdate ? '添加院系信息' : '编辑院系信息'}`" v-model="showDialog" width="30%">
+      <el-form label-width="100px" ref="formRef" :model="formData" :rules="formRules"
+        autocomplete="on">
+        <el-form-item label="院系编号" prop="id">
+          <el-input v-model="formData.id" placeholder="编号"></el-input>
+        </el-form-item>
+        <el-form-item label="院系名字" prop="name">
+          <el-input v-model="formData.name" placeholder="名字"></el-input>
+        </el-form-item>
+        <el-form-item label="主任名" prop="chairman">
+          <el-input v-model="formData.chairman" placeholder="主任名"></el-input>
+        </el-form-item>
+        <el-form-item label="主任手机号" prop="phone">
+          <el-input v-model="formData.phone" type="tel" placeholder="手机号"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showDialog = false">取 消</el-button>
+          <el-button type="primary" v-if="addOrUpdate" @click="addUser">添 加</el-button>
+          <el-button type="primary" v-else @click="saveEdit">更 新</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { ref, reactive, onMounted, watch } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import {
+  read_departments,
+  create_department,
+  update_department,
+  delete_department,
+} from '../../api/department';
+
+export default {
+  name: 'department',
+  setup() {
+    const tableData = ref([]); // 数据变量
+    const pageTotal = ref(0); // 总个数
+
+    // 获取表格数据
+    const getData = () => {
+      read_departments(query)
+        .then((res) => {
+          tableData.value = res;
+        })
+        .catch(() => {
+          ElMessage.warning('加载数据失败！');
+        });
+    };
+
+    // 页面加载后调用函数
+    onMounted(() => {
+      getData();
+    });
+
+    // 监听属性
+    watch(
+      () => tableData.value.length,
+      (newVal, oldVar) => {
+        pageTotal.value = newVal || 10;
+      }
+    );
+
+    // 页码
+    const query = reactive({
+      sort: 'up',
+      pageIndex: 1,
+      pageSize: 10,
+    });
+
+    // 升序操作
+    const handleSort = (event) => {
+      // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
+      let target = event.target;
+      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
+        target = event.target.parentNode;
+      }
+      target.blur();
+
+      if (query.sort === 'up') {
+        tableData.value.sort((a, b) => a.id - b.id);
+      } else {
+        tableData.value.sort((a, b) => b.id - a.id);
+      }
+    };
+
+    // 分页导航
+    const handleSizeChange = (val) => {
+      console.log(`每页 ${val} 条`);
+    };
+    const handlePageChange = (val) => {
+      query.pageIndex = val;
+      console.log(`当前页: ${val}`);
+      getData();
+    };
+
+    // 添加、编辑表格的弹窗和保存
+    const showDialog = ref(false); // 是否显示弹窗
+    const addOrUpdate = ref(true); // 是否是添加或更新
+    const formRef = ref();
+
+    // 定义校验规则
+    const formRules = reactive({
+      id: [
+        {
+          required: 'true',
+          pattern: /^10/,
+          message: '请输入院系编号(以10开头)',
+          trigger: ['change', 'blur'],
+        },
+        {
+          min: 4,
+          max: 4,
+          message: '院系编号的长度应为4',
+        },
+      ],
+      name: [
+        {
+          required: 'true',
+          message: '请输入院系名称',
+          trigger: ['change', 'blur'],
+        },
+      ],
+      chairman: [
+        {
+          required: 'true',
+          message: '请输入院系主任名',
+          trigger: ['change', 'blur'],
+        },
+        {
+          max: 4,
+          message: '主任名长度不能超过4',
+        },
+      ],
+      phone: [
+        {
+          pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
+          message: '请输入正确的手机号',
+          trigger: ['change', 'blur'],
+        },
+      ],
+    });
+
+    // 表单对象
+    const formData = reactive({
+      id: '',
+      name: '',
+      chairman: '',
+      phone: '',
+    });
+
+    let idx = -1; // 用户ID
+    let reIndex = -1; // 序号
+
+    // 添加用户信息
+    const handleAdd = (event) => {
+      // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
+      let target = event.target;
+      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
+        target = event.target.parentNode;
+      }
+      target.blur();
+
+      // 重置表单(防止编辑页面数据)
+      Object.keys(formData).forEach((key) => (formData[key] = ''));
+
+      // 显示弹窗(添加)
+      addOrUpdate.value = true;
+      showDialog.value = true;
+    };
+    const addUser = () => {
+      showDialog.value = false;
+      formRef.value.validate((valid) => {
+        if (valid) {
+          create_department(formData)
+            .then((res) => {
+              tableData.value.push(res);
+              ElMessage.success('成功添加院系信息！');
+            })
+            .catch(() => {
+              ElMessage.error('添加院系信息失败！');
+            });
+        } else {
+          ElMessage.warning('填写院系信息有误，添加失败！');
+        }
+        // 重置表单
+        formRef.value.resetFields();
+      });
+    };
+
+    // 编辑用户信息
+    const handleEdit = (index, row) => {
+      idx = row.id;
+      reIndex = index;
+      Object.keys(formData).forEach((item) => {
+        formData[item] = row[item];
+      });
+
+      // 显示弹窗(更新)
+      addOrUpdate.value = false;
+      showDialog.value = true;
+    };
+    const saveEdit = () => {
+      addOrUpdate.value = false;
+      showDialog.value = false;
+
+      formRef.value.validate((valid) => {
+        if (valid) {
+          update_department(idx, formData)
+            .then((res) => {
+              ElMessage.success(`修改院系ID为 ${idx} 成功！`);
+              Object.keys(res).forEach((item) => {
+                tableData.value[reIndex][item] = res[item];
+              });
+            })
+            .catch(() => {
+              ElMessage.error(`修改院系ID为 ${idx} 行失败！`);
+            });
+        } else {
+          ElMessage.warning('填写院系信息有误，修改失败！');
+        }
+      });
+    };
+
+    // 删除操作
+    const handleDelete = (index, row) => {
+      idx = row.id;
+      // 二次确认删除
+      ElMessageBox.confirm('确定要删除吗？', '提示', {
+        type: 'warning',
+      })
+        .then(() => {
+          // 调用删除用户接口
+          delete_department(idx)
+            .then(() => {
+              tableData.value.splice(index, 1);
+              ElMessage.success('删除成功！');
+            })
+            .catch(function (error) {
+              ElMessage.success('删除成功！');
+            });
+        })
+        .catch(() => {});
+    };
+
+    // 返回
+    return {
+      query,
+      tableData,
+      pageTotal,
+      showDialog,
+      addOrUpdate,
+      formRef,
+      formData,
+      formRules,
+      handleSort,
+      handleSizeChange,
+      handlePageChange,
+      handleAdd,
+      addUser,
+      handleEdit,
+      saveEdit,
+      handleDelete,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.handle-box {
+  margin-bottom: 20px;
+}
+
+.handle-select {
+  width: 120px;
+}
+
+.handle-input {
+  width: 300px;
+  display: inline-block;
+}
+.table {
+  width: 100%;
+  font-size: 14px;
+}
+.red {
+  color: #ff0000;
+}
+.mr10 {
+  margin-right: 10px;
+}
+.table-td-thumb {
+  display: block;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+}
+</style>

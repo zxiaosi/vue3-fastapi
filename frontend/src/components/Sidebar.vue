@@ -45,8 +45,22 @@ export default {
             },
             {
                 icon: "el-icon-ali-cascades",
-                index: "/table",
-                title: "学生信息表格",
+                index: "2",
+                title: "信息表格",
+                subs: [
+                    {
+                        index: "/users",
+                        title: "用户表"
+                    },
+                    {
+                        index: "/department",
+                        title: "院系表"
+                    },
+                    {
+                        index: "/table",
+                        title: "基础表格"
+                    }
+                ]
             },
             {
                 icon: "el-icon-ali-copy",

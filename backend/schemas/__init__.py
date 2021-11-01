@@ -5,3 +5,4 @@
 # @desc : Pydantic模型|架构 (数据验证)
 """ 抛出Pydantic模型对象 """
 from .user import User, UserCreate, UserInDB, UserUpdate
+from .department import Department, DepartmentCreate, DepartmentInDB, DepartmentUpdate

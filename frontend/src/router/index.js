@@ -18,12 +18,26 @@ const routes = [
                 },
                 component: () => import ( /* webpackChunkName: "dashboard" */ "../views/Dashboard.vue")
             }, {
+                path: "/users",
+                name: "users",
+                meta: {
+                    title: '用户表'
+                },
+                component: () => import ( /* webpackChunkName: "table" */ "../views/tables/users.vue")
+            }, {
+                path: "/department",
+                name: "department",
+                meta: {
+                    title: '院系表'
+                },
+                component: () => import ( /* webpackChunkName: "table" */ "../views/tables/department.vue")
+            }, {
                 path: "/table",
                 name: "basetable",
                 meta: {
-                    title: '表格'
+                    title: '基础表格'
                 },
-                component: () => import ( /* webpackChunkName: "table" */ "../views/BaseTable.vue")
+                component: () => import ( /* webpackChunkName: "table" */ "../views/tables/BaseTable.vue")
             }, {
                 path: "/charts",
                 name: "basecharts",

@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-test"></i> 测试页面
+          <i class="el-icon-ali-test"></i> 用户表
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -60,7 +60,7 @@
           <el-input v-model="formData.full_name" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="formData.password" type="password" placeholder="用户密码"></el-input>
+          <el-input v-model="formData.password" type="password" placeholder="用户密码" maxlength="20"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -77,10 +77,10 @@
 <script>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { userData, delele_User, update_User, add_User } from '../api/index';
+import { userData, delele_User, update_User, add_User } from '../../api/index';
 
 export default {
-  name: 'test',
+  name: 'users',
   setup() {
     // 搜索
     const query = reactive({
@@ -144,12 +144,12 @@ export default {
     });
     // 定义校验规则
     const formRules = reactive({
-      id: [{ required: 'true', message: '请输入用户ID', trigger: 'change' }],
+      id: [{ required: 'true', message: '请输入用户ID', trigger: 'blur' }],
       full_name: [
-        { required: 'true', message: '请输入用户名', trigger: 'change' },
+        { required: 'true', message: '请输入用户名', trigger: 'blur' },
       ],
       password: [
-        { required: 'true', message: '请输入登录密码', trigger: 'change' },
+        { required: 'true', message: '请输入登录密码', trigger: 'blur' },
       ],
     });
     let idx = -1; // 用户ID
@@ -184,6 +184,8 @@ export default {
               ElMessage.warning('添加用户信息失败！');
               console.log(error);
             });
+        }else{
+        ElMessage.warning('输入用户信息有错,添加失败！');
         }
         formRef.value.resetFields();
       });
@@ -203,18 +205,24 @@ export default {
     };
     const saveEdit = () => {
       addOrUpdate.value = false;
-      update_User(idx, formData)
-        .then(() => {
-          ElMessage.success(`修改ID为 ${idx} 成功！`);
-          Object.keys(formData).forEach((item) => {
-            tableData.value[reIndex][item] = formData[item];
-          });
-        })
-        .catch(function (error) {
-          ElMessage.success(`修改ID为 ${idx} 行失败！`);
-          console.log(error);
-        });
-      showDialog.value = false;
+      formRef.value.validate((valid) => {
+        if(valid){
+          update_User(idx, formData)
+            .then(() => {
+              ElMessage.success(`修改ID为 ${idx} 成功！`);
+              Object.keys(formData).forEach((item) => {
+                tableData.value[reIndex][item] = formData[item];
+              });
+            })
+            .catch(function (error) {
+              ElMessage.warning(`修改ID为 ${idx} 行失败！`);
+              console.log(error);
+            });
+          showDialog.value = false;
+        }else{
+          ElMessage.warning("输入用户信息有错,修改失败！");
+        }
+      })
     };
 
     // 删除操作

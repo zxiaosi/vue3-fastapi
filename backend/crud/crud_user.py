@@ -2,15 +2,15 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/14 17:01
 # @Author : 小四先生
-# @desc : 用户表--增上改查方法
+# @desc : 用户表--增删改查方法
 from typing import Any, Dict, Union
 
 from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models.user import User
-from schemas.user import UserCreate, UserUpdate
+from models import User
+from schemas import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -19,7 +19,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         添加用户
 
         :param db: Session
-        :param obj_in: UserCreate 创建用户对象
+        :param obj_in: UserCreate 输入的用户对象
         :return: 用户对象
         """
         db_obj = User(
