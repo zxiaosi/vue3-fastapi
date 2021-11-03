@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 # 查询所有院系
-@router.get("/", response_model=List[schemas.Department])
+@router.get("/", response_model=List[schemas.Department], summary='查询所有院系')
 def read_departments(
         db: Session = Depends(deps.get_db),
         skip: int = 0,
@@ -32,7 +32,7 @@ def read_departments(
 
 
 # 通过 id 查询院系
-@router.get("/{department_id}", response_model=schemas.Department)
+@router.get("/{department_id}", response_model=schemas.Department, summary='通过 id 查询院系')
 def read_department(
         departments_id: int,
         db: Session = Depends(deps.get_db),
@@ -52,7 +52,7 @@ def read_department(
 
 
 # 添加院系信息
-@router.post("/", response_model=schemas.Department)
+@router.post("/", response_model=schemas.Department, summary='添加院系信息')
 def create_department(
         *,
         db: Session = Depends(deps.get_db),
@@ -73,8 +73,8 @@ def create_department(
     return department
 
 
-# 通过 id 更新用户信息
-@router.put("/{department_id}", response_model=schemas.Department)
+# 通过 id 更新院系信息
+@router.put("/{department_id}", response_model=schemas.Department, summary='通过 id 更新院系信息')
 def update_department(
         *,
         db: Session = Depends(deps.get_db),
@@ -96,8 +96,8 @@ def update_department(
     return department
 
 
-# 通过 id 删除用户信息
-@router.delete("/{department_id}", response_model=schemas.Department)
+# 通过 id 删除院系信息
+@router.delete("/{department_id}", response_model=schemas.Department, summary='通过 id 删除院系信息')
 def delete_department(
         *,
         db: Session = Depends(deps.get_db),
@@ -111,7 +111,7 @@ def delete_department(
         logger.warning(f"系统中不存在 id 为 {department_id} 的院系.")
         raise HTTPException(
             status_code=404,
-            detail="系统中不存在此用户名的用户.",
+            detail="系统中不存在此用户名的院系.",
         )
     department = crud.department.remove(db, id=department_id)
     logger.info(f"删除了 id 为 {department_id} 的院系.")

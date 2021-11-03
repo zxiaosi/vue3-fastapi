@@ -8,6 +8,7 @@
       </el-breadcrumb>
     </div>
 
+    <!-- 表格 -->
     <div class="container">
       <!-- 搜索 -->
       <div class="handle-box">
@@ -64,7 +65,7 @@
       <el-form label-width="100px" ref="formRef" :model="formData" :rules="formRules"
         autocomplete="on">
         <el-form-item label="院系编号" prop="id">
-          <el-input v-model="formData.id" placeholder="编号"></el-input>
+          <el-input v-model="formData.id" placeholder="编号" :disabled=!addOrUpdate></el-input>
         </el-form-item>
         <el-form-item label="院系名字" prop="name">
           <el-input v-model="formData.name" placeholder="名字"></el-input>
@@ -103,7 +104,10 @@ export default {
     const tableData = ref([]); // 数据变量
     const pageTotal = ref(0); // 总个数
 
-    // 获取表格数据
+    /**
+     * getData()
+     * 获取表格数据
+     */
     const getData = () => {
       read_departments(query)
         .then((res) => {
@@ -127,21 +131,19 @@ export default {
       }
     );
 
-    // 页码
+    // 排序和页码
     const query = reactive({
       sort: 'up',
       pageIndex: 1,
       pageSize: 10,
     });
 
-    // 升序操作
-    const handleSort = (event) => {
-      // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
-      let target = event.target;
-      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
-        target = event.target.parentNode;
-      }
-      target.blur();
+    /**
+     * handleSort
+     * 升序操作
+     */
+    const handleSort = () => {
+      clickRecover();
 
       if (query.sort === 'up') {
         tableData.value.sort((a, b) => a.id - b.id);
@@ -170,9 +172,9 @@ export default {
       id: [
         {
           required: 'true',
-          pattern: /^10/,
+          pattern: /^10[0-9]{2}/,
           message: '请输入院系编号(以10开头)',
-          trigger: ['change', 'blur'],
+          trigger: 'change',
         },
         {
           min: 4,
@@ -190,7 +192,7 @@ export default {
       chairman: [
         {
           required: 'true',
-          message: '请输入院系主任名',
+          message: '请输入院系主任名', // 后台字段默认最多能输入10个汉字
           trigger: ['change', 'blur'],
         },
         {
@@ -218,14 +220,12 @@ export default {
     let idx = -1; // 用户ID
     let reIndex = -1; // 序号
 
-    // 添加用户信息
-    const handleAdd = (event) => {
-      // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
-      let target = event.target;
-      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
-        target = event.target.parentNode;
-      }
-      target.blur();
+    /**
+     * handleAdd
+     * 添加用户信息
+     */
+    const handleAdd = () => {
+      clickRecover();
 
       // 重置表单(防止编辑页面数据)
       Object.keys(formData).forEach((key) => (formData[key] = ''));
@@ -234,6 +234,10 @@ export default {
       addOrUpdate.value = true;
       showDialog.value = true;
     };
+    /**
+     * addUser
+     * 确认添加
+     */
     const addUser = () => {
       showDialog.value = false;
       formRef.value.validate((valid) => {
@@ -244,17 +248,20 @@ export default {
               ElMessage.success('成功添加院系信息！');
             })
             .catch(() => {
-              ElMessage.error('添加院系信息失败！');
+              ElMessage.error('院系编号重复，添加失败！');
             });
         } else {
-          ElMessage.warning('填写院系信息有误，添加失败！');
+          ElMessage.warning('院系信息填写有误，添加失败！');
         }
         // 重置表单
         formRef.value.resetFields();
       });
     };
 
-    // 编辑用户信息
+    /**
+     * handleEdit
+     * 编辑用户信息
+     */
     const handleEdit = (index, row) => {
       idx = row.id;
       reIndex = index;
@@ -266,6 +273,10 @@ export default {
       addOrUpdate.value = false;
       showDialog.value = true;
     };
+    /**
+     * saveEdit
+     * 确认更新
+     */
     const saveEdit = () => {
       addOrUpdate.value = false;
       showDialog.value = false;
@@ -279,8 +290,9 @@ export default {
                 tableData.value[reIndex][item] = res[item];
               });
             })
-            .catch(() => {
-              ElMessage.error(`修改院系ID为 ${idx} 行失败！`);
+            .catch((error) => {
+              ElMessage.error('院系编号重复，修改失败！');
+              console.log(error);
             });
         } else {
           ElMessage.warning('填写院系信息有误，修改失败！');
@@ -288,7 +300,10 @@ export default {
       });
     };
 
-    // 删除操作
+    /**
+     * handleDelete
+     * 删除操作
+     */
     const handleDelete = (index, row) => {
       idx = row.id;
       // 二次确认删除
@@ -307,6 +322,19 @@ export default {
             });
         })
         .catch(() => {});
+    };
+
+    /**
+     * clickRecover
+     * 点击后鼠标移开恢复按钮默认样式
+     */
+    const clickRecover = (event) => {
+      let target = event.target;
+      // (如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
+      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
+        target = event.target.parentNode;
+      }
+      target.blur();
     };
 
     // 返回

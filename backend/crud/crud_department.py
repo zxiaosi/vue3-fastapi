@@ -15,11 +15,11 @@ from schemas import DepartmentCreate, DepartmentUpdate
 class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
     def create(self, db: Session, *, obj_in: DepartmentCreate) -> Department:
         """
-        添加院系表
+        添加院系信息
 
         :param db: Session
         :param obj_in: DepartmentCreate 输入的院系对象
-        :return: 用户对象
+        :return: 院系对象
         """
         db_obj = Department(
             id=obj_in.id,

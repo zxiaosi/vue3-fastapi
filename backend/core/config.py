@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"  # (可开启 db/session 下的多线程)
     # SQLALCHEMY_DATABASE_URI = "mysql://user:password@hostname/dbname?charset=utf8"
     # SQLALCHEMY_DATABASE_URI = "postgresql://user:password@postgresserver/db"
-    # SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8" # (关闭 db/session 下的多线程)
+    # SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"  # (关闭 db/session 下的多线程)
     # 数据库日志 (可看到创建表、表数据增删改查的信息)
     SQLALCHEMY_DATABASE_ECHO = False
 

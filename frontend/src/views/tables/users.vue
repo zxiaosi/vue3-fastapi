@@ -101,7 +101,6 @@ export default {
           ElMessage.warning('加载数据失败！');
           console.log(error);
         });
-      // console.log("我是tableData--", tableData);
     };
 
     // 页面加载后调用函数

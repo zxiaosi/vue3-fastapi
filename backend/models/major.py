@@ -26,9 +26,9 @@ class Major(Base):
                   index=True,
                   doc='专业名字')
 
-    assistant = Column(String(10), nullable=False, doc='辅导员')
+    assistant = Column(String(10), nullable=False, doc='辅导员姓名')
 
-    phone = Column(String(11), nullable=False, doc='辅导员手机号')
+    phone = Column(String(11), doc='辅导员手机号')
 
     department_id = Column(String(4), ForeignKey('department.id'), doc='院系编号')
 

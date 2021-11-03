@@ -20,6 +20,6 @@ class Department(Base):
                   index=True,
                   doc='院系名字')
 
-    chairman = Column(String(10), nullable=False, doc='院系主任')
+    chairman = Column(String(10), nullable=False, doc='主任姓名')
 
     phone = Column(String(11), nullable=False, doc='主任手机号')

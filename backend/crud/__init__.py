@@ -6,6 +6,7 @@
 """ 抛出操作表数据文件中的类 """
 from .crud_user import user
 from .crud_department import department
+from .crud_major import major
 
 # 对于一个新的基本CRUD操作集，您可以直接执行
 

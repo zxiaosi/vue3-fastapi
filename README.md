@@ -6,15 +6,16 @@
 + Vue3+ElementPlus+FastAPI 实现学生选课系统（尝试中......😝）
 + 第一次做前后端分离的项目，希望可以完成！！！😁
 
-## 架构
+## 安装
 
-+ **后端**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md
-+ **前端**：[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system) --> `frontend` --> README.md
++ **后端安装**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md
++ **前端安装**：[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system) --> `frontend` --> README.md
 
 ## 版本
 
 + `1.0` 测试数据的增删改查已完成
 + `1.1` 院系表的增删改查已完成（见`信息表格`）
++ `1.2` 首页仪表盘信息的优化
 
 ## 开启服务
 

@@ -1,3 +1,4 @@
+import global from '../Global.vue'
 import {createRouter, createWebHashHistory} from "vue-router";
 import Home from "../views/Home.vue";
 
@@ -141,7 +142,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
+    document.title = `${to.meta.title} | ${global.TITLE}`;
     const role = localStorage.getItem('ms_username');
     if (!role && to.path !== '/login') {
         next('/login');
