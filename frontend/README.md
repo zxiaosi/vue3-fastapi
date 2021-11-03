@@ -55,7 +55,7 @@
 
 ## 常见错误
 
-### `npm run dev` 报错
+### 1. `npm run dev` 报错
 
 + 内容如下
 
@@ -86,4 +86,13 @@
 + 错误原因：`vite` 安装失败
 
 + 解决措施：输入下面命令 `node .\node_modules\esbuild\install.js`，重新运行 `npm run dev`
+
+### 2. `npm run dev` 报错
+
++ 内容如下
+
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E6%8A%A5%E9%94%992.png)
+
++ 错误原因：`端口号被占用`
++ 解决措施：关闭其他占用 `3000`端口号的应用，重新运行 `npm run dev`
 
