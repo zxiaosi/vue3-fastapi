@@ -5,6 +5,7 @@
 # @desc : 操作院系表
 from typing import Union, Dict, Any
 
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
@@ -21,12 +22,7 @@ class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
         :param obj_in: DepartmentCreate 输入的院系对象
         :return: 院系对象
         """
-        db_obj = Department(
-            id=obj_in.id,
-            name=obj_in.name,
-            chairman=obj_in.chairman,
-            phone=obj_in.phone
-        )
+        db_obj = Department(**jsonable_encoder(obj_in))
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)

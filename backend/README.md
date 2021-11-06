@@ -17,6 +17,7 @@
 + `V3.1` 去除了测试表的自增
 + `V3.2` 添加了department表的接口
 + `V3.3` 添加了major表的接口
++ `V3.4` 更了major表接口的部分代码
 
 ## 安装
 
@@ -114,8 +115,8 @@
 		|-- teacher.py			# 教师表
 		|-- user.py				# 调试表
 		
-	|-- schemas                 # Pydantic模型|架构 (数据验证)
-		|-- __init__.py			# 抛出Pydantic模型对象
+	|-- schemas                 # JSON字段以及数据验证
+		|-- __init__.py			# 抛出JSON字段模型对象
 		|-- admin.py			# 管理员表数据验证
 		|-- control.py			# 控制表数据验证
 		|-- course.py			# 课程表数据验证

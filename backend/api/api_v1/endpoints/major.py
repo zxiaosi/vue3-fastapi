@@ -22,22 +22,11 @@ def read_majors(
         db: Session = Depends(deps.get_db),
         skip: int = 0,
         limit: int = 100,
-        department_id: str = None,
 ) -> Any:
     """
-    查询从 skip 到 limit 的专业 (department_id 选填)
+    查询从 skip 到 limit 的专业
     """
-    if department_id:
-        if crud.department.get(db=db, id=department_id):
-            majors = crud.major.get_multi_by_department(db, department_id=department_id, skip=skip, limit=limit)
-        else:
-            logger.warning(f"系统中不存在 id 为 {department_id} 的院系.")
-            raise HTTPException(
-                status_code=404,
-                detail=f"系统中不存在 id 为 {department_id} 的院系.",
-            )
-    else:
-        majors = crud.major.get_multi(db, skip=skip, limit=limit)
+    majors = crud.major.get_multi_by_department(db, skip=skip, limit=limit)
     logger.info(f"查询了从 {skip} 到 {limit} 之间的专业.")
     return majors
 
@@ -63,11 +52,11 @@ def read_major(
 
 
 # 添加专业信息
-@router.post("/", response_model=schemas.Major, summary='添加专业信息')
+@router.post("/", response_model=schemas.MajorInDB, summary='添加专业信息')
 def create_major(
         *,
         db: Session = Depends(deps.get_db),
-        major_in: schemas.Major,
+        major_in: schemas.MajorCreate,
 ) -> Any:
     """
     添加专业信息
@@ -97,18 +86,18 @@ def update_major(
         *,
         db: Session = Depends(deps.get_db),
         major_id: int,
-        major_in: schemas.Major,
+        major_in: schemas.MajorUpdate,
 ) -> Any:
     """
-    通过 id 更新院系信息
+    通过 id 更新专业信息
     """
     major = crud.major.get(db, id=major_id)
     if crud.department.get(db=db, id=major_in.department_id):
         if not major:
-            logger.warning(f"系统中不存在 id 为 {major_id} 的院系.")
+            logger.warning(f"系统中不存在 id 为 {major_id} 的专业.")
             raise HTTPException(
                 status_code=404,
-                detail=f"系统中不存在 id 为 {major_id} 的院系.",
+                detail=f"系统中不存在 id 为 {major_id} 的专业.",
             )
     else:
         logger.warning(f"系统中不存在 id 为 {major_in.department_id} 的院系.")
@@ -117,7 +106,7 @@ def update_major(
             detail=f"系统中不存在 id 为 {major_in.department_id} 的院系.",
         )
     major = crud.major.update(db, db_obj=major, obj_in=major_in)
-    logger.info(f"更新了 id 为 {major_id} 的院系.")
+    logger.info(f"更新了 id 为 {major_id} 的专业.")
     return major
 
 

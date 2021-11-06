@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/22 9:59
 # @Author : 小四先生
-# @desc : 院系表模型的数据验证
+# @desc : 院系表 返回和接收的JSON字段
 # 共享属性
 from typing import Optional
 

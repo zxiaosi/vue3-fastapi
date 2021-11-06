@@ -9,24 +9,31 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
-from models import Major
+from models import Major, Department
 from schemas import MajorCreate, MajorUpdate
 
 
 class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
     def get_multi_by_department(
-            self, db: Session, *, department_id: str, skip: int = 0, limit: int = 100
-    ) -> List[Major]:
+            self, db: Session, *, skip: int = 0, limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         获取 skip-limit 的专业信息
 
         :param db: Session
-        :param department_id: department_id 院系编号
         :param skip: 起始 (默认值0)
         :param limit: 结束 (默认值100)
         :return: 所有专业对象
         """
-        return db.query(self.model).filter(Major.department_id == department_id).offset(skip).limit(limit).all()
+        lines = db.query(self.model).filter(Major.department_id == Department.id).add_entity(Department)
+        major_plus = []
+        for line in lines:
+            major = jsonable_encoder(line[0])
+            major['department_name'] = line[1].name
+            major_plus.append(major)
+
+        return major_plus[skip:limit]
+        # return db.query(self.model).filter(Major.department_id == Department.id).offset(skip).limit(limit).all()
 
     def create_with_department(self, db: Session, *, obj_in: MajorCreate, department_id: str) -> Major:
         """
@@ -57,10 +64,10 @@ class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
         :return: 专业对象
         """
         if isinstance(obj_in, dict):
-            department_data = obj_in
+            major_data = obj_in
         else:
-            department_data = obj_in.dict(exclude_unset=True)
-        return super().update(db, db_obj=db_obj, obj_in=department_data)
+            major_data = obj_in.dict(exclude_unset=True)
+        return super().update(db, db_obj=db_obj, obj_in=major_data)
 
 
 major = CRUDMajor(Major)

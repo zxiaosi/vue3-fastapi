@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-cascades"></i> 院系表
+          <i class="el-icon-ali-cascades"></i> 专业表
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -33,10 +33,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="id" label="院系编号" width="120" align="center"></el-table-column>
-        <el-table-column prop="name" label="院系名字" width="140" align="center"></el-table-column>
-        <el-table-column prop="chairman" label="主任名" width="140" align="center"></el-table-column>
-        <el-table-column prop="phone" label="主任手机号" align="center"></el-table-column>
+        <el-table-column prop="id" label="专业编号" width="120" align="center"></el-table-column>
+        <el-table-column prop="name" label="专业名字" width="180" align="center"></el-table-column>
+        <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center">
+        </el-table-column>
+        <el-table-column prop="phone" label="辅导员手机号" width="180" align="center"></el-table-column>
+        <el-table-column prop="department_name" label="院系名字" align="center"></el-table-column>
 
         <!-- 操作 -->
         <el-table-column label="操作" width="180" align="center">
@@ -61,20 +63,27 @@
     </div>
 
     <!-- 编辑弹出框 -->
-    <el-dialog :title="`${addOrUpdate ? '添加院系信息' : '编辑院系信息'}`" v-model="showDialog" width="30%">
+    <el-dialog :title="`${addOrUpdate ? '添加专业信息' : '编辑专业信息'}`" v-model="showDialog" width="30%">
       <el-form label-width="100px" ref="formRef" :model="formData" :rules="formRules"
         autocomplete="on">
-        <el-form-item label="院系编号" prop="id">
+        <el-form-item label="专业编号" prop="id">
           <el-input v-model="formData.id" placeholder="编号" :disabled=!addOrUpdate></el-input>
         </el-form-item>
-        <el-form-item label="院系名字" prop="name">
+        <el-form-item label="专业名字" prop="name">
           <el-input v-model="formData.name" placeholder="名字"></el-input>
         </el-form-item>
-        <el-form-item label="主任名" prop="chairman">
-          <el-input v-model="formData.chairman" placeholder="主任名"></el-input>
+        <el-form-item label="辅导员姓名" prop="assistant">
+          <el-input v-model="formData.assistant" placeholder="辅导员姓名"></el-input>
         </el-form-item>
-        <el-form-item label="主任手机号" prop="phone">
-          <el-input v-model="formData.phone" type="tel" placeholder="手机号"></el-input>
+        <el-form-item label="辅导员手机号" prop="phone">
+          <el-input v-model="formData.phone" placeholder="辅导员手机号"></el-input>
+        </el-form-item>
+        <el-form-item label="院系名字" prop="department_id">
+          <el-select v-model="formData.department_id" placeholder="请选择院系"
+            @change="getChange(formData.department_id)">
+            <el-option v-for="(dept, index) in departmentData" :key=index :label=dept.name
+              :value=dept.id />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -92,29 +101,38 @@
 import { ref, reactive, onMounted, watchEffect } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
-  read_departments,
-  create_department,
-  update_department,
-  delete_department,
-} from '../../api/department';
+  read_majors,
+  create_major,
+  update_major,
+  delete_major,
+} from '../../api/major';
+import { read_departments } from '../../api/department';
 
 export default {
-  name: 'department',
+  name: 'major',
   setup() {
-    const tableData = ref([]); // 数据变量
+    const tableData = ref([]); // 专业变量
     const pageTotal = ref(0); // 总个数
+    const departmentData = ref([]); // 院系变量
 
     /**
      * getData()
      * 获取表格数据
      */
     const getData = () => {
-      read_departments(query)
+      read_majors(query)
         .then((res) => {
           tableData.value = res;
         })
         .catch(() => {
-          ElMessage.error('加载院系信息数据失败');
+          ElMessage.error('加载专业信息数据失败！');
+        });
+      read_departments(query)
+        .then((res) => {
+          departmentData.value = res;
+        })
+        .catch(() => {
+          ElMessage.error('加载院系信息数据失败！');
         });
     };
 
@@ -170,31 +188,31 @@ export default {
         {
           required: 'true',
           pattern: /^10[0-9]{2}/,
-          message: '请输入院系编号(以10开头)',
+          message: '请输入专业编号(以10开头)',
           trigger: 'change',
         },
         {
-          min: 4,
-          max: 4,
-          message: '院系编号的长度应为4',
+          min: 6,
+          max: 6,
+          message: '专业编号的长度应为6',
         },
       ],
       name: [
         {
           required: 'true',
-          message: '请输入院系名称',
+          message: '请输入专业名称',
           trigger: ['change', 'blur'],
         },
       ],
-      chairman: [
+      assistant: [
         {
           required: 'true',
-          message: '请输入院系主任名', // 后台字段默认最多能输入10个汉字
+          message: '请输入辅导员姓名', // 后台字段默认最多能输入10个汉字
           trigger: ['change', 'blur'],
         },
         {
           max: 4,
-          message: '主任名长度不能超过4',
+          message: '辅导员姓名长度不能超过4',
         },
       ],
       phone: [
@@ -204,22 +222,30 @@ export default {
           trigger: ['change', 'blur'],
         },
       ],
+      department_id: [
+        {
+          required: 'true',
+          message: '请选择院系',
+          trigger: ['change'],
+        },
+      ],
     });
 
     // 表单对象
     const formData = reactive({
       id: '',
       name: '',
-      chairman: '',
+      assistant: '',
       phone: '',
+      department_id: '',
     });
 
-    let idx = -1; // 院系ID
+    let idx = -1; // 用户ID
     let reIndex = -1; // 序号
 
     /**
      * handleAdd
-     * 添加院系信息
+     * 添加用户信息
      */
     const handleAdd = (event) => {
       clickRecover(event);
@@ -239,16 +265,17 @@ export default {
       showDialog.value = false;
       formRef.value.validate((valid) => {
         if (valid) {
-          create_department(formData)
+          create_major(formData)
             .then((res) => {
               tableData.value.push(res);
-              ElMessage.success('成功添加院系信息！');
+              ElMessage.success('成功添加专业信息！');
+              getData();
             })
             .catch(() => {
-              ElMessage.error('添加院系信息失败！');
+              ElMessage.error('添加专业信息失败！');
             });
         } else {
-          ElMessage.warning('院系信息填写有误，添加失败！');
+          ElMessage.warning('专业信息填写有误，添加失败！');
         }
         // 重置表单
         formRef.value.resetFields();
@@ -257,7 +284,7 @@ export default {
 
     /**
      * handleEdit
-     * 编辑院系信息
+     * 编辑用户信息
      */
     const handleEdit = (index, row) => {
       idx = row.id;
@@ -277,22 +304,23 @@ export default {
     const saveEdit = () => {
       addOrUpdate.value = false;
       showDialog.value = false;
-
+      console.log(formData);
       formRef.value.validate((valid) => {
         if (valid) {
-          update_department(idx, formData)
+          update_major(idx, formData)
             .then((res) => {
-              ElMessage.success(`修改院系ID为 ${idx} 成功！`);
+              ElMessage.success(`修改专业ID为 ${idx} 成功！`);
               Object.keys(res).forEach((item) => {
+                console.log(res[item]);
                 tableData.value[reIndex][item] = res[item];
               });
+              getData();
             })
-            .catch((error) => {
-              ElMessage.error('修改院系信息失败！');
-              console.log(error);
+            .catch(() => {
+              ElMessage.error('修改专业信息失败！');
             });
         } else {
-          ElMessage.warning('填写院系信息有误，修改失败！');
+          ElMessage.warning('填写专业信息有误，修改失败！');
         }
       });
     };
@@ -308,8 +336,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          // 调用删除院系接口
-          delete_department(idx)
+          // 调用删除用户接口
+          delete_major(idx)
             .then(() => {
               tableData.value.splice(index, 1);
               ElMessage.success('删除成功！');
@@ -334,11 +362,17 @@ export default {
       target.blur();
     };
 
+    // 获取多选框的值
+    const getChange = (value) => {
+      console.log(value);
+    };
+
     // 返回
     return {
       query,
       tableData,
       pageTotal,
+      departmentData,
       showDialog,
       addOrUpdate,
       formRef,
@@ -352,12 +386,18 @@ export default {
       handleEdit,
       saveEdit,
       handleDelete,
+      getChange,
     };
   },
 };
 </script>
 
 <style scoped>
+/* 选择框长度 */
+.el-form-item .el-select {
+  width: 100%;
+}
+
 .handle-box {
   margin-bottom: 20px;
 }

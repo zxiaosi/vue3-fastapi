@@ -57,6 +57,10 @@ export default {
                         title: "院系表"
                     },
                     {
+                        index: "/major",
+                        title: "专业表"
+                    },
+                    {
                         index: "/table",
                         title: "基础表格"
                     }
