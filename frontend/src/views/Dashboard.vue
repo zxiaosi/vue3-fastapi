@@ -184,10 +184,11 @@ export default {
     // 待办
     const showDialog = ref(false);
     const todoList = reactive([
-      { title: '修改首页内容', status: false },
-      { title: '添加专业表信息', status: false },
+      { title: '调整代码结构', status: false },
       { title: '添加学生表信息', status: false },
       { title: '添加教师表信息', status: false },
+      { title: '添加专业表信息', status: true },
+      { title: '修改首页内容', status: true },
       { title: '添加了院系表(见信息表格)', status: true },
       { title: '调试测试数据接口', status: true },
     ]);

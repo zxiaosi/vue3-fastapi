@@ -2,28 +2,30 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/22 9:59
 # @Author : 小四先生
-# @desc : 院系表 返回和接收的JSON字段
+# @desc : 院系表的Pydantic数据验证
 # 共享属性
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-# 共享属性
+# 共享JSON字段属性
 class DepartmentBase(BaseModel):
-    id: Optional[str] = None
-    name: Optional[str] = None
-    chairman: Optional[str] = None
-    phone: Optional[str] = None
+    id: str = Field(regex=r'^10', min_length=4, max_length=4, example='院系编号', title='院系编号')
+    name: str = Field(max_length=20, example='院系名字', title='院系名字')
+    chairman: str = Field(max_length=10, example='主任名', title='主任名')
+    phone: Optional[str] = Field(default=None, max_length=11, example='主任手机号', title='主任手机号')  # 默认值为空
 
 
-# 属性在创建时通过API接收
+# 通过API创建时接收的JSON字段
 class DepartmentCreate(DepartmentBase):
+    """ 通过API创建时接收的JSON字段 """
     pass
 
 
-# 属性通过API接收更新
+# 通过API更新时接收的JSON字段
 class DepartmentUpdate(DepartmentBase):
+    """ 通过API更新时接收的JSON字段 """
     pass
 
 
@@ -33,11 +35,13 @@ class DepartmentInDBBase(DepartmentBase):
         orm_mode = True  # 是否为orm模型
 
 
-# 通过API返回的附加属性
+# 通过API返回的附加JSON字段
 class Department(DepartmentInDBBase):
+    """ 通过API返回的附加JSON字段 """
     pass
 
 
-# 存储在DB中的附加属性
+# 存储在DB中的附加JSON字段
 class DepartmentInDB(DepartmentInDBBase):
+    """ 存储在DB中的附加JSON字段 """
     pass

@@ -38,7 +38,7 @@
         <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center">
         </el-table-column>
         <el-table-column prop="phone" label="辅导员手机号" width="180" align="center"></el-table-column>
-        <el-table-column prop="department_name" label="院系名字" align="center"></el-table-column>
+        <el-table-column prop="department.name" label="院系名字" align="center"></el-table-column>
 
         <!-- 操作 -->
         <el-table-column label="操作" width="180" align="center">
@@ -237,7 +237,10 @@ export default {
       name: '',
       assistant: '',
       phone: '',
-      department_id: '',
+      department: {
+        id: '',
+        name: ''
+      },
     });
 
     let idx = -1; // 用户ID
@@ -253,6 +256,8 @@ export default {
       // 重置表单(防止编辑页面数据)
       Object.keys(formData).forEach((key) => (formData[key] = ''));
 
+      getData();
+
       // 显示弹窗(添加)
       addOrUpdate.value = true;
       showDialog.value = true;
@@ -262,6 +267,9 @@ export default {
      * 确认添加
      */
     const addUser = () => {
+
+      console.log(formData);
+
       showDialog.value = false;
       formRef.value.validate((valid) => {
         if (valid) {
@@ -293,6 +301,8 @@ export default {
         formData[item] = row[item];
       });
 
+      getData();
+
       // 显示弹窗(更新)
       addOrUpdate.value = false;
       showDialog.value = true;
@@ -304,7 +314,6 @@ export default {
     const saveEdit = () => {
       addOrUpdate.value = false;
       showDialog.value = false;
-      console.log(formData);
       formRef.value.validate((valid) => {
         if (valid) {
           update_major(idx, formData)

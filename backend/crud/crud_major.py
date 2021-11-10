@@ -8,6 +8,7 @@ from typing import Union, Dict, Any, List
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+import schemas
 from crud.base import CRUDBase
 from models import Major, Department
 from schemas import MajorCreate, MajorUpdate
@@ -16,7 +17,7 @@ from schemas import MajorCreate, MajorUpdate
 class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
     def get_multi_by_department(
             self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[Dict[str, Any]]:
+    ) -> List[schemas.Major]:
         """
         获取 skip-limit 的专业信息
 
@@ -27,13 +28,19 @@ class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
         """
         lines = db.query(self.model).filter(Major.department_id == Department.id).add_entity(Department)
         major_plus = []
+        # for line in lines:
+        #     major = jsonable_encoder(line[0])
+        #     major['department_name'] = line[1].name
+        #     major_plus.append(major)
+
+        # return major_plus[skip:limit]
         for line in lines:
             major = jsonable_encoder(line[0])
-            major['department_name'] = line[1].name
+            major['department'] = jsonable_encoder(line[1])
             major_plus.append(major)
 
         return major_plus[skip:limit]
-        # return db.query(self.model).filter(Major.department_id == Department.id).offset(skip).limit(limit).all()
+        # return lines.offset(skip).limit(limit).all()
 
     def create_with_department(self, db: Session, *, obj_in: MajorCreate, department_id: str) -> Major:
         """

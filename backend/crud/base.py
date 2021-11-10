@@ -36,6 +36,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param id: ID
         :return: 查询到的对象
         """
+        # table_name = self.model.__tablename__
+        # table_id = table_name + '_id'
+        # print(table_id)
+        # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
+
         return db.query(self.model).filter(self.model.id == id).first()
 
     def get_multi(

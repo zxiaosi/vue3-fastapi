@@ -14,19 +14,19 @@ userData = [
 ]
 
 departmentData = [
-    {'id': '1001', 'name': '计算机工程学院', 'chairman': '张强', 'phone': '123456'},
-    {'id': '1002', 'name': '医学院', 'chairman': '马建国', 'phone': '123456'},
+    {'id': '1001', 'name': '计算机工程学院', 'chairman': '张强', 'phone': '12345678910'},
+    {'id': '1002', 'name': '医学院', 'chairman': '马建国', 'phone': '12345678910'},
 ]
 
 majorData = [
     # 计算机工程学院
-    {'id': '100101', 'name': '计算机科学与技术', 'assistant': '钱伟', 'phone': '123456', 'department_id': '1001'},
-    {'id': '100102', 'name': '物联网工程', 'assistant': '吴晓红', 'phone': '123456', 'department_id': '1001'},
-    {'id': '100103', 'name': '软件工程技术', 'assistant': '柯刚', 'phone': '123456', 'department_id': '1001'},
+    {'id': '100101', 'name': '计算机科学与技术', 'assistant': '钱伟', 'phone': '12345678910', 'department_id': '1001'},
+    {'id': '100102', 'name': '物联网工程', 'assistant': '吴晓红', 'phone': '12345678910', 'department_id': '1001'},
+    {'id': '100103', 'name': '软件工程技术', 'assistant': '柯刚', 'phone': '12345678910', 'department_id': '1001'},
     # 医学院
-    {'id': '100201', 'name': '中药学专业', 'assistant': '赵露', 'phone': '123456', 'department_id': '1002'},
-    {'id': '100202', 'name': '护理学专业', 'assistant': '朱壮', 'phone': '123456', 'department_id': '1002'},
-    {'id': '100203', 'name': '针灸推拿学专业', 'assistant': '李勇', 'phone': '123456', 'department_id': '1002'},
+    {'id': '100201', 'name': '中药学专业', 'assistant': '赵露', 'phone': '12345678910', 'department_id': '1002'},
+    {'id': '100202', 'name': '护理学专业', 'assistant': '朱壮', 'phone': '12345678910', 'department_id': '1002'},
+    {'id': '100203', 'name': '针灸推拿学专业', 'assistant': '李勇', 'phone': '12345678910', 'department_id': '1002'},
 ]
 
 studentData = [

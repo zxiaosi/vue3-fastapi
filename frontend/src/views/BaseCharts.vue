@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Schart from "vue-schart";
+// import Schart from "vue-schart";
 export default {
     name: "basecharts",
     components: {

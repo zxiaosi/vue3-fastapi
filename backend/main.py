@@ -7,10 +7,11 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from api.api_v1.api import api_router
-from core.config import settings, logger
+from core.config import settings
+from core.logger import logger
 from db import init_db
 from initial_data import sqlalchemy_orm_initial, sqlalchemy_core_initial
+from api.api_v1.api import api_router
 
 # 配置接口文档信息
 app = FastAPI(

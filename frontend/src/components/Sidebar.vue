@@ -49,10 +49,6 @@ export default {
                 title: "信息表格",
                 subs: [
                     {
-                        index: "/users",
-                        title: "用户表"
-                    },
-                    {
                         index: "/department",
                         title: "院系表"
                     },

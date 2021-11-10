@@ -14,7 +14,7 @@ engine = create_engine(
     settings.SQLALCHEMY_DATABASE_URI,
 
     # sqlite默认是单线程,开启多线程
-    connect_args={"check_same_thread": False},
+    connect_args={"check_same_thread": settings.SQLALCHEMY_DATABASE_THREAD},
 
     # 打印日志
     echo=settings.SQLALCHEMY_DATABASE_ECHO

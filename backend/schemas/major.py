@@ -2,29 +2,33 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/22 10:00
 # @Author : 小四先生
-# @desc : 专业表 返回和接收的JSON字段
+# @desc : 专业表的Pydantic数据验证
 # 共享属性
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from schemas import Department
 
 
-# 共享属性
+# 共享JSON字段属性
 class MajorBase(BaseModel):
-    id: Optional[str] = None
-    name: Optional[str] = None
-    assistant: Optional[str] = None
-    phone: Optional[str] = None
-    department_id: Optional[str] = None
+    id: str = Field(regex=r'^10', min_length=6, max_length=6, example='专业编号', title='专业编号')
+    name: str = Field(max_length=20, example='专业名字', title='专业名字')
+    assistant: str = Field(max_length=10, example='辅导员名', title='辅导员名')
+    phone: Optional[str] = Field(default=None, max_length=11, example='辅导员手机号', title='辅导员手机号')  # 默认值为空
+    department_id: str = Field(regex=r'^10', min_length=4, max_length=4, example='院系编号', title='院系编号')
 
 
-# 属性在创建时通过API接收
+# 通过API创建时接收的JSON字段
 class MajorCreate(MajorBase):
+    """ 通过API创建时接收的JSON字段 """
     pass
 
 
-# 属性通过API接收更新
+# 通过API更新时接收的JSON字段
 class MajorUpdate(MajorBase):
+    """ 通过API更新时接收的JSON字段 """
     pass
 
 
@@ -34,11 +38,13 @@ class MajorInDBBase(MajorBase):
         orm_mode = True  # 是否为orm模型
 
 
-# 通过API返回的附加属性
+# 通过API返回的附加JSON字段
 class Major(MajorInDBBase):
-    department_name: Optional[str] = None
+    """ 通过API返回的附加JSON字段 """
+    department: Optional[Department] = None  # 默认值为空
 
 
-# 存储在DB中的附加属性
+# 存储在DB中的附加JSON字段
 class MajorInDB(MajorInDBBase):
+    """ 存储在DB中的附加JSON字段 """
     pass

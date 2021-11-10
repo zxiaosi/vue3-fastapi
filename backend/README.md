@@ -17,7 +17,8 @@
 + `V3.1` 去除了测试表的自增
 + `V3.2` 添加了department表的接口
 + `V3.3` 添加了major表的接口
-+ `V3.4` 更了major表接口的部分代码
++ `V3.4` 更新了major表接口的部分代码
++ `V3.5` 更换了日志模块(loguru)&&添加了后端数据验证
 
 ## 安装
 
@@ -28,6 +29,7 @@
    ```python
    pip install fastapi
    pip install uvicorn
+   pip install loguru
    pip install SQLAlchemy
    pip install python-jose
    pip install passlib
@@ -115,8 +117,8 @@
 		|-- teacher.py			# 教师表
 		|-- user.py				# 调试表
 		
-	|-- schemas                 # JSON字段以及数据验证
-		|-- __init__.py			# 抛出JSON字段模型对象
+	|-- schemas                 # Pydantic数据验证
+		|-- __init__.py			# 抛出Pydantic数据验证
 		|-- admin.py			# 管理员表数据验证
 		|-- control.py			# 控制表数据验证
 		|-- course.py			# 课程表数据验证
