@@ -190,7 +190,6 @@ export default {
       { title: '添加专业表信息', status: true },
       { title: '修改首页内容', status: true },
       { title: '添加了院系表(见信息表格)', status: true },
-      { title: '调试测试数据接口', status: true },
     ]);
 
     // 折线图

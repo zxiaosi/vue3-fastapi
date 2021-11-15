@@ -8,8 +8,6 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from schemas import Department
-
 
 # 共享JSON字段属性
 class MajorBase(BaseModel):
@@ -41,7 +39,8 @@ class MajorInDBBase(MajorBase):
 # 通过API返回的附加JSON字段
 class Major(MajorInDBBase):
     """ 通过API返回的附加JSON字段 """
-    department: Optional[Department] = None  # 默认值为空
+    # department: Optional[Department] = None  # 整个Department模型
+    department_name: Optional[str] = Field(default=None, max_length=20, example='院系名字', title='院系名字')
 
 
 # 存储在DB中的附加JSON字段

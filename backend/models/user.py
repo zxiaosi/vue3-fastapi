@@ -3,7 +3,7 @@
 # @Time : 2021/9/19 17:13
 # @Author : 小四先生
 # @desc : user表(调试)
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, text, CheckConstraint
+from sqlalchemy import Column, Integer, String
 
 from db.base_class import Base
 

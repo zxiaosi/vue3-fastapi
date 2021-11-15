@@ -3,7 +3,7 @@
 # @Time : 2021/9/25 22:08
 # @Author : 小四先生
 # @desc : 创建与删除所有表
-from core.logger import logger
+from utils.logger import logger
 from db import base
 from db.session import engine
 

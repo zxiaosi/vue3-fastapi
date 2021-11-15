@@ -25,7 +25,7 @@
 
       <!-- 表格信息 -->
       <el-table
-        :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
+        :data="deptData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
         border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column type="index" width="80" label="序号" align="center">
           <template #default="scope">
@@ -101,7 +101,7 @@ import {
 export default {
   name: 'department',
   setup() {
-    const tableData = ref([]); // 数据变量
+    const deptData = ref([]); // 数据变量
     const pageTotal = ref(0); // 总个数
 
     /**
@@ -111,7 +111,7 @@ export default {
     const getData = () => {
       read_departments(query)
         .then((res) => {
-          tableData.value = res;
+          deptData.value = res.data;
         })
         .catch(() => {
           ElMessage.error('加载院系信息数据失败');
@@ -125,7 +125,7 @@ export default {
 
     // 监听属性
     watchEffect(() => {
-      pageTotal.value = tableData.value.length || 10;
+      pageTotal.value = deptData.value.length || 10;
     });
 
     // 排序和页码
@@ -143,9 +143,9 @@ export default {
       clickRecover(event);
 
       if (query.sort === 'up') {
-        tableData.value.sort((a, b) => a.id - b.id);
+        deptData.value.sort((a, b) => a.id - b.id);
       } else {
-        tableData.value.sort((a, b) => b.id - a.id);
+        deptData.value.sort((a, b) => b.id - a.id);
       }
     };
 
@@ -241,7 +241,7 @@ export default {
         if (valid) {
           create_department(formData)
             .then((res) => {
-              tableData.value.push(res);
+              deptData.value.push(res.data);
               ElMessage.success('成功添加院系信息！');
             })
             .catch(() => {
@@ -283,8 +283,8 @@ export default {
           update_department(idx, formData)
             .then((res) => {
               ElMessage.success(`修改院系ID为 ${idx} 成功！`);
-              Object.keys(res).forEach((item) => {
-                tableData.value[reIndex][item] = res[item];
+              Object.keys(res.data).forEach((item) => {
+                deptData.value[reIndex][item] = res.data[item];
               });
             })
             .catch((error) => {
@@ -311,7 +311,7 @@ export default {
           // 调用删除院系接口
           delete_department(idx)
             .then(() => {
-              tableData.value.splice(index, 1);
+              deptData.value.splice(index, 1);
               ElMessage.success('删除成功！');
             })
             .catch(function (error) {
@@ -337,7 +337,7 @@ export default {
     // 返回
     return {
       query,
-      tableData,
+      deptData,
       pageTotal,
       showDialog,
       addOrUpdate,

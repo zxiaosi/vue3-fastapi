@@ -25,7 +25,7 @@
 
       <!-- 表格信息 -->
       <el-table
-        :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
+        :data="majorData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
         border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column type="index" width="80" label="序号" align="center">
           <template #default="scope">
@@ -38,7 +38,7 @@
         <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center">
         </el-table-column>
         <el-table-column prop="phone" label="辅导员手机号" width="180" align="center"></el-table-column>
-        <el-table-column prop="department.name" label="院系名字" align="center"></el-table-column>
+        <el-table-column prop="department_name" label="院系名字" align="center"></el-table-column>
 
         <!-- 操作 -->
         <el-table-column label="操作" width="180" align="center">
@@ -81,7 +81,7 @@
         <el-form-item label="院系名字" prop="department_id">
           <el-select v-model="formData.department_id" placeholder="请选择院系"
             @change="getChange(formData.department_id)">
-            <el-option v-for="(dept, index) in departmentData" :key=index :label=dept.name
+            <el-option v-for="(dept, index) in deptData" :key=index :label=dept.name
               :value=dept.id />
           </el-select>
         </el-form-item>
@@ -111,9 +111,9 @@ import { read_departments } from '../../api/department';
 export default {
   name: 'major',
   setup() {
-    const tableData = ref([]); // 专业变量
+    const majorData = ref([]); // 专业数据
+    const deptData = ref([]); // 院系变量
     const pageTotal = ref(0); // 总个数
-    const departmentData = ref([]); // 院系变量
 
     /**
      * getData()
@@ -122,14 +122,16 @@ export default {
     const getData = () => {
       read_majors(query)
         .then((res) => {
-          tableData.value = res;
+          majorData.value = res.data;
         })
         .catch(() => {
           ElMessage.error('加载专业信息数据失败！');
         });
+
+      // 获取院系信息
       read_departments(query)
         .then((res) => {
-          departmentData.value = res;
+          deptData.value = res.data;
         })
         .catch(() => {
           ElMessage.error('加载院系信息数据失败！');
@@ -143,7 +145,7 @@ export default {
 
     // 监听属性
     watchEffect(() => {
-      pageTotal.value = tableData.value.length || 10;
+      pageTotal.value = majorData.value.length || 10;
     });
 
     // 排序和页码
@@ -161,9 +163,9 @@ export default {
       clickRecover(event);
 
       if (query.sort === 'up') {
-        tableData.value.sort((a, b) => a.id - b.id);
+        majorData.value.sort((a, b) => a.id - b.id);
       } else {
-        tableData.value.sort((a, b) => b.id - a.id);
+        majorData.value.sort((a, b) => b.id - a.id);
       }
     };
 
@@ -237,10 +239,7 @@ export default {
       name: '',
       assistant: '',
       phone: '',
-      department: {
-        id: '',
-        name: ''
-      },
+      department_id: '',
     });
 
     let idx = -1; // 用户ID
@@ -267,15 +266,12 @@ export default {
      * 确认添加
      */
     const addUser = () => {
-
-      console.log(formData);
-
       showDialog.value = false;
       formRef.value.validate((valid) => {
         if (valid) {
           create_major(formData)
             .then((res) => {
-              tableData.value.push(res);
+              majorData.value.push(res.data);
               ElMessage.success('成功添加专业信息！');
               getData();
             })
@@ -319,9 +315,8 @@ export default {
           update_major(idx, formData)
             .then((res) => {
               ElMessage.success(`修改专业ID为 ${idx} 成功！`);
-              Object.keys(res).forEach((item) => {
-                console.log(res[item]);
-                tableData.value[reIndex][item] = res[item];
+              Object.keys(res.data).forEach((item) => {
+                majorData.value[reIndex][item] = res.data[item];
               });
               getData();
             })
@@ -348,7 +343,7 @@ export default {
           // 调用删除用户接口
           delete_major(idx)
             .then(() => {
-              tableData.value.splice(index, 1);
+              majorData.value.splice(index, 1);
               ElMessage.success('删除成功！');
             })
             .catch(function (error) {
@@ -379,9 +374,9 @@ export default {
     // 返回
     return {
       query,
-      tableData,
+      majorData,
       pageTotal,
-      departmentData,
+      deptData,
       showDialog,
       addOrUpdate,
       formRef,

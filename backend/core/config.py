@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     LOGGER_FOLDER = "logs"
     # 日志文件名 (时间格式)
     LOGGER_NAME = '{time:YYYY-MM-DD_HH-mm-ss}.log'
+    LOGGER_ENCODING = 'utf-8'
     LOGGER_LEVEL = 'DEBUG'  # ['DEBUG' | 'INFO']
     # 按 时间段 切分日志
     LOGGER_ROTATION = "1 minute"  # ["500 MB" | "12:00" | "1 week"]

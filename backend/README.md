@@ -78,17 +78,16 @@
 	|-- core					# 核心内容
 		|-- __init__.py			    
 		|-- config.py			# 配置文件
-		|-- logger.py		    # 封装日志模块
 		|-- security.py		    # 安全配置
 		
 	|-- crud					# 数据库的增删改查操作
 		|-- __init__.py			# 抛出操作表数据文件中的类
-		|-- base.py			    # 封装数据库增删改查方法
+		|-- base_class.py			    # 封装数据库增删改查方法
 		|-- crud_user.py		# 用户表--增删改查方法
 		
  	|-- db						# 数据库相关
  		|-- __init__.py			# 抛出数据库生成、删除表的方法
-		|-- base.py				# 配置需要创建的表
+		|-- base_class.py				# 配置需要创建的表
 		|-- base_class.py		# 自动生成 表名
 		|-- init_db.py			# 创建和删除base中的表
 		|-- session.py			# 创建数据库连接会话
@@ -128,6 +127,11 @@
 		|-- student.py			# 学生表数据验证
 		|-- teacher.py			# 教师表数据验证
 		|-- user.py				# 调试表数据验证
+		
+	|-- utils                   # 封装工具
+	    |-- __init__.py		    # 抛出工具类
+	    |-- logger.py		    # 封装日志模块
+	    |-- response_code.py	# 封装统一的响应JSON数据
 		
 	|-- test                    # 测试文件夹
     	|-- __init__.py				

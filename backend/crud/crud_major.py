@@ -28,19 +28,18 @@ class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
         """
         lines = db.query(self.model).filter(Major.department_id == Department.id).add_entity(Department)
         major_plus = []
-        # for line in lines:
-        #     major = jsonable_encoder(line[0])
-        #     major['department_name'] = line[1].name
-        #     major_plus.append(major)
-
-        # return major_plus[skip:limit]
         for line in lines:
             major = jsonable_encoder(line[0])
-            major['department'] = jsonable_encoder(line[1])
+            major['department_name'] = line[1].name
             major_plus.append(major)
 
+        # 整个department对象
+        # for line in lines:
+        #     major = jsonable_encoder(line[0])
+        #     major['department'] = jsonable_encoder(line[1])
+        #     major_plus.append(major)
+
         return major_plus[skip:limit]
-        # return lines.offset(skip).limit(limit).all()
 
     def create_with_department(self, db: Session, *, obj_in: MajorCreate, department_id: str) -> Major:
         """

@@ -3,7 +3,7 @@
 # @Time : 2021/9/25 20:50
 # @Author : 小四先生
 # @desc : 两种初始化表数据的方式
-from core.logger import logger
+from utils.logger import logger
 from db import base, init_db
 from db.session import SessionLocal
 from initial_data.data_orm import data

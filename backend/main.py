@@ -8,10 +8,11 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from core.config import settings
-from core.logger import logger
+
 from db import init_db
-from initial_data import sqlalchemy_orm_initial, sqlalchemy_core_initial
+from initial_data import sqlalchemy_core_initial
 from api.api_v1.api import api_router
+from utils import logger
 
 # 配置接口文档信息
 app = FastAPI(
@@ -20,6 +21,7 @@ app = FastAPI(
     version=settings.PROJECT_VERSION
 )
 
+# 注册路由
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # 设置所有CORS(跨域请求)

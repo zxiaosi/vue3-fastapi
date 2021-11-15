@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from api import deps
-from core.logger import logger
+from utils.logger import logger
 
 router = APIRouter()
 

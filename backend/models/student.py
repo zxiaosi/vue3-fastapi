@@ -6,7 +6,7 @@
 from datetime import date
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, String, ForeignKey, CheckConstraint, Date, text
+from sqlalchemy import Column, String, ForeignKey, CheckConstraint, Date
 from sqlalchemy.orm import relationship
 
 from db.base_class import Base
