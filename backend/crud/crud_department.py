@@ -22,7 +22,7 @@ class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
         :param obj_in: DepartmentCreate 输入的院系对象
         :return: 院系对象
         """
-        db_obj = Department(**jsonable_encoder(obj_in))
+        db_obj = Department(**jsonable_encoder(obj_in))  # type: ignore
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
@@ -32,13 +32,13 @@ class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
             self, db: Session, *, db_obj: Department, obj_in: Union[DepartmentUpdate, Dict[str, Any]]
     ) -> Department:
         """
-        更新对象
+        更新院系信息
 
         :param db: Session
         :param db_obj: Department 院系对象
         :param obj_in: UpdateSchemaType schemas类型
         :param obj_in: Dict[str, Any] 字典数据
-        :return: 用户对象
+        :return: 院系对象
         """
         if isinstance(obj_in, dict):
             department_data = obj_in

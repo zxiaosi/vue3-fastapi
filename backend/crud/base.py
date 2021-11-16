@@ -38,7 +38,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         # table_name = self.model.__tablename__
         # table_id = table_name + '_id'
-        # print(table_id)
+        # print(table_id) # 表名_字段名
         # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
 
         return db.query(self.model).filter(self.model.id == id).first()

@@ -13,13 +13,15 @@ SchemasType = TypeVar("SchemasType")
 
 class RestfulModel(GenericModel, Generic[SchemasType]):
     code: int
-    msg: str
     data: SchemasType = None
+    msg: str
 
 
-def response(code: int = 200, msg: str = 'Success', data: Type[SchemasType] = None):
+def response(code: int = 200, data: Type[SchemasType] = None, msg: str = 'Success'):
     if code == 200:
         logger.info(msg)
+    elif code == 404:
+        logger.error(msg)
     else:
         logger.warning(msg)
-    return {'code': code, 'msg': msg, 'data': data}
+    return {'code': code, 'data': data, 'msg': msg}

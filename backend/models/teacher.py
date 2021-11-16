@@ -27,8 +27,8 @@ class Teacher(Base):
                   index=True,
                   doc='教师姓名')
 
-    sex = Column(String(2),
-                 CheckConstraint("sex in ('男', '女')"),
+    sex = Column(String(5),
+                 CheckConstraint("sex in ('man', 'woman')"),
                  nullable=False,
                  doc='教师性别')
 
@@ -37,15 +37,15 @@ class Teacher(Base):
                       nullable=False,
                       doc='教师生日')
 
-    hashed_password = Column(String(20), nullable=False, doc='教师密码')
+    hashed_password = Column(String(60), nullable=False, doc='教师密码')
 
-    education = Column(String(6),
-                       CheckConstraint("education in ('学士', '硕士', '博士')"),
+    education = Column(String(8),
+                       CheckConstraint("education in ('Bachelor', 'Master', 'Doctor')"),
                        nullable=False,
                        doc='教师学历')
 
-    title = Column(String(10),
-                   CheckConstraint("title in ('助教', '讲师', '副教授', '教授')"),
+    title = Column(String(9),
+                   CheckConstraint("title in ('Assistant', 'Lecturer', 'Associate', 'Professor')"),
                    nullable=False,
                    doc='教师职称')
 

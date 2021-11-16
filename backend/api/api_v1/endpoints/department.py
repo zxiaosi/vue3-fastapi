@@ -36,10 +36,10 @@ def read_departments(
         get_department = crud.department.get(db, id=departments_id)
         if not get_department:
             return response(code=404, msg=f"系统中不存在 id 为 {departments_id} 的院系.")
-        return response(msg=f"查询到了 id 为 {departments_id} 的院系.", data=get_department)
+        return response(data=get_department, msg=f"查询到了 id 为 {departments_id} 的院系.")
     else:  # 查询从 skip 到 limit 的院系
         get_departments = crud.department.get_multi(db, skip=skip, limit=limit)
-        return response(msg=f"查询了从 {skip} 到 {limit} 之间的院系.", data=get_departments)
+        return response(data=get_departments, msg=f"查询了从 {skip} 到 {limit} 之间的院系.")
 
 
 # 添加院系信息
@@ -56,7 +56,7 @@ def create_department(
     if get_department:
         return response(code=400, msg=f"系统中已经存在 id 为 {department_in.id} 的院系.")
     add_department = crud.department.create(db, obj_in=department_in)
-    return response(msg=f"添加了 id 为 {department_in.id} 的院系.", data=add_department)
+    return response(data=add_department, msg=f"添加了 id 为 {department_in.id} 的院系信息.")
 
 
 # 通过 id 更新院系信息
@@ -74,7 +74,7 @@ def update_department(
     if not get_department:
         return response(code=404, msg=f"系统中不存在 id 为 {department_id} 的院系.")
     alter_department = crud.department.update(db, db_obj=get_department, obj_in=department_in)
-    return response(msg=f"更新了 id 为 {department_id} 的院系信息.", data=alter_department)
+    return response(data=alter_department, msg=f"更新了 id 为 {department_id} 的院系信息.")
 
 
 # 通过 id 删除院系信息
@@ -91,4 +91,4 @@ def delete_department(
     if not get_department:
         return response(code=404, msg=f"系统中不存在 id 为 {department_id} 的院系.")
     del_department = crud.department.remove(db, id=department_id)
-    return response(msg=f'成功删除 id 为 {department_id} 的院系', data=del_department)
+    return response(data=del_department, msg=f'成功删除 id 为 {department_id} 的院系信息')

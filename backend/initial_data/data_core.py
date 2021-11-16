@@ -104,21 +104,21 @@ studentData = [
 
 teacherData = [
     # 计算机工程学院
-    {'id': '180101', 'name': '陈江川', 'sex': '男', 'birthday': date(1988, 9, 9), 'hashed_password': '123456', 'education': '学士',
-     'title': '副教授', 'department_id': '1001'},
-    {'id': '180102', 'name': '李小平', 'sex': '男', 'birthday': date(1993, 8, 17), 'hashed_password': '123456', 'education': '硕士',
-     'title': '讲师', 'department_id': '1001'},
-    {'id': '180103', 'name': '赵希明', 'sex': '女', 'birthday': date(1988, 3, 28), 'hashed_password': '123456', 'education': '博士',
-     'title': '教授', 'department_id': '1001'},
-    {'id': '180104', 'name': '张红', 'sex': '女', 'birthday': date(1995, 6, 15), 'hashed_password': '123456', 'education': '学士',
-     'title': '助教', 'department_id': '1001'},
+    {'id': '180101', 'name': '陈江川', 'sex': 'man', 'birthday': date(1988, 9, 9), 'hashed_password': '123456',
+     'education': 'Bachelor', 'title': 'Associate', 'department_id': '1001'},
+    {'id': '180102', 'name': '李小平', 'sex': 'man', 'birthday': date(1993, 8, 17), 'hashed_password': '123456',
+     'education': 'Master', 'title': 'Lecturer', 'department_id': '1001'},
+    {'id': '180103', 'name': '赵希明', 'sex': 'woman', 'birthday': date(1988, 3, 28), 'hashed_password': '123456',
+     'education': 'Doctor', 'title': 'Professor', 'department_id': '1001'},
+    {'id': '180104', 'name': '张红', 'sex': 'woman', 'birthday': date(1995, 6, 15), 'hashed_password': '123456',
+     'education': 'Bachelor', 'title': 'Assistant', 'department_id': '1001'},
     # 医学院
-    {'id': '180201', 'name': '吴小龚', 'sex': '女', 'birthday': date(1988, 4, 20), 'hashed_password': '123456', 'education': '硕士',
-     'title': '讲师', 'department_id': '1002'},
-    {'id': '180202', 'name': '张进明', 'sex': '男', 'birthday': date(1989, 10, 29), 'hashed_password': '123456', 'education': '学士',
-     'title': '助教', 'department_id': '1002'},
-    {'id': '180203', 'name': '李历宁', 'sex': '男', 'birthday': date(1996, 3, 19), 'hashed_password': '123456', 'education': '学士',
-     'title': '副教授', 'department_id': '1002'},
+    {'id': '180201', 'name': '吴小龚', 'sex': 'woman', 'birthday': date(1988, 4, 20), 'hashed_password': '123456',
+     'education': 'Master', 'title': 'Lecturer', 'department_id': '1002'},
+    {'id': '180202', 'name': '张进明', 'sex': 'man', 'birthday': date(1989, 10, 29), 'hashed_password': '123456',
+     'education': 'Bachelor', 'title': 'Assistant', 'department_id': '1002'},
+    {'id': '180203', 'name': '李历宁', 'sex': 'man', 'birthday': date(1996, 3, 19), 'hashed_password': '123456',
+     'education': 'Bachelor', 'title': 'Associate', 'department_id': '1002'},
 ]
 
 adminData = [

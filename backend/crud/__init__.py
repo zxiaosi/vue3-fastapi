@@ -7,6 +7,7 @@
 from .crud_user import user
 from .crud_department import department
 from .crud_major import major
+from .crud_teacher import teacher
 
 # 对于一个新的基本CRUD操作集，您可以直接执行
 

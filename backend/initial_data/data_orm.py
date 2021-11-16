@@ -12,7 +12,7 @@ from models import *
 data = []
 
 for user in userData:
-    data.append(User(full_name=user['full_name'], hashed_password=user['hashed_password']))
+    data.append(User(full_name=user['full_name'], hashed_password=user['hashed_password']))  # type: ignore
 
 for department in departmentData:
     data.append(

@@ -7,3 +7,4 @@
 from .user import User, UserCreate, UserInDB, UserUpdate
 from .department import Department, DepartmentCreate, DepartmentInDB, DepartmentUpdate
 from .major import Major, MajorCreate, MajorInDB, MajorUpdate
+from .teacher import Teacher, TeacherCreate, TeacherInDB, TeacherUpdate

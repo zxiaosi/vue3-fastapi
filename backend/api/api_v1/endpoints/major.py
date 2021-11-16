@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 import crud
-from schemas import Major, MajorInDB, MajorCreate, MajorUpdate
 from api import deps
+from schemas import Major, MajorInDB, MajorCreate, MajorUpdate
 from utils import RestfulModel, response
 
 router = APIRouter()
@@ -36,10 +36,10 @@ def read_majors(
         get_major = crud.major.get(db, id=major_id)
         if not get_major:
             return response(code=404, msg=f"系统中不存在 id 为 {major_id} 的专业.")
-        return response(msg=f"查询到了 id 为 {major_id} 的专业.", data=get_major)
+        return response(data=get_major, msg=f"查询到了 id 为 {major_id} 的专业.")
     else:
-        get_majors = crud.major.get_multi_by_department(db, skip=skip, limit=limit)
-        return response(msg=f"查询了从 {skip} 到 {limit} 之间的专业.", data=get_majors)
+        get_majors = crud.major.get_multi_major(db, skip=skip, limit=limit)
+        return response(data=get_majors, msg=f"查询了从 {skip} 到 {limit} 之间的专业.")
 
 
 # 添加专业信息
@@ -58,7 +58,7 @@ def create_major(
     else:
         if crud.department.get(db=db, id=major_in.department_id):
             add_major = crud.major.create(db, obj_in=major_in)
-            return response(msg=f"添加了 id 为 {major_in.id} 的专业.", data=add_major)
+            return response(msg=f"添加了 id 为 {major_in.id} 的专业信息.", data=add_major)
         else:
             return response(code=404, msg=f"系统中不存在 id 为 {major_in.department_id} 的院系.")
 
@@ -99,4 +99,4 @@ def delete_major(
     if not get_major:
         return response(code=404, msg=f"系统中不存在 id 为 {major_id} 的专业.")
     del_major = crud.major.remove(db, id=major_id)
-    return response(msg=f"删除了 id 为 {major_id} 的专业.", data=del_major)
+    return response(msg=f"删除了 id 为 {major_id} 的专业信息.", data=del_major)

@@ -24,14 +24,21 @@ const routes = [
                 meta: {
                     title: '院系表'
                 },
-                component: () => import( /* webpackChunkName: "table" */ "../views/tables/department.vue")
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/Department.vue")
             }, {
                 path: "/major",
                 name: "major",
                 meta: {
                     title: '专业表'
                 },
-                component: () => import( /* webpackChunkName: "table" */ "../views/tables/major.vue")
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/Major.vue")
+            }, {
+                path: "/teacher",
+                name: "teacher",
+                meta: {
+                    title: '教师表'
+                },
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/Teacher.vue")
             }, {
                 path: "/table",
                 name: "basetable",
