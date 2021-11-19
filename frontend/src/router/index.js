@@ -40,6 +40,27 @@ const routes = [
                 },
                 component: () => import( /* webpackChunkName: "table" */ "../views/tables/Teacher.vue")
             }, {
+                path: "/student",
+                name: "student",
+                meta: {
+                    title: '学生表'
+                },
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/Student.vue")
+            }, {
+                path: "/course",
+                name: "course",
+                meta: {
+                    title: '课程表'
+                },
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/Course.vue")
+            }, {
+                path: "/selectCourse",
+                name: "selectCourse",
+                meta: {
+                    title: '选课表'
+                },
+                component: () => import( /* webpackChunkName: "table" */ "../views/tables/selectCourse.vue")
+            }, {
                 path: "/table",
                 name: "basetable",
                 meta: {

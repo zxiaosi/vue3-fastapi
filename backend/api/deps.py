@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/15 20:10
 # @Author : 小四先生
-# @desc :
+# @desc : 获取数据库连接对象
 from typing import Generator
 
 from fastapi import Depends, HTTPException, status
@@ -19,7 +19,7 @@ from core.config import settings
 from db.session import SessionLocal
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+    tokenUrl=f"{settings.API_STR}/login/access-token"
 )
 
 

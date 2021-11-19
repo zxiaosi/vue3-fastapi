@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/11/15 19:53
 # @Author : 小四先生
-# @desc :
+# @desc : 操作教师表
 from datetime import datetime
 from typing import Union, Dict, Any, List
 
@@ -11,14 +11,14 @@ from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models import Teacher as MTeacher, Department
-from schemas import Teacher as STeacher, TeacherCreate, TeacherUpdate
+from models import Teacher, Department
+from schemas import TeacherReturn, TeacherCreate, TeacherUpdate
 
 
-class CRUDTeacher(CRUDBase[MTeacher, TeacherCreate, TeacherUpdate]):
+class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):
     def get_multi_teacher(
             self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[STeacher]:
+    ) -> List[TeacherReturn]:
         """
         获取 skip-limit 的教师信息
 
@@ -27,16 +27,14 @@ class CRUDTeacher(CRUDBase[MTeacher, TeacherCreate, TeacherUpdate]):
         :param limit: 结束 (默认值100)
         :return: 所有教师对象
         """
-        lines = db.query(self.model).filter(MTeacher.department_id == Department.id).add_entity(Department)
-        teacher_plus = []
-        for line in lines:
-            teacher = jsonable_encoder(line[0])
-            teacher['department_name'] = line[1].name
-            teacher_plus.append(teacher)
+        custom_filter = [
+            self.model.id, self.model.name, self.model.sex, self.model.birthday, self.model.education,
+            self.model.title, self.model.department_id, Department.name.label('department_name')
+        ]
 
-        return teacher_plus[skip:limit]
+        return db.query(*custom_filter).join(Department).offset(skip).limit(limit).all()
 
-    def create(self, db: Session, *, obj_in: TeacherCreate) -> MTeacher:
+    def create(self, db: Session, *, obj_in: TeacherCreate) -> Teacher:
         """
         添加教师信息
 
@@ -61,8 +59,8 @@ class CRUDTeacher(CRUDBase[MTeacher, TeacherCreate, TeacherUpdate]):
         return db_obj
 
     def update(
-            self, db: Session, *, db_obj: MTeacher, obj_in: Union[TeacherUpdate, Dict[str, Any]]
-    ) -> MTeacher:
+            self, db: Session, *, db_obj: Teacher, obj_in: Union[TeacherUpdate, Dict[str, Any]]
+    ) -> Teacher:
         """
         更新教师信息
 
@@ -83,4 +81,4 @@ class CRUDTeacher(CRUDBase[MTeacher, TeacherCreate, TeacherUpdate]):
         return super().update(db, db_obj=db_obj, obj_in=teacher_data)
 
 
-teacher = CRUDTeacher(MTeacher)
+teacher = CRUDTeacher(Teacher)

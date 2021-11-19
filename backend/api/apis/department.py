@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 import crud
-from schemas import Department, DepartmentCreate, DepartmentInDB, DepartmentUpdate
 from api import deps
+from schemas import DepartmentReturn, DepartmentInDB, DepartmentCreate, DepartmentUpdate
 from utils import RestfulModel, response
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 
 # 查询所有院系 or 根据 id 查询院系信息
 @router.get("/",
-            response_model=RestfulModel[Union[Department, List[Department]]],
+            response_model=RestfulModel[Union[DepartmentReturn, List[DepartmentReturn]]],
             summary='查询所有院系 or 根据 id 查询院系信息')
 def read_departments(
         db: Session = Depends(deps.get_db),
@@ -38,7 +38,7 @@ def read_departments(
             return response(code=404, msg=f"系统中不存在 id 为 {departments_id} 的院系.")
         return response(data=get_department, msg=f"查询到了 id 为 {departments_id} 的院系.")
     else:  # 查询从 skip 到 limit 的院系
-        get_departments = crud.department.get_multi(db, skip=skip, limit=limit)
+        get_departments = crud.department.get_multi_department(db, skip=skip, limit=limit)
         return response(data=get_departments, msg=f"查询了从 {skip} 到 {limit} 之间的院系.")
 
 

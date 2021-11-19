@@ -9,8 +9,17 @@ from pydantic import BaseSettings, AnyHttpUrl, validator
 
 # 配置信息
 class Settings(BaseSettings):
+    # 接口文档的 名字
+    PROJECT_NAME = "FastAPI"
+    # 接口文档的 描述
+    PROJECT_DESCRIPTION = "FastAPI接口"
+    # 接口文档的 版本
+    PROJECT_VERSION = "3.0"
+    # 接口文档的 路径
+    PROJECT_DIR = "/"  # 默认是/docs
+
     # api 前缀
-    API_V1_STR: str = "/api/v1"
+    API_STR: str = "/api"
 
     # 跨域请求
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
@@ -26,20 +35,16 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # 接口文档的 名字
-    PROJECT_NAME = "FastAPI"
-    # 接口文档的 描述
-    PROJECT_DESCRIPTION = "FastAPI接口"
-    # 接口文档的 版本
-    PROJECT_VERSION = "3.0"
-
     # 数据库链接
     # SQLALCHEMY_DATABASE_URI = "mysql://user:password@hostname/dbname?charset=utf8"
     # SQLALCHEMY_DATABASE_URI = "postgresql://user:password@postgresserver/db"
+
     SQLALCHEMY_DATABASE_URI = "sqlite:///./sql_app.db"  # (可开启下面的多线程)
-    # Sqlite多线程 (False关闭单线程 | True 开启单线程)
-    SQLALCHEMY_DATABASE_THREAD = False
-    # SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"  # (关闭 db/session 下的多线程)
+    SQLALCHEMY_DATABASE_THREAD = False  # Sqlite多线程 (False关闭单线程 | True 开启单线程)
+
+    # (开启MySQL 需注释 db/session 下Sqlite的多线程)
+    # SQLALCHEMY_DATABASE_URI = "mysql://root:123456@localhost/elective_system?charset=utf8"
+
     # 数据库日志 (可看到创建表、表数据增删改查的信息)
     SQLALCHEMY_DATABASE_ECHO = False
 

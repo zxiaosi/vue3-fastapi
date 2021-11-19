@@ -11,18 +11,19 @@ from core.config import settings
 
 from db import init_db
 from initial_data import sqlalchemy_core_initial
-from api.api_v1.api import api_router
+from api.api_router import api_router
 from utils import logger
 
 # 配置接口文档信息
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
-    version=settings.PROJECT_VERSION
+    version=settings.PROJECT_VERSION,
+    docs_url=settings.PROJECT_DIR
 )
 
 # 注册路由
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix=settings.API_STR)
 
 # 设置所有CORS(跨域请求)
 if settings.BACKEND_CORS_ORIGINS:

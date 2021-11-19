@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 import crud
 from api import deps
-from schemas import Major, MajorInDB, MajorCreate, MajorUpdate
+from schemas import MajorReturn, MajorInDB, MajorCreate, MajorUpdate
 from utils import RestfulModel, response
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 
 # 查询所有专业 or 通过 id 查询专业信息
 @router.get("/",
-            response_model=RestfulModel[Union[Major, List[Major]]],
+            response_model=RestfulModel[Union[MajorReturn, List[MajorReturn]]],
             summary='查询所有专业 or 通过 id 查询专业信息')
 def read_majors(
         db: Session = Depends(deps.get_db),

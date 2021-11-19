@@ -27,8 +27,8 @@ class Student(Base):
                   index=True,
                   doc='学生姓名')
 
-    sex = Column(String(2),
-                 CheckConstraint("sex in ('男', '女')"),
+    sex = Column(String(5),
+                 CheckConstraint("sex in ('man', 'woman')"),
                  nullable=False,
                  doc='学生性别')
 
@@ -37,7 +37,7 @@ class Student(Base):
                       nullable=False,
                       doc='学生生日')
 
-    hashed_password = Column(String(20), nullable=True, doc='学生密码')
+    hashed_password = Column(String(60), nullable=True, doc='学生密码')
 
     major_id = Column(String(6), ForeignKey('major.id'), doc='专业编号')
 

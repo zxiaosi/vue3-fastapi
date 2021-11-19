@@ -63,6 +63,18 @@ export default {
             title: '教师表',
           },
           {
+            index: '/student',
+            title: '学生表',
+          },
+          {
+            index: '/course',
+            title: '课程表',
+          },
+          {
+            index: '/selectCourse',
+            title: '选课表',
+          },
+          {
             index: '/table',
             title: '基础表格',
           },

@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/11/16 9:48
 # @Author : 小四先生
-# @desc :
+# @desc : 教师表接口
 from typing import Any, List, Union, Optional
 
 from fastapi import APIRouter, Depends
@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 import crud
 from api import deps
-from schemas import Teacher, TeacherInDB, TeacherCreate, TeacherUpdate
+from schemas import TeacherReturn, TeacherInDB, TeacherCreate, TeacherUpdate
 from utils import RestfulModel, response
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 
 # 查询所有教师 or 通过 id 查询教师信息
 @router.get("/",
-            response_model=RestfulModel[Union[Teacher, List[Teacher]]],
+            response_model=RestfulModel[Union[TeacherReturn, List[TeacherReturn]]],
             summary='查询所有教师 or 通过 id 查询教师信息')
 def read_teachers(
         db: Session = Depends(deps.get_db),

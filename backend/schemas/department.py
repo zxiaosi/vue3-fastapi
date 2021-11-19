@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 # 共享JSON字段属性
 class DepartmentBase(BaseModel):
-    id: str = Field(regex=r'^10', min_length=4, max_length=4, example='院系编号', title='院系编号')
+    id: str = Field(regex=r'^10\d{2}$', min_length=4, max_length=4, example='院系编号', title='院系编号')
     name: str = Field(max_length=20, example='院系名字', title='院系名字')
     chairman: str = Field(max_length=10, example='主任名', title='主任名')
     phone: Optional[str] = Field(default=None, max_length=11, example='主任手机号', title='主任手机号')  # 默认值为空
@@ -36,7 +36,7 @@ class DepartmentInDBBase(DepartmentBase):
 
 
 # 通过API返回的附加JSON字段
-class Department(DepartmentInDBBase):
+class DepartmentReturn(DepartmentInDBBase):
     """ 通过API返回的附加JSON字段 """
     pass
 

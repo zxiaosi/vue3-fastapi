@@ -35,7 +35,7 @@
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
+                            <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
                                 <el-dropdown-item>项目仓库</el-dropdown-item>
                             </a>
                             <el-dropdown-item command="user">个人中心</el-dropdown-item>
@@ -134,6 +134,7 @@ export default {
     text-align: center;
     border-radius: 15px;
     cursor: pointer;
+    margin-top: 10px;
 }
 .btn-bell-badge {
     position: absolute;
@@ -152,7 +153,7 @@ export default {
     margin-left: 10px;
 }
 .user-avator {
-    margin-left: 20px;
+    margin: 0px 20px;
 }
 .user-avator img {
     display: block;

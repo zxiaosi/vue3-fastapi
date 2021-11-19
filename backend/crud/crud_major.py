@@ -9,14 +9,14 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
-from models import Major as MMajor, Department
-from schemas import Major as SMajor, MajorCreate, MajorUpdate
+from models import Major, Department
+from schemas import MajorReturn, MajorCreate, MajorUpdate
 
 
-class CRUDMajor(CRUDBase[MMajor, MajorCreate, MajorUpdate]):
+class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
     def get_multi_major(
             self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[SMajor]:
+    ) -> List[MajorReturn]:
         """
         获取 skip-limit 的专业信息
 
@@ -25,16 +25,14 @@ class CRUDMajor(CRUDBase[MMajor, MajorCreate, MajorUpdate]):
         :param limit: 结束 (默认值100)
         :return: 所有专业对象
         """
-        lines = db.query(self.model).filter(MMajor.department_id == Department.id).add_entity(Department)
-        major_plus = []
-        for line in lines:
-            major = jsonable_encoder(line[0])
-            major['department_name'] = line[1].name
-            major_plus.append(major)
+        custom_filter = [
+            self.model.id, self.model.name, self.model.assistant, self.model.phone,
+            self.model.department_id, Department.name.label('department_name')
+        ]
 
-        return major_plus[skip:limit]
+        return db.query(*custom_filter).join(Department).offset(skip).limit(limit).all()
 
-    def create(self, db: Session, *, obj_in: MajorCreate) -> MMajor:
+    def create(self, db: Session, *, obj_in: MajorCreate) -> Major:
         """
         添加专业信息
 
@@ -50,8 +48,8 @@ class CRUDMajor(CRUDBase[MMajor, MajorCreate, MajorUpdate]):
         return db_obj
 
     def update(
-            self, db: Session, *, db_obj: MMajor, obj_in: Union[MajorUpdate, Dict[str, Any]]
-    ) -> MMajor:
+            self, db: Session, *, db_obj: Major, obj_in: Union[MajorUpdate, Dict[str, Any]]
+    ) -> Major:
         """
         更新专业信息
 
@@ -68,4 +66,4 @@ class CRUDMajor(CRUDBase[MMajor, MajorCreate, MajorUpdate]):
         return super().update(db, db_obj=db_obj, obj_in=major_data)
 
 
-major = CRUDMajor(MMajor)
+major = CRUDMajor(Major)

@@ -20,6 +20,8 @@
 + `V3.4` 更新了major表接口的部分代码
 + `V3.5` 更换了日志模块(loguru)&&添加了后端数据验证
 + `V3.5` 添加了teacher表的接口
++ `V3.6` 添加了student表的接口
++ `V3.7` 添加了course表和selectCourse表的接口
 
 ## 安装
 
@@ -71,8 +73,8 @@
         |-- deps.py	            # 获取数据库连接对象
         |-- api_v1              # api版本1
             |-- __init__.py	       	        
-            |-- api.py	       	# 接口汇总       
-            |-- endpoints	    # 接口
+            |-- api_router.py	       	# 接口汇总       
+            |-- apis	    # 接口
                 |-- __init__.py	           
                 |-- users.py	# 用户表接口
                          
@@ -83,12 +85,16 @@
 		
 	|-- crud					# 数据库的增删改查操作
 		|-- __init__.py			# 抛出操作表数据文件中的类
-		|-- base_class.py			    # 封装数据库增删改查方法
+		|-- base.py     		# 封装数据库增删改查方法
 		|-- crud_user.py		# 用户表--增删改查方法
+		|-- crud_department.py	# 院系表--增删改查方法
+		|-- crud_major.py		# 专业表--增删改查方法
+		|-- crud_teacher.py		# 教师表--增删改查方法
+		|-- crud_student.py		# 学生表--增删改查方法
 		
  	|-- db						# 数据库相关
  		|-- __init__.py			# 抛出数据库生成、删除表的方法
-		|-- base_class.py				# 配置需要创建的表
+		|-- base.py		        # 配置需要创建的表
 		|-- base_class.py		# 自动生成 表名
 		|-- init_db.py			# 创建和删除base中的表
 		|-- session.py			# 创建数据库连接会话
@@ -100,7 +106,6 @@
     	|-- init_data.py		# 两种初始化表数据的方式
     	
     |-- logs                    # 日志模块(自动生成)
-        |-- log                 # 当前时间段暂存的日志
         |-- 2021-10-06_23-46-45.log			    
         |-- 2021-10-06_23-46-47.log			    
         |-- 2021-10-06_23-46-49.log		
