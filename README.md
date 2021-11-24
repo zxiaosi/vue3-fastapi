@@ -9,7 +9,7 @@
 ## 安装
 
 + **后端安装**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md
-+ **前端安装**：[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system) --> `frontend` --> README.md
++ **前端安装**：Vue3+ElementPlus+Vite --> `frontend` --> README.md (参考[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system))
 
 ## 版本
 
@@ -20,6 +20,7 @@
 + `1.4` 整理代码
 + `1.5` 添加了教师表
 + `1.6` 添加了学生表、课程表、选课表
++ `1.7` 重构前端代码
 
 ## 开启服务
 
@@ -28,7 +29,7 @@
    + 进入到 `backend` 项目下
    + 找到 `main.py` 右键运行（建议用Pycharm启动）
 
-   >接口文档：http://127.0.0.1:8000/docs
+   >接口文档：http://127.0.0.1:8000/
 
 2. 前端
 

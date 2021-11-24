@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-cascades"></i> 专业表
+          <i class="el-icon-ali-cascades" /> 专业表
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, watchEffect } from 'vue';
+import { ref, reactive, onMounted, watchEffect, toRefs } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
   read_majors,
@@ -111,6 +111,7 @@ import { read_departments } from '../../api/department';
 export default {
   name: 'major',
   setup() {
+
     const majorData = ref([]); // 专业数据
     const deptData = ref([]); // 院系变量
     const pageTotal = ref(0); // 总个数

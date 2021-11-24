@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-test"></i> 测试页面
+          <i class="el-icon-ali-test" /> 测试页面
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -18,12 +18,15 @@
           <el-option key="2" label="测试2" value="2"></el-option>
         </el-select>
         <el-input v-model="query.full_name" placeholder="用户名" class="handle-input mr10"></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch" disabled>搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch" disabled>搜索
+        </el-button>
         <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
       </div>
 
       <!-- 表格信息 -->
-      <el-table :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))" border class="table" ref="multipleTable" header-cell-class-name="table-header">
+      <el-table
+        :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
+        border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column type="index" width="55" label="序号" align="center">
           <template #default="scope">
             <span>{{scope.$index+((query.pageIndex) - 1) * (query.pageSize) + 1}} </span>
@@ -36,9 +39,11 @@
         <!-- 操作 -->
         <el-table-column label="操作" width="180" align="center">
           <template #default="scope">
-            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑
+            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
+              编辑
             </el-button>
-            <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除
+            <el-button type="text" icon="el-icon-delete" class="red"
+              @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -46,13 +51,17 @@
 
       <!-- 页码 -->
       <div class="pagination">
-        <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page="query.pageIndex" :page-sizes="[10]" :page-size="query.pageSize" :total="pageTotal" @size-change="handleSizeChange" @current-change="handlePageChange"></el-pagination>
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+          :current-page="query.pageIndex" :page-sizes="[10]" :page-size="query.pageSize"
+          :total="pageTotal" @size-change="handleSizeChange" @current-change="handlePageChange">
+        </el-pagination>
       </div>
     </div>
 
     <!-- 编辑弹出框 -->
     <el-dialog :title="`${addOrUpdate ? '添加用户' : '编辑用户'}`" v-model="showDialog" width="30%">
-      <el-form label-width="70px" ref="formRef" :model="formData" :rules="formRules" autocomplete="on">
+      <el-form label-width="70px" ref="formRef" :model="formData" :rules="formRules"
+        autocomplete="on">
         <el-form-item label="用户ID" prop="id">
           <el-input v-model="formData.id" type="number" placeholder="用户ID"></el-input>
         </el-form-item>

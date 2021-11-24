@@ -1,32 +1,20 @@
 {
-  "name": "Vue+FastAPI",
-  "version": "1.1.0",
-  "private": true,
+  "name": "vue3-elementplus-vite",
+  "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "echarts": "^4.9.0",
-    "element-plus": "1.0.2-beta.52",
-    "vue": "^3.1.2",
-    "vue-cropperjs": "^5.0.0",
-    "vue-i18n": "^9.0.0",
-    "vue-router": "^4.0.10",
-    "vue-schart": "^2.0.0",
-    "vuex": "^4.0.2",
-    "wangeditor": "^4.7.4"
+    "axios": "^0.24.0",
+    "element-plus": "^1.2.0-beta.3",
+    "vue": "^3.2.16",
+    "vue-router": "^4.0.12",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.2.3",
-    "@vue/compiler-sfc": "^3.1.2",
-    "vite": "2.3.7"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "@vitejs/plugin-vue": "^1.9.3",
+    "vite": "^2.6.4"
+  }
 }

@@ -53,7 +53,9 @@
           <el-col :span="8">
             <el-card shadow="hover" :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-1">
-                <i class="el-icon-user-solid grid-con-icon"></i>
+                <el-icon class="grid-con-icon">
+                  <user-filled />
+                </el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">1234</div>
                   <div>用户访问量</div>
@@ -64,7 +66,9 @@
           <el-col :span="8">
             <el-card shadow="hover" :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-2">
-                <i class="el-icon-message-solid grid-con-icon"></i>
+                <el-icon class="grid-con-icon">
+                  <message />
+                </el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">321</div>
                   <div>系统消息</div>
@@ -75,7 +79,9 @@
           <el-col :span="8">
             <el-card shadow="hover" :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-3">
-                <i class="el-icon-s-goods grid-con-icon"></i>
+                <el-icon class="grid-con-icon">
+                  <goods />
+                </el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">5000</div>
                   <div>数量</div>
@@ -96,21 +102,30 @@
           </template>
 
           <el-table :show-header="false" :data="todoList" style="width:100%;">
+            <!-- 选择框 -->
             <el-table-column width="40">
               <template #default="scope">
                 <el-checkbox v-model="scope.row.status"></el-checkbox>
               </template>
             </el-table-column>
+
+            <!-- 待办内容 -->
             <el-table-column>
               <template #default="scope">
                 <div class="todo-item" :class="{'todo-item-del': scope.row.status,}">
                   {{ scope.row.title }}</div>
               </template>
             </el-table-column>
+
+            <!-- 编辑待办(暂无) -->
             <el-table-column width="60">
               <template>
-                <i class="el-icon-edit"></i>
-                <i class="el-icon-delete"></i>
+                <el-icon size="20">
+                  <edit />
+                </el-icon>
+                <el-icon size="20">
+                  <delete />
+                </el-icon>
               </template>
             </el-table-column>
           </el-table>
@@ -133,116 +148,69 @@
         </span>
       </template>
     </el-dialog>
-
-    <!-- schart图表 -->
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="line" class="schart" canvasId="line" :options="options"></schart>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="ring" class="schart" canvasId="ring" :options="options2"></schart>
-        </el-card>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
-<script>
-import Schart from 'vue-schart';
+<script setup>
 import { ref, reactive, onMounted } from 'vue';
-export default {
-  name: 'dashboard',
-  components: { Schart },
-  setup() {
-    const name = localStorage.getItem('ms_username');
-    const role = name === 'admin' ? '超级管理员' : '普通用户';
-    const currentTime = ref(0);
+import { UserFilled, Message, Goods, Edit, Delete } from '@element-plus/icons'; // 图标
 
-    // 当前登录时间
-    onMounted(() => {
-      var aData = new Date();
-      currentTime.value =
-        aData.getFullYear() +
-        '年' +
-        (aData.getMonth() + 1) +
-        '月' +
-        aData.getDate() +
-        '日';
-    });
+const name = localStorage.getItem('ms_username');
+const role = name === 'admin' ? '超级管理员' : '普通用户';
+const currentTime = ref(0);
 
-    // 语言使用详情
-    const languages = reactive([
-      { title: 'Vue', percentage: 53.4, color: '#42b983' },
-      { title: 'Python', percentage: 38.2, color: '#f1e05a' },
-      { title: 'JavaScript', percentage: 6.3, color: '#409EFF' },
-      { title: 'CSS', percentage: 1.7, color: '#f56c6c' },
-    ]);
+// 当前登录时间
+onMounted(() => {
+  var aData = new Date();
+  currentTime.value =
+    aData.getFullYear() +
+    '年' +
+    (aData.getMonth() + 1) +
+    '月' +
+    aData.getDate() +
+    '日';
+});
 
-    // 待办
-    const showDialog = ref(false);
-    const todoList = reactive([
-      { title: '添加所有表信息', status: false },
-      { title: '调整代码结构', status: false },
-      { title: '添加学生表信息', status: false },
-      { title: '添加教师表信息', status: true },
-      { title: '添加专业表信息', status: true },
-      { title: '修改首页内容', status: true },
-    ]);
+// 语言使用详情
+const languages = reactive([
+  { title: 'Vue', percentage: 53.4, color: '#42b983' },
+  { title: 'Python', percentage: 38.2, color: '#f1e05a' },
+  { title: 'JavaScript', percentage: 6.3, color: '#409EFF' },
+  { title: 'CSS', percentage: 1.7, color: '#f56c6c' },
+]);
 
-    // 折线图
-    const options = {
-      type: 'line',
-      title: { text: '最近一周的代码提交' },
-      labels: ['周一', '周二', '周三', '周四', '周五'],
-      datasets: [
-        { label: 'GitLab', data: [23, 27, 27, 19, 23] },
-        { label: 'Github', data: [16, 17, 19, 13, 16] },
-        { label: 'Gitee', data: [18, 19, 15, 23, 12] },
-      ],
-    };
+// 待办
+const showDialog = ref(false);
+const todoList = reactive([
+  { title: '添加所有表信息', status: false },
+  { title: '调整代码结构', status: false },
+  { title: '添加学生表信息', status: false },
+  { title: '添加教师表信息', status: true },
+  { title: '添加专业表信息', status: true },
+]);
 
-    // 环状图
-    const options2 = {
-      type: 'ring',
-      title: { text: '最近一周工作状态' },
-      legend: { position: 'left' },
-      labels: ['上班', '前端', '后端', 'Bug'],
-      datasets: [{ data: [50, 20, 20, 30] }],
-    };
-
-    // 添加待办
-    const text = ref('');
-    const add = () => {
-      todoList.pop();
-      todoList.unshift({ title: text.value, status: false });
-      showDialog.value = false;
-      text.value = '';
-    };
-
-    // 取消
-    const cancel = () => {
-      showDialog.value = false;
-      text.value = '';
-    };
-
-    return {
-      name,
-      currentTime,
-      languages,
-      options,
-      options2,
-      showDialog,
-      todoList,
-      role,
-      text,
-      add,
-      cancel,
-    };
-  },
+// 添加待办
+const text = ref('');
+const add = () => {
+  todoList.pop();
+  todoList.unshift({ title: text.value, status: false });
+  showDialog.value = false;
+  text.value = '';
 };
+
+// 取消
+const cancel = () => {
+  showDialog.value = false;
+  text.value = '';
+};
+
+// 默认开启,可不要
+defineExpose({
+  role,
+  languages,
+  add,
+  cancel,
+});
 </script>
 
 <style scoped>
@@ -273,7 +241,7 @@ export default {
   width: 100px;
   height: 100px;
   text-align: center;
-  line-height: 100px;
+  line-height: 112px;
   color: #fff;
 }
 
@@ -354,10 +322,5 @@ export default {
 .todo-item-del {
   text-decoration: line-through;
   color: #999;
-}
-
-.schart {
-  width: 100%;
-  height: 300px;
 }
 </style>

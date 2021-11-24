@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-cascades"></i> 院系表
+          <i class="el-icon-ali-cascades" /> 院系表
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -352,7 +352,7 @@ export default {
       handleEdit,
       saveEdit,
       handleDelete,
-      name
+      name,
     };
   },
 };

@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-ali-cascades"></i> 学生表
+          <i class="el-icon-ali-cascades" /> 学生表
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

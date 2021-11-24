@@ -1,16 +1,27 @@
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-export default {
-    base: './',
-    plugins: [vue()],
-    optimizeDeps: {
-        include: ['schart.js']
-    },
-    server: {
-        host: 'localhost',
-        port: 3000, // 端口号
-        open: false, // 是否打开新窗口
-        strictPort: false, // 设为 true 时若端口已被占用则会直接退出，而不是尝试下一个可用端口
-        https: false, // 是否开启https
-    },
-}
+// https://vitejs.dev/config/
+export default defineConfig({
+  // 用于开发环境
+  base: './',
+
+  // 插件
+  plugins: [vue()],
+
+  // 服务器配置
+  server: {
+    host: 'localhost',
+    port: 3000, // 端口号
+    open: false, // 是否打开新窗口
+    strictPort: false, // 设为 true 时若端口已被占用则会直接退出，而不是尝试下一个可用端口
+    https: false, // 是否开启https
+  },
+
+  // 全局常量
+  define: {
+    BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
+    TIMEOUT: 5000,
+    TITLE: JSON.stringify('学生选课系统'),
+  }
+})

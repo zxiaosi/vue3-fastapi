@@ -1,9 +1,10 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 
 export default createStore({
     state: {
-        tagsList: [],
-        collapse: false
+        size: 20, // element-icon 图标大小(也可以使用 main.css 样式决定)
+        tagsList: [], // 标签列表
+        collapse: false, // 侧边栏是否折叠
     },
     mutations: {
         delTagsItem(state, data) {
