@@ -2,10 +2,10 @@
   <div class="header">
     <!-- 折叠按钮 -->
     <div class="collapse-btn" @click="collapseChage">
-      <el-icon v-if="!collapse" :size=size>
+      <el-icon v-if="!collapse" :size='20'>
         <fold />
       </el-icon>
-      <el-icon v-else :size=size>
+      <el-icon v-else :size='20'>
         <expand />
       </el-icon>
     </div>
@@ -20,7 +20,7 @@
         <div class="btn-bell">
           <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
             <router-link to="/tabs">
-              <el-icon :size=size color="#409EFC">
+              <el-icon :size='20' color="#409EFC">
                 <bell />
               </el-icon>
             </router-link>
@@ -37,7 +37,7 @@
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
             {{username}}
-            <el-icon :size=size>
+            <el-icon :size='20'>
               <caret-bottom />
             </el-icon>
           </span>
@@ -66,7 +66,6 @@ const username = localStorage.getItem('ms_username');
 const message = 2;
 
 const store = useStore();
-const size = computed(() => store.state.size); // 设置 element-icon 图标大小
 const collapse = computed(() => store.state.collapse); // 设置侧边栏是否折叠
 
 // 侧边栏折叠
@@ -96,7 +95,6 @@ const handleCommand = (command) => {
 defineExpose({
   username,
   message,
-  size,
   handleCommand,
 });
 </script>

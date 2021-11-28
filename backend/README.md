@@ -22,6 +22,7 @@
 + `V3.5` 添加了teacher表的接口
 + `V3.6` 添加了student表的接口
 + `V3.7` 添加了course表和selectCourse表的接口
++ `V3.8` 更新了所需的包
 
 ## 安装
 
@@ -30,6 +31,9 @@
 2. 安装运行所需的包
 
    ```python
+   pip install requirements.txt
+   
+   # 或者
    pip install fastapi
    pip install uvicorn
    pip install loguru
@@ -38,11 +42,8 @@
    pip install passlib
    pip install bcrypt
    
-   # mysql
+   # 使用mysql, 请安装下面包
    pip install mysqlclient
-   
-   # 或者
-   pip install requirements.txt
    ```
 
 

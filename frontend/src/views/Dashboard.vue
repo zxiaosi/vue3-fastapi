@@ -132,6 +132,19 @@
         </el-card>
 
       </el-col>
+
+      <el-row class="githubCard">
+        <el-col :span="8">
+          <img
+            src="https://github-readme-stats.vercel.app/api/top-langs/?username=zxiaosi&layout=compact" />
+        </el-col>
+
+        <el-col :span="10">
+          <img
+            src="https://github-readme-stats.vercel.app/api?username=zxiaosi&hide=prs&show_icons=true&theme=tokyonight" />
+        </el-col>
+      </el-row>
+
     </el-row>
 
     <!-- 待办事项弹窗 -->
@@ -322,5 +335,11 @@ defineExpose({
 .todo-item-del {
   text-decoration: line-through;
   color: #999;
+}
+
+.githubCard {
+  width: 100%;
+  margin: 20px 0px 0px 70px;
+  justify-content: space-between;
 }
 </style>

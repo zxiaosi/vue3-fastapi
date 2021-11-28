@@ -1,27 +1,12 @@
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="el-icon-ali-test" /> 测试页面
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <header-name :iconName='iconName' :pageName='pageName' />
 
     <div class="container">
       <div class="plugins-tips">测试用户信息表格</div>
 
-      <!-- 搜索 -->
-      <div class="handle-box">
-        <el-select v-model="query.id" placeholder="ID" class="handle-select mr10">
-          <el-option key="1" label="测试1" value="1"></el-option>
-          <el-option key="2" label="测试2" value="2"></el-option>
-        </el-select>
-        <el-input v-model="query.full_name" placeholder="用户名" class="handle-input mr10"></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch" disabled>搜索
-        </el-button>
-        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
-      </div>
+      <header-handle :query="query" :data="tableData" :form-data="formData"
+        @isAddDialog='isAddDialog' />
 
       <!-- 表格信息 -->
       <el-table
@@ -83,191 +68,176 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { userData, delele_User, update_User, add_User } from '../api/index';
+import { userData, delele_User, update_User, add_User } from '../api/baseTable';
+import HeaderName from '../components/tables/HeaderName.vue';
+import HeaderHandle from '../components/tables/HeaderHandle.vue';
 
-export default {
-  name: 'test',
-  setup() {
-    // 搜索
-    const query = reactive({
-      id: '',
-      full_name: '',
-      pageIndex: 1,
-      pageSize: 10,
+const iconName = ref('test');
+const pageName = ref('测试页面');
+
+// 搜索
+const query = reactive({
+  id: '',
+  full_name: '',
+  pageIndex: 1,
+  pageSize: 10,
+  sort: 'up',
+});
+const tableData = ref([]);
+const pageTotal = ref(0);
+
+// 获取表格数据
+const getData = () => {
+  userData(query)
+    .then((res) => {
+      tableData.value = res;
+    })
+    .catch(() => {
+      ElMessage.warning('加载数据失败！');
     });
-    const tableData = ref([]);
-    const pageTotal = ref(0);
-    // 获取表格数据
-    const getData = () => {
-      userData(query)
+  // console.log("我是tableData--", tableData);
+};
+
+// 页面加载后调用函数
+onMounted(() => {
+  getData();
+});
+
+// 监听属性
+watch(
+  () => tableData.value.length,
+  (newVal, oldVar) => {
+    pageTotal.value = newVal || 10;
+  }
+);
+
+// 查询操作
+const handleSearch = () => {
+  query.pageIndex = 1;
+  getData();
+};
+
+// 分页导航
+const handleSizeChange = (val) => {
+  console.log(`每页 ${val} 条`);
+};
+const handlePageChange = (val) => {
+  query.pageIndex = val;
+  console.log(`当前页: ${val}`);
+  getData();
+};
+
+// 表格编辑时弹窗和保存
+const showDialog = ref(false); // 是否显示弹窗
+const addOrUpdate = ref(true); // 是否是添加或更新
+const isAddDialog = (res) => {
+  addOrUpdate.value = res;
+  showDialog.value = res;
+};
+
+const formRef = ref(); //
+const formData = reactive({
+  id: '',
+  full_name: '',
+  password: '',
+});
+// 定义校验规则
+const formRules = reactive({
+  id: [{ required: 'true', message: '请输入用户ID', trigger: 'change' }],
+  full_name: [{ required: 'true', message: '请输入用户名', trigger: 'change' }],
+  password: [
+    { required: 'true', message: '请输入登录密码', trigger: 'change' },
+  ],
+});
+let idx = -1; // 用户ID
+let reIndex = -1; // 序号
+
+// 添加用户信息
+// const handleAdd = (event) => {
+//   // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
+//   let target = event.target;
+//   if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
+//     target = event.target.parentNode;
+//   }
+//   target.blur();
+
+//   // 重置表单
+//   Object.keys(formData).forEach((key) => (formData[key] = ''));
+
+//   // 显示弹窗(添加)
+//   addOrUpdate.value = true;
+//   showDialog.value = true;
+// };
+
+const addUser = () => {
+  showDialog.value = false;
+  formRef.value.validate((valid) => {
+    if (valid) {
+      add_User(formData)
         .then((res) => {
-          tableData.value = res;
+          tableData.value.push(res);
+          ElMessage.success('成功添加用户信息！');
         })
         .catch(function (error) {
-          ElMessage.warning('加载数据失败！');
+          ElMessage.warning('添加用户信息失败！');
           console.log(error);
         });
-      // console.log("我是tableData--", tableData);
-    };
+    }
+    formRef.value.resetFields();
+  });
+};
 
-    // 页面加载后调用函数
-    onMounted(() => {
-      getData();
-    });
+// 编辑用户信息
+const handleEdit = (index, row) => {
+  idx = row.id;
+  reIndex = index;
+  Object.keys(formData).forEach((item) => {
+    formData[item] = row[item];
+  });
 
-    // 监听属性
-    watch(
-      () => tableData.value.length,
-      (newVal, oldVar) => {
-        pageTotal.value = newVal || 10;
-      }
-    );
-
-    // 查询操作
-    const handleSearch = () => {
-      query.pageIndex = 1;
-      getData();
-    };
-
-    // 分页导航
-    const handleSizeChange = (val) => {
-      console.log(`每页 ${val} 条`);
-    };
-    const handlePageChange = (val) => {
-      query.pageIndex = val;
-      console.log(`当前页: ${val}`);
-      getData();
-    };
-
-    // 表格编辑时弹窗和保存
-    const showDialog = ref(false); // 是否显示弹窗
-    const addOrUpdate = ref(true); // 是否是添加或更新
-    const formRef = ref(); //
-    const formData = reactive({
-      id: '',
-      full_name: '',
-      password: '',
-    });
-    // 定义校验规则
-    const formRules = reactive({
-      id: [{ required: 'true', message: '请输入用户ID', trigger: 'change' }],
-      full_name: [
-        { required: 'true', message: '请输入用户名', trigger: 'change' },
-      ],
-      password: [
-        { required: 'true', message: '请输入登录密码', trigger: 'change' },
-      ],
-    });
-    let idx = -1; // 用户ID
-    let reIndex = -1; // 序号
-
-    // 添加用户信息
-    const handleAdd = (event) => {
-      // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
-      let target = event.target;
-      if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
-        target = event.target.parentNode;
-      }
-      target.blur();
-
-      // 重置表单
-      Object.keys(formData).forEach((key) => (formData[key] = ''));
-
-      // 显示弹窗(添加)
-      addOrUpdate.value = true;
-      showDialog.value = true;
-    };
-    const addUser = () => {
-      showDialog.value = false;
-      formRef.value.validate((valid) => {
-        if (valid) {
-          add_User(formData)
-            .then((res) => {
-              tableData.value.push(res);
-              ElMessage.success('成功添加用户信息！');
-            })
-            .catch(function (error) {
-              ElMessage.warning('添加用户信息失败！');
-              console.log(error);
-            });
-        }
-        formRef.value.resetFields();
-      });
-    };
-
-    // 编辑用户信息
-    const handleEdit = (index, row) => {
-      idx = row.id;
-      reIndex = index;
+  // 显示弹窗(更新)
+  addOrUpdate.value = false;
+  showDialog.value = true;
+};
+const saveEdit = () => {
+  addOrUpdate.value = false;
+  update_User(idx, formData)
+    .then(() => {
+      ElMessage.success(`修改ID为 ${idx} 成功！`);
       Object.keys(formData).forEach((item) => {
-        formData[item] = row[item];
+        tableData.value[reIndex][item] = formData[item];
       });
+    })
+    .catch(function (error) {
+      ElMessage.success(`修改ID为 ${idx} 行失败！`);
+      console.log(error);
+    });
+  showDialog.value = false;
+};
 
-      // 显示弹窗(更新)
-      addOrUpdate.value = false;
-      showDialog.value = true;
-    };
-    const saveEdit = () => {
-      addOrUpdate.value = false;
-      update_User(idx, formData)
+// 删除操作
+const handleDelete = (index, row) => {
+  idx = row.id;
+  // 二次确认删除
+  ElMessageBox.confirm('确定要删除吗？', '提示', {
+    type: 'warning',
+  })
+    .then(() => {
+      // 调用删除用户接口
+      delele_User(idx)
         .then(() => {
-          ElMessage.success(`修改ID为 ${idx} 成功！`);
-          Object.keys(formData).forEach((item) => {
-            tableData.value[reIndex][item] = formData[item];
-          });
+          tableData.value.splice(index, 1);
+          ElMessage.success('删除成功！');
         })
         .catch(function (error) {
-          ElMessage.success(`修改ID为 ${idx} 行失败！`);
+          ElMessage.success('删除成功！');
           console.log(error);
         });
-      showDialog.value = false;
-    };
-
-    // 删除操作
-    const handleDelete = (index, row) => {
-      idx = row.id;
-      // 二次确认删除
-      ElMessageBox.confirm('确定要删除吗？', '提示', {
-        type: 'warning',
-      })
-        .then(() => {
-          // 调用删除用户接口
-          delele_User(idx)
-            .then(() => {
-              tableData.value.splice(index, 1);
-              ElMessage.success('删除成功！');
-            })
-            .catch(function (error) {
-              ElMessage.success('删除成功！');
-              console.log(error);
-            });
-        })
-        .catch(() => {});
-    };
-
-    // 返回
-    return {
-      query,
-      tableData,
-      pageTotal,
-      showDialog,
-      addOrUpdate,
-      formRef,
-      formData,
-      formRules,
-      handleSearch,
-      handleSizeChange,
-      handlePageChange,
-      handleAdd,
-      addUser,
-      handleEdit,
-      saveEdit,
-      handleDelete,
-    };
-  },
+    })
+    .catch(() => {});
 };
 </script>
 
