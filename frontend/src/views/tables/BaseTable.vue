@@ -17,7 +17,7 @@
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       </div>
       <el-table :data="tableData" border class="table" ref="multipleTable"
-        header-cell-class-name="table-header">
+        header-cell-class-name="table-header" max-height="578">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="用户名"></el-table-column>
         <el-table-column label="账户余额">

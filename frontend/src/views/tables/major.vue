@@ -1,80 +1,79 @@
 <template>
   <div>
-    <header-name :iconName='iconName' :pageName='pageName' />
+    <header-name :iconName='state.iconName' :pageName='state.pageName' />
 
     <!-- 表格 -->
     <div class="container">
-      <!-- 排序和添加 -->
-      <header-handle :query="query" :data="majorData" :form-data="formData"
-        @isAddDialog='isAddDialog' />
+
+      <!-- 搜索和添加 -->
+      <header-handle :query="query" :data="state.majorData" :formData="formData"
+        :isShowSearched="state.isShowSearched" :selectedList="state.selectedList"
+        :read_datas="read_majors" :delete_data="delete_major" :removeSearch="removeSearch"
+        @searchedData='searchedData' @isAddDialog='isAddDialog' />
 
       <!-- 表格信息 -->
       <el-table
-        :data="majorData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
-        border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column type="index" width="80" label="序号" align="center">
-          <template #default="scope">
-            <span>{{scope.$index+((query.pageIndex) - 1) * (query.pageSize) + 1}} </span>
-          </template>
-        </el-table-column>
+        :data="state.isShowSearched 
+                ? state.searched 
+                : state.majorData.slice((query.currentPage-1)*(query.pageSize),(query.currentPage)*(query.pageSize))"
+        border stripe class="table" max-height="578"
+        :default-sort="{ prop: 'id', order: 'ascending' }"
+        @selection-change="handleSelectionChange">
 
-        <el-table-column prop="id" label="专业编号" width="120" align="center"></el-table-column>
-        <el-table-column prop="name" label="专业名字" width="180" align="center"></el-table-column>
-        <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center">
-        </el-table-column>
-        <el-table-column prop="phone" label="辅导员手机号" width="180" align="center"></el-table-column>
-        <el-table-column prop="department_name" label="院系名字" align="center"></el-table-column>
+        <!-- 勾选框 -->
+        <el-table-column type="selection" width="80" align="center" />
+
+        <!-- 序号 -->
+        <el-table-column label="序号" type="index" width="80" align="center" fixed />
+
+        <el-table-column prop="id" label="专业编号" width="140" align="center" sortable
+          :sort-orders="['ascending', 'descending']" />
+        <el-table-column prop="name" label="专业名字" width="220" align="center" />
+        <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center" />
+        <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
+        <el-table-column prop="department_name" label="院系名字" min-width="220" align="center" />
 
         <!-- 操作 -->
-        <el-table-column label="操作" width="180" align="center">
-          <template #default="scope">
-            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
-              编辑
-            </el-button>
-            <el-button type="text" icon="el-icon-delete" class="red"
-              @click="handleDelete(scope.$index, scope.row)">删除
-            </el-button>
-          </template>
-        </el-table-column>
+        <handle :data="state.majorData" :formData="formData" :delete_data="delete_major"
+          :removeSearch="removeSearch" @isAddDialog='isAddDialog' @subIndexId='subIndexId' />
       </el-table>
 
       <!-- 页码 -->
-      <div class="pagination">
-        <el-pagination background layout="total, sizes, prev, pager, next, jumper"
-          :current-page="query.pageIndex" :page-sizes="[10]" :page-size="query.pageSize"
-          :total="pageTotal" @size-change="handleSizeChange" @current-change="handlePageChange">
-        </el-pagination>
-      </div>
+      <pagination :pageSize="query.pageSize" :pageTotal="state.pageTotal"
+        :currentPage="query.currentPage" :render='getData' @pageIndex='pageIndex' />
     </div>
 
     <!-- 编辑弹出框 -->
-    <el-dialog :title="`${addOrUpdate ? '添加专业信息' : '编辑专业信息'}`" v-model="showDialog" width="30%">
-      <el-form label-width="100px" ref="formRef" :model="formData" :rules="formRules"
+    <el-dialog :title="`${state.addOrUpdate ? '添加专业信息' : '编辑专业信息'}`" v-model="state.showDialog"
+      width="30%">
+
+      <el-form status-icon label-width="100px" ref="formRef" :model="formData" :rules="formRules"
         autocomplete="on">
         <el-form-item label="专业编号" prop="id">
-          <el-input v-model="formData.id" placeholder="编号" :disabled=!addOrUpdate></el-input>
+          <el-input v-model="formData.id" placeholder="编号" maxlength="6"
+            :disabled=!state.addOrUpdate />
         </el-form-item>
         <el-form-item label="专业名字" prop="name">
-          <el-input v-model="formData.name" placeholder="名字"></el-input>
+          <el-input v-model="formData.name" placeholder="名字" maxlength="20" />
         </el-form-item>
         <el-form-item label="辅导员姓名" prop="assistant">
-          <el-input v-model="formData.assistant" placeholder="辅导员姓名"></el-input>
+          <el-input v-model="formData.assistant" placeholder="辅导员姓名" maxlength="10" />
         </el-form-item>
         <el-form-item label="辅导员手机号" prop="phone">
-          <el-input v-model="formData.phone" placeholder="辅导员手机号"></el-input>
+          <el-input v-model="formData.phone" placeholder="辅导员手机号" maxlength="11" />
         </el-form-item>
         <el-form-item label="院系名字" prop="department_id">
           <el-select v-model="formData.department_id" placeholder="请选择院系"
             @change="getChange(formData.department_id)">
-            <el-option v-for="(dept, index) in deptData" :key=index :label=dept.name
+            <el-option v-for="(dept, index) in state.deptData" :key=index :label=dept.name
               :value=dept.id />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="showDialog = false">取 消</el-button>
-          <el-button type="primary" v-if="addOrUpdate" @click="addUser">添 加</el-button>
+          <el-button @click="state.showDialog = false">取 消</el-button>
+          <el-button type="primary" v-if="state.addOrUpdate" @click="saveAdd">添 加</el-button>
           <el-button type="primary" v-else @click="saveEdit">更 新</el-button>
         </span>
       </template>
@@ -84,10 +83,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, watchEffect } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { Edit, Delete } from '@element-plus/icons'; // 图标
+import { ElMessage } from 'element-plus';
 import HeaderName from '../../components/tables/HeaderName.vue';
 import HeaderHandle from '../../components/tables/HeaderHandle.vue';
+import Handle from '../../components/tables/Handle.vue';
+import Pagination from '../../components/tables/Pagination.vue';
 import {
   read_majors,
   create_major,
@@ -96,36 +96,51 @@ import {
 } from '../../api/major';
 import { read_departments } from '../../api/department';
 
-// 定义icon和页面名字
-const iconName = ref('cascades');
-const pageName = ref('专业表');
+// 变量
+const state = reactive({
+  iconName: 'cascades', // 页面icon名字
+  pageName: '专业表', // 页面名字
+  majorData: [], // 专业表数据
+  deptData: [], // 院系表数据
+  pageTotal: 0, // 总个数
+  isShowSearched: false, // 是否显示被搜索的
+  searched: [], // 被搜索的数据(渲染表格数据需要是列表)
+  selectedList: [], // 被勾选的的值
+  showDialog: false, // 是否显示弹窗
+  addOrUpdate: true, // 是否是添加或更新(true-添加 | false-更新)
+});
 
-const majorData = ref([]); // 专业数据
-const deptData = ref([]); // 院系变量
-const pageTotal = ref(0); // 总个数
+// 搜索和页码
+const query = reactive({
+  id: '',
+  currentPage: 1,
+  pageSize: 10,
+});
+
+let idx = -1; // 临时编号
+let reIndex = -1; // 临时序号
 
 /**
- * getData()
  * 获取表格数据
  */
-const getData = () => {
-  read_majors(query)
+function getData() {
+  read_majors()
     .then((res) => {
-      majorData.value = res.data;
+      state.majorData = res.data;
     })
     .catch(() => {
       ElMessage.error('加载专业信息数据失败！');
     });
 
   // 获取院系信息
-  read_departments(query)
+  read_departments()
     .then((res) => {
-      deptData.value = res.data;
+      state.deptData = res.data;
     })
     .catch(() => {
       ElMessage.error('加载院系信息数据失败！');
     });
-};
+}
 
 // 页面加载后调用函数
 onMounted(() => {
@@ -134,84 +149,37 @@ onMounted(() => {
 
 // 监听属性
 watchEffect(() => {
-  pageTotal.value = majorData.value.length || 10;
+  state.pageTotal = state.majorData.length || query.pageSize;
 });
 
-// 排序和页码
-const query = reactive({
-  sort: 'up',
-  pageIndex: 1,
-  pageSize: 10,
-});
+// 当前页码
+function pageIndex(res) {
+  query.currentPage = res;
+}
 
-// 分页导航
-const handleSizeChange = (val) => {
-  console.log(`每页 ${val} 条`);
-};
-const handlePageChange = (val) => {
-  query.pageIndex = val;
-  console.log(`当前页: ${val}`);
-  getData();
-};
+/**
+ * 显示被搜索的数据(子组件传值)
+ */
+function searchedData(res) {
+  state.isShowSearched = true;
+  state.searched.splice(0, 1, res);
+}
 
-// 添加、编辑表格的弹窗和保存
-const showDialog = ref(false); // 是否显示弹窗
-const addOrUpdate = ref(true); // 是否是添加或更新
-const isAddDialog = (res) => {
-  addOrUpdate.value = res;
-  showDialog.value = res;
-};
+/**
+ * 被勾选的数据
+ */
+function handleSelectionChange(val) {
+  if (val.length == 0) {
+    state.selectedList = [];
+  }
 
+  val.forEach((item, index) => {
+    state.selectedList.splice(index, 1, { reIndex: index, idx: item.id });
+  });
+}
+
+// 校验规则
 const formRef = ref();
-
-// 定义校验规则
-const formRules = reactive({
-  id: [
-    {
-      required: 'true',
-      pattern: /^10[0-9]{2}/,
-      message: '请输入专业编号(以10开头)',
-      trigger: 'change',
-    },
-    {
-      min: 6,
-      max: 6,
-      message: '专业编号的长度应为6',
-    },
-  ],
-  name: [
-    {
-      required: 'true',
-      message: '请输入专业名称',
-      trigger: ['change', 'blur'],
-    },
-  ],
-  assistant: [
-    {
-      required: 'true',
-      message: '请输入辅导员姓名', // 后台字段默认最多能输入10个汉字
-      trigger: ['change', 'blur'],
-    },
-    {
-      max: 4,
-      message: '辅导员姓名长度不能超过4',
-    },
-  ],
-  phone: [
-    {
-      pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
-      message: '请输入正确的手机号',
-      trigger: ['change', 'blur'],
-    },
-  ],
-  department_id: [
-    {
-      required: 'true',
-      message: '请选择院系',
-      trigger: ['change'],
-    },
-  ],
-});
 
 // 表单对象
 const formData = reactive({
@@ -222,134 +190,143 @@ const formData = reactive({
   department_id: '',
 });
 
-let idx = -1; // 用户ID
-let reIndex = -1; // 序号
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    {
+      required: 'true',
+      pattern: /^10[0-9]{2}/,
+      message: '请输入专业编号(以10开头)',
+      trigger: 'change',
+    },
+    { min: 6, message: '专业编号的长度应为6' },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入专业名称(最大长度为20)',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  assistant: [
+    {
+      required: 'true',
+      message: '请输入辅导员姓名(最大长度为10)',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  phone: [
+    {
+      pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
+      message: '请输入正确的手机号',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  department_id: [
+    { required: 'true', message: '请选择院系', trigger: ['change'] },
+  ],
+});
 
 /**
- * addUser
+ * 添加、编辑表格的弹窗(子组件传递的值)
+ */
+function isAddDialog(show, addUpdate) {
+  state.showDialog = show;
+  state.addOrUpdate = addUpdate;
+}
+
+/**
  * 确认添加
  */
-const addUser = () => {
-  showDialog.value = false;
+function saveAdd() {
+  state.showDialog = false;
+
   formRef.value.validate((valid) => {
     if (valid) {
       create_major(formData)
         .then((res) => {
-          majorData.value.push(res.data);
-          ElMessage.success('成功添加专业信息！');
-          getData();
+          if (res.code == 200) {
+            state.majorData.push(res.data);
+            ElMessage.success(`成功添加编号为${res.data.id}的专业信息！`);
+            removeSearch();
+          } else {
+            ElMessage.warning('专业信息填写有误，添加失败！');
+          }
         })
         .catch(() => {
           ElMessage.error('添加专业信息失败！');
         });
     } else {
-      ElMessage.warning('专业信息填写有误，添加失败！');
+      ElMessage.warning('专业信息不符合校验规则，添加失败！');
     }
+
     // 重置表单
     formRef.value.resetFields();
   });
-};
+}
 
 /**
- * handleEdit
- * 编辑用户信息
+ * 获取索引和编号
  */
-const handleEdit = (index, row) => {
-  idx = row.id;
+function subIndexId(index, id) {
   reIndex = index;
-  Object.keys(formData).forEach((item) => {
-    formData[item] = row[item];
-  });
+  idx = id;
+}
 
-  getData();
-
-  // 显示弹窗(更新)
-  addOrUpdate.value = false;
-  showDialog.value = true;
-};
 /**
- * saveEdit
  * 确认更新
  */
-const saveEdit = () => {
-  addOrUpdate.value = false;
-  showDialog.value = false;
+function saveEdit() {
+  state.addOrUpdate = state.showDialog = false;
+
+  console.log(idx);
+
   formRef.value.validate((valid) => {
     if (valid) {
       update_major(idx, formData)
         .then((res) => {
+          console.log(res);
           ElMessage.success(`修改专业ID为 ${idx} 成功！`);
           Object.keys(res.data).forEach((item) => {
-            majorData.value[reIndex][item] = res.data[item];
+            state.majorData[reIndex][item] = res.data[item];
           });
+          state.searched[0] = formData;
           getData();
         })
         .catch(() => {
           ElMessage.error('修改专业信息失败！');
         });
     } else {
-      ElMessage.warning('填写专业信息有误，修改失败！');
+      ElMessage.warning('填写专业不符合校验规则，修改失败！');
     }
   });
-};
+}
 
 /**
- * handleDelete
- * 删除操作
+ * 获取多选框的值
  */
-const handleDelete = (index, row) => {
-  idx = row.id;
-  // 二次确认删除
-  ElMessageBox.confirm('确定要删除吗？', '提示', {
-    type: 'warning',
-  })
-    .then(() => {
-      // 调用删除用户接口
-      delete_major(idx)
-        .then(() => {
-          majorData.value.splice(index, 1);
-          ElMessage.success('删除成功！');
-        })
-        .catch(function (error) {
-          ElMessage.success('删除成功！');
-        });
-    })
-    .catch(() => {});
-};
-
-// 获取多选框的值
-const getChange = (value) => {
+function getChange(value) {
   console.log(value);
-};
+}
+
+/**
+ * 清除搜索
+ */
+function removeSearch() {
+  query.id = '';
+  state.isShowSearched = false;
+  getData();
+}
 </script>
 
 <style scoped>
-/* 选择框长度 */
+/* 选中框长度 */
 .el-form-item .el-select {
   width: 100%;
-}
-
-.handle-box {
-  margin-bottom: 20px;
-}
-
-.handle-select {
-  width: 120px;
-}
-
-.handle-input {
-  width: 300px;
-  display: inline-block;
 }
 .table {
   width: 100%;
   font-size: 14px;
-}
-.red {
-  color: #ff0000;
-}
-.mr10 {
-  margin-right: 10px;
 }
 .table-td-thumb {
   display: block;

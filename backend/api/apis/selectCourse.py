@@ -33,7 +33,7 @@ def read_select_courses(
         - select_course_id - 选课编号
     """
     if select_course_id:
-        get_select_course = crud.selectCourse.get(db, id=select_course_id)
+        get_select_course = crud.selectCourse.get_multi_select_course(db, id=select_course_id)
         if not get_select_course:
             return response(code=404, msg=f"系统中不存在 id 为 {select_course_id} 的选课.")
         return response(data=get_select_course, msg=f"查询到了 id 为 {select_course_id} 的选课.")

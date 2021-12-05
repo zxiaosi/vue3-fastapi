@@ -195,11 +195,11 @@ const languages = reactive([
 // 待办
 const showDialog = ref(false);
 const todoList = reactive([
+  { title: '重构前端代码', status: false },
   { title: '添加所有表信息', status: false },
-  { title: '调整代码结构', status: false },
-  { title: '添加学生表信息', status: false },
+  { title: '调整代码结构', status: true },
+  { title: '添加学生表信息', status: true },
   { title: '添加教师表信息', status: true },
-  { title: '添加专业表信息', status: true },
 ]);
 
 // 添加待办

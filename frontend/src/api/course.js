@@ -2,14 +2,14 @@ import request from '../utils/request';
 
 /**
  * 获取课程信息
- * @param {*} query 
- * @returns 所有课程信息
+ * @param {*} id 课程id 
+ * @returns 所有课程信息 || 某个课程信息
  */
-export const read_courses = query => {
+export const read_courses = (id) => {
     return request({
         url: './course/?skip=0&limit=100',
         method: 'get',
-        params: query
+        params: { course_id: id }
     });
 };
 

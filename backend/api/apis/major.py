@@ -33,7 +33,7 @@ def read_majors(
         - major_id - 专业编号
     """
     if major_id:
-        get_major = crud.major.get(db, id=major_id)
+        get_major = crud.major.get_multi_major(db, id=major_id)
         if not get_major:
             return response(code=404, msg=f"系统中不存在 id 为 {major_id} 的专业.")
         return response(data=get_major, msg=f"查询到了 id 为 {major_id} 的专业.")

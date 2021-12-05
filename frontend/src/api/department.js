@@ -1,15 +1,15 @@
 import request from '../utils/request';
 
 /**
- * 获取院系信息
- * @param {*} query 
- * @returns 所有院系信息
+ * 获取院系信息 
+ * @param {*} id 
+ * @returns 所有院系信息 || 某个院系信息
  */
-export const read_departments = query => {
+export const read_departments = (id) => {
     return request({
-        url: './department/?skip=0&limit=100',
+        url: `./department/?skip=0&limit=100`,
         method: 'get',
-        params: query
+        params: { departments_id: id }
     });
 };
 

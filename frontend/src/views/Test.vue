@@ -5,16 +5,21 @@
     <div class="container">
       <div class="plugins-tips">测试用户信息表格</div>
 
+      <!-- 排序和添加 -->
       <header-handle :query="query" :data="tableData" :form-data="formData"
         @isAddDialog='isAddDialog' />
 
       <!-- 表格信息 -->
       <el-table
-        :data="tableData.slice((query.pageIndex-1)*(query.pageSize),(query.pageIndex)*(query.pageSize))"
-        border class="table" ref="multipleTable" header-cell-class-name="table-header">
+        :data="tableData.slice((query.currentPage-1)*(query.pageSize),(query.currentPage)*(query.pageSize))"
+        border class="table" ref="multipleTable" header-cell-class-name="table-header"
+        @selection-change="handleSelectionChange">
+
+        <el-table-column type="selection" width="80" align="center" />
+
         <el-table-column type="index" width="55" label="序号" align="center">
           <template #default="scope">
-            <span>{{scope.$index+((query.pageIndex) - 1) * (query.pageSize) + 1}} </span>
+            <span>{{scope.$index+((query.currentPage) - 1) * (query.pageSize) + 1}} </span>
           </template>
         </el-table-column>
 
@@ -24,23 +29,20 @@
         <!-- 操作 -->
         <el-table-column label="操作" width="180" align="center">
           <template #default="scope">
-            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
+            <el-button type="text" :icon="Edit" @click="handleEdit(scope.$index, scope.row)">
               编辑
             </el-button>
-            <el-button type="text" icon="el-icon-delete" class="red"
+            <el-button type="text" :icon="Delete" class="red"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
+
       </el-table>
 
       <!-- 页码 -->
-      <div class="pagination">
-        <el-pagination background layout="total, sizes, prev, pager, next, jumper"
-          :current-page="query.pageIndex" :page-sizes="[10]" :page-size="query.pageSize"
-          :total="pageTotal" @size-change="handleSizeChange" @current-change="handlePageChange">
-        </el-pagination>
-      </div>
+      <pagination :page-size="query.pageSize" :page-total="pageTotal"
+        :current-page="query.currentPage" :render='getData' />
     </div>
 
     <!-- 编辑弹出框 -->
@@ -71,9 +73,11 @@
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { userData, delele_User, update_User, add_User } from '../api/baseTable';
+import { Edit, Delete } from '@element-plus/icons'; // 图标
 import HeaderName from '../components/tables/HeaderName.vue';
 import HeaderHandle from '../components/tables/HeaderHandle.vue';
+import Pagination from '../components/tables/Pagination.vue';
+import { userData, delele_User, update_User, add_User } from '../api/baseTable';
 
 const iconName = ref('test');
 const pageName = ref('测试页面');
@@ -82,7 +86,7 @@ const pageName = ref('测试页面');
 const query = reactive({
   id: '',
   full_name: '',
-  pageIndex: 1,
+  currentPage: 1,
   pageSize: 10,
   sort: 'up',
 });
@@ -110,25 +114,9 @@ onMounted(() => {
 watch(
   () => tableData.value.length,
   (newVal, oldVar) => {
-    pageTotal.value = newVal || 10;
+    pageTotal.value = newVal || query.pageSize;
   }
 );
-
-// 查询操作
-const handleSearch = () => {
-  query.pageIndex = 1;
-  getData();
-};
-
-// 分页导航
-const handleSizeChange = (val) => {
-  console.log(`每页 ${val} 条`);
-};
-const handlePageChange = (val) => {
-  query.pageIndex = val;
-  console.log(`当前页: ${val}`);
-  getData();
-};
 
 // 表格编辑时弹窗和保存
 const showDialog = ref(false); // 是否显示弹窗
@@ -154,23 +142,6 @@ const formRules = reactive({
 });
 let idx = -1; // 用户ID
 let reIndex = -1; // 序号
-
-// 添加用户信息
-// const handleAdd = (event) => {
-//   // 点击后鼠标移开恢复按钮默认样式(如果按钮没有加icon图标的话，target.nodeName == "I"可以去掉)
-//   let target = event.target;
-//   if (target.nodeName == 'I' || target.nodeName == 'SPAN') {
-//     target = event.target.parentNode;
-//   }
-//   target.blur();
-
-//   // 重置表单
-//   Object.keys(formData).forEach((key) => (formData[key] = ''));
-
-//   // 显示弹窗(添加)
-//   addOrUpdate.value = true;
-//   showDialog.value = true;
-// };
 
 const addUser = () => {
   showDialog.value = false;
@@ -238,6 +209,14 @@ const handleDelete = (index, row) => {
         });
     })
     .catch(() => {});
+};
+
+const handleSelectionChange = (val) => {
+  console.log('handleSelectionChange--', val);
+  val.map((item) => {
+    console.log(item.id);
+    tableIdList.value.push(item.id);
+  });
 };
 </script>
 

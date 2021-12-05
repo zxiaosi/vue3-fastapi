@@ -17,14 +17,15 @@ from schemas import StudentReturn, StudentCreate, StudentUpdate
 
 class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
     def get_multi_student(
-            self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[StudentReturn]:
+            self, db: Session, *, skip: int = 0, limit: int = 100, id: Any = None
+    ) -> Union[StudentReturn, List[StudentReturn]]:
         """
         获取 skip-limit 的学生信息
 
         :param db: Session
         :param skip: 起始 (默认值0)
         :param limit: 结束 (默认值100)
+        :param id: 学生id (可选参数)
         :return: 所有学生对象
         """
         custom_filter = [
@@ -32,7 +33,10 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
             self.model.major_id, Major.name.label('major_name')
         ]
 
-        return db.query(*custom_filter).join(Major).offset(skip).limit(limit).all()
+        if id:
+            return db.query(*custom_filter).filter(self.model.id == id).first()
+        else:
+            return db.query(*custom_filter).join(Major).offset(skip).limit(limit).all()
 
     def create(self, db: Session, *, obj_in: StudentCreate) -> Student:
         """

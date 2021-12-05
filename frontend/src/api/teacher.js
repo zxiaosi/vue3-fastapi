@@ -2,14 +2,14 @@ import request from '../utils/request';
 
 /**
  * 获取教师信息
- * @param {*} query 
- * @returns 所有教师信息
+ * @param {*} id 教师id 
+ * @returns 所有教师信息 || 某个教师的信息
  */
-export const read_teachers = query => {
+export const read_teachers = (id) => {
     return request({
         url: './teacher/?skip=0&limit=100',
         method: 'get',
-        params: query
+        params: { teacher_id: id }
     });
 };
 

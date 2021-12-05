@@ -2,14 +2,14 @@ import request from '../utils/request';
 
 /**
  * 获取选课信息
- * @param {*} query 
- * @returns 所有选课信息
+ * @param {*} id 选课id 
+ * @returns 所有选课信息 || 某个选课信息
  */
-export const read_select_courses = query => {
+export const read_select_courses = (id) => {
     return request({
         url: './selectCourse/?skip=0&limit=100',
         method: 'get',
-        params: query
+        params: { select_course_id: id }
     });
 };
 
@@ -28,13 +28,13 @@ export const create_select_course = (data) => {
 
 /**
  * 根据id修改选课信息
- * @param {*} selectCourse_id 
+ * @param {*} select_course_id 
  * @param {*} data 选课对象
  * @returns 修改的选课对象
  */
-export const update_select_course = (selectCourse_id, data) => {
+export const update_select_course = (select_course_id, data) => {
     return request({
-        url: `./selectCourse/${selectCourse_id}`,
+        url: `./selectCourse/${select_course_id}`,
         method: 'put',
         data: data
     });
@@ -42,12 +42,12 @@ export const update_select_course = (selectCourse_id, data) => {
 
 /**
  * 根据id删除选课信息
- * @param {*} selectCourse_id 选课id
+ * @param {*} select_course_id 选课id
  * @returns 删除的选课信息
  */
-export const delete_select_course = selectCourse_id => {
+export const delete_select_course = (select_course_id) => {
     return request({
-        url: `./selectCourse/${selectCourse_id}`,
+        url: `./selectCourse/${select_course_id}`,
         method: 'delete'
     });
 };

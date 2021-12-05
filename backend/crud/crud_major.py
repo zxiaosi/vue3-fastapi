@@ -15,14 +15,15 @@ from schemas import MajorReturn, MajorCreate, MajorUpdate
 
 class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
     def get_multi_major(
-            self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[MajorReturn]:
+            self, db: Session, *, skip: int = 0, limit: int = 100, id: Any = None
+    ) -> Union[MajorReturn, List[MajorReturn]]:
         """
         获取 skip-limit 的专业信息
 
         :param db: Session
         :param skip: 起始 (默认值0)
         :param limit: 结束 (默认值100)
+        :param id: 专业id (可选参数)
         :return: 所有专业对象
         """
         custom_filter = [
@@ -30,7 +31,10 @@ class CRUDMajor(CRUDBase[Major, MajorCreate, MajorUpdate]):
             self.model.department_id, Department.name.label('department_name')
         ]
 
-        return db.query(*custom_filter).join(Department).offset(skip).limit(limit).all()
+        if id:
+            return db.query(*custom_filter).filter(self.model.id == id).first()
+        else:
+            return db.query(*custom_filter).join(Department).offset(skip).limit(limit).all()
 
     def create(self, db: Session, *, obj_in: MajorCreate) -> Major:
         """

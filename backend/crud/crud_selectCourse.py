@@ -15,7 +15,7 @@ from schemas import SelectCourseReturn, SelectCourseCreate, SelectCourseUpdate
 
 class CRUDSelectCourse(CRUDBase[SelectCourse, SelectCourseCreate, SelectCourseUpdate]):
     def get_multi_select_course(
-            self, db: Session, *, skip: int = 0, limit: int = 100
+            self, db: Session, *, skip: int = 0, limit: int = 100, id: Any = None
     ) -> List[SelectCourseReturn]:
         """
         获取 skip-limit 的选课信息
@@ -23,6 +23,7 @@ class CRUDSelectCourse(CRUDBase[SelectCourse, SelectCourseCreate, SelectCourseUp
         :param db: Session
         :param skip: 起始 (默认值0)
         :param limit: 结束 (默认值100)
+        :param id: 选课id (可选参数)
         :return: 所有选课对象
         """
 
@@ -32,7 +33,10 @@ class CRUDSelectCourse(CRUDBase[SelectCourse, SelectCourseCreate, SelectCourseUp
             Student.name.label('student_name'), Teacher.name.label('teacher_name'), Course.name.label('course_name')
         ]
 
-        return db.query(*custom_filter).join(Student, Teacher, Course).offset(skip).limit(limit).all()
+        if id:
+            return db.query(*custom_filter).filter(self.model.id == id).first()
+        else:
+            return db.query(*custom_filter).join(Student, Teacher, Course).offset(skip).limit(limit).all()
 
     def create_select_course(self, db: Session, *, obj_in: SelectCourseCreate) -> SelectCourse:
         """

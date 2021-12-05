@@ -12,8 +12,8 @@
 <script setup>
 import { defineProps } from '@vue/runtime-core';
 const props = defineProps({
-  iconName: String,
-  pageName: String,
+  iconName: String, // 图标名
+  pageName: String, // 页面名
 });
 
 // 可以省略

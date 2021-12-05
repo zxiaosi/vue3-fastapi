@@ -24,19 +24,19 @@ def read_courses(
         db: Session = Depends(deps.get_db),
         skip: int = 0,
         limit: int = 100,
-        courses_id: Optional[int] = None,  # 虽然是str类型,防止用户输入字符串
+        course_id: Optional[int] = None,  # 虽然是str类型,防止用户输入字符串
 ) -> Any:
     """
         查询从 skip 到 limit 的课程 || 根据 id 查询课程信息
         - skip - 起始
         - limit - 末尾
-        - courses_id - 课程编号
+        - course_id - 课程编号
     """
-    if courses_id:  # 根据 id 查询课程信息
-        get_course = crud.course.get(db, id=courses_id)
+    if course_id:  # 根据 id 查询课程信息
+        get_course = crud.course.get(db, id=course_id)
         if not get_course:
-            return response(code=404, msg=f"系统中不存在 id 为 {courses_id} 的课程.")
-        return response(data=get_course, msg=f"查询到了 id 为 {courses_id} 的课程.")
+            return response(code=404, msg=f"系统中不存在 id 为 {course_id} 的课程.")
+        return response(data=get_course, msg=f"查询到了 id 为 {course_id} 的课程.")
     else:  # 查询从 skip 到 limit 的课程
         get_courses = crud.course.get_multi(db, skip=skip, limit=limit)
         return response(data=get_courses, msg=f"查询了从 {skip} 到 {limit} 之间的课程.")

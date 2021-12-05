@@ -3,13 +3,13 @@ import request from '../utils/request';
 /**
  * 获取专业信息
  * @param {*} query 
- * @returns 所有专业信息
+ * @returns 所有专业信息 || 某个专业信息
  */
-export const read_majors = query => {
+export const read_majors = (id) => {
     return request({
         url: './major/?skip=0&limit=100',
         method: 'get',
-        params: query
+        params: { major_id: id }
     });
 };
 

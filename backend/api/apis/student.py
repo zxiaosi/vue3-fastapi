@@ -33,7 +33,7 @@ def read_students(
         - student_id - 学生编号
     """
     if student_id:
-        get_student = crud.student.get(db, id=student_id)
+        get_student = crud.student.get_multi_student(db, id=student_id)
         if not get_student:
             return response(code=404, msg=f"系统中不存在 id 为 {student_id} 的学生.")
         return response(data=get_student, msg=f"查询到了 id 为 {student_id} 的学生.")
