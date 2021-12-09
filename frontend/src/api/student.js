@@ -5,7 +5,7 @@ import request from '../utils/request';
  * @param {*} id 学生id 
  * @returns 所有学生信息 || 某个学生的信息
  */
-export const read_students = (id) => {
+function read_datas(id) {
     return request({
         url: './student/?skip=0&limit=100',
         method: 'get',
@@ -18,7 +18,7 @@ export const read_students = (id) => {
  * @param {*} data 学生对象
  * @returns 添加的学生对象
  */
-export const create_student = (data) => {
+function create_data(data) {
     return request({
         url: `./student/`,
         method: 'post',
@@ -32,7 +32,7 @@ export const create_student = (data) => {
  * @param {*} data 学生对象
  * @returns 修改的学生对象
  */
-export const update_student = (student_id, data) => {
+function update_data(student_id, data) {
     return request({
         url: `./student/${student_id}`,
         method: 'put',
@@ -45,9 +45,16 @@ export const update_student = (student_id, data) => {
  * @param {*} student_id 学生id
  * @returns 删除的学生信息
  */
-export const delete_student = student_id => {
+function delete_data(student_id) {
     return request({
         url: `./student/${student_id}`,
         method: 'delete'
     });
 };
+
+export default {
+    read_datas,
+    create_data,
+    update_data,
+    delete_data
+} 

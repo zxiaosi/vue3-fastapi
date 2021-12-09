@@ -5,7 +5,7 @@ import request from '../utils/request';
  * @param {*} id 教师id 
  * @returns 所有教师信息 || 某个教师的信息
  */
-export const read_teachers = (id) => {
+function read_datas(id) {
     return request({
         url: './teacher/?skip=0&limit=100',
         method: 'get',
@@ -18,7 +18,7 @@ export const read_teachers = (id) => {
  * @param {*} data 教师对象
  * @returns 添加的教师对象
  */
-export const create_teacher = (data) => {
+function create_data(data) {
     return request({
         url: `./teacher/`,
         method: 'post',
@@ -32,7 +32,7 @@ export const create_teacher = (data) => {
  * @param {*} data 教师对象
  * @returns 修改的教师对象
  */
-export const update_teacher = (teacher_id, data) => {
+function update_data(teacher_id, data) {
     return request({
         url: `./teacher/${teacher_id}`,
         method: 'put',
@@ -45,9 +45,16 @@ export const update_teacher = (teacher_id, data) => {
  * @param {*} teacher_id 教师id
  * @returns 删除的教师信息
  */
-export const delete_teacher = teacher_id => {
+function delete_data(teacher_id) {
     return request({
         url: `./teacher/${teacher_id}`,
         method: 'delete'
     });
 };
+
+export default {
+    read_datas,
+    create_data,
+    update_data,
+    delete_data
+} 

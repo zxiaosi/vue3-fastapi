@@ -1,49 +1,43 @@
 <template>
   <!-- 分页 -->
   <div class="pagination">
-    <el-pagination background :page-size="pagesize" :total="pageTotal" :page-sizes="[10]"
-      :current-page="pageIndex" @size-change="handleSizeChange" @current-change="handlePageChange"
-      :layout="layout" />
+    <el-pagination background :page-size="pageSize" :total="pageTotal" :current-page="pageIndex"
+      :layout="layout" :disabled="disabled" @current-change="handlePageChange" />
   </div>
 </template>
 
 <script setup>
 import { ref, toRefs } from 'vue';
-import { defineProps } from '@vue/runtime-core';
+
+const pageIndex = ref(1); // 当前页
+
 const props = defineProps({
-  pagesize: Number, //一页多少条
+  pageSize: Number, //每页个数
   pageTotal: Number, // 总个数
   layout: {
     type: String,
-    default: 'total, sizes, prev, pager, next, jumper',
+    default: 'total, prev, pager, next, jumper',
   }, // 布局
-  render: Function, // 跳转触发的请求
+  disabled: Boolean, // 是否显示分页
 });
 
-const pageIndex = ref(1); // 当前页
-const { pagesize, pageTotal, layout } = toRefs(props);
-
-// 切换分页条数(未生效)
-const handleSizeChange = (val) => {
-  console.log(`每页 ${val} 条`);
-};
+const { pageSize, pageTotal, layout, disabled } = toRefs(props);
 
 const emit = defineEmits(['pageIndex']);
 
-// 分页导航
-const handlePageChange = (val) => {
-  console.log(`当前页: ${val}`);
+/**
+ * 分页导航
+ */
+function handlePageChange(val) {
   pageIndex.value = val;
-  props.render();
   emit('pageIndex', pageIndex.value);
-};
+}
 
 defineExpose({
-  pageIndex,
-  pagesize,
+  pageSize,
   pageTotal,
   layout,
-  handleSizeChange,
+  disabled,
   handlePageChange,
 });
 </script>

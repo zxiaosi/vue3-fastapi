@@ -5,7 +5,7 @@ import request from '../utils/request';
  * @param {*} query 
  * @returns 所有专业信息 || 某个专业信息
  */
-export const read_majors = (id) => {
+function read_datas(id) {
     return request({
         url: './major/?skip=0&limit=100',
         method: 'get',
@@ -18,7 +18,7 @@ export const read_majors = (id) => {
  * @param {*} data 专业对象
  * @returns 添加的专业对象
  */
-export const create_major = (data) => {
+function create_data(data) {
     return request({
         url: `./major/`,
         method: 'post',
@@ -32,7 +32,7 @@ export const create_major = (data) => {
  * @param {*} data 专业对象
  * @returns 修改的专业对象
  */
-export const update_major = (major_id, data) => {
+function update_data(major_id, data) {
     return request({
         url: `./major/${major_id}`,
         method: 'put',
@@ -45,9 +45,16 @@ export const update_major = (major_id, data) => {
  * @param {*} major_id 专业id
  * @returns 删除的专业信息
  */
-export const delete_major = major_id => {
+function delete_data(major_id) {
     return request({
         url: `./major/${major_id}`,
         method: 'delete'
     });
 };
+
+export default {
+    read_datas,
+    create_data,
+    update_data,
+    delete_data
+} 

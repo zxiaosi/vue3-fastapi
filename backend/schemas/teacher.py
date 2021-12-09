@@ -44,7 +44,7 @@ class TeacherInDBBase(TeacherBase):
 # 通过API返回的附加JSON字段
 class TeacherReturn(TeacherInDBBase):
     """ 通过API返回的附加JSON字段 """
-    department_name: Optional[str] = Field(default=None, max_length=20, example='院系名字', title='院系名字')
+    pass
 
 
 # 存储在DB中的附加JSON字段

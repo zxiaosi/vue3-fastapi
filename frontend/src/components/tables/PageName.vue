@@ -3,14 +3,13 @@
   <div class="crumbs">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>
-        <i :class="`el-icon-ali-${iconName}`" /> {{pageName}}
+        <i :class="`el-icon-ali-${iconName}`" /> {{pageName}}表
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from '@vue/runtime-core';
 const props = defineProps({
   iconName: String, // 图标名
   pageName: String, // 页面名

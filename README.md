@@ -22,6 +22,7 @@
 + `1.6` 添加了学生表、课程表、选课表
 + `1.7` 重构前端代码
 + `1.8` 封装组件，取出冗余代码
++ `1.9` 自定义表格组件
 
 ## 开启服务
 
@@ -51,14 +52,26 @@
   
     ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/frontend-login.png)
   
-+ 测试数据的`增`
++ 首页（假数据）
 
-  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E5%A2%9E.gif)
+  ![home](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/home.png)
   
-+ 测试数据的`删`
++ 数据的`增`
 
-  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E6%94%B9.gif)
+  ![add](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/add.gif)
+  
++ 数据的`删`
 
-+ 测试数据的`改`
+  ![delete](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/delete.gif)
 
-  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/%E5%88%A0.gif)
++ 数据的`改`
+
+  ![update](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/update.gif)
+
++ 搜索数据
+
+  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/search.gif)
+
++ 多选删除
+
+  ![selectedDelete](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/selectedDelete.gif)

@@ -33,12 +33,12 @@ def read_teachers(
         - teacher_id - 教师编号
     """
     if teacher_id:
-        get_teacher = crud.teacher.get_multi_teacher(db, id=teacher_id)
+        get_teacher = crud.teacher.get(db, id=teacher_id)
         if not get_teacher:
             return response(code=404, msg=f"系统中不存在 id 为 {teacher_id} 的教师.")
         return response(data=get_teacher, msg=f"查询到了 id 为 {teacher_id} 的教师.")
     else:
-        get_teachers = crud.teacher.get_multi_teacher(db, skip=skip, limit=limit)
+        get_teachers = crud.teacher.get_multi(db, skip=skip, limit=limit)
         return response(data=get_teachers, msg=f"查询了从 {skip} 到 {limit} 之间的教师.")
 
 

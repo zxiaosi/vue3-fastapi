@@ -5,7 +5,7 @@ import request from '../utils/request';
  * @param {*} id 课程id 
  * @returns 所有课程信息 || 某个课程信息
  */
-export const read_courses = (id) => {
+function read_datas(id) {
     return request({
         url: './course/?skip=0&limit=100',
         method: 'get',
@@ -18,7 +18,7 @@ export const read_courses = (id) => {
  * @param {*} data 课程对象
  * @returns 添加的课程对象
  */
-export const create_course = (data) => {
+function create_data(data) {
     return request({
         url: `./course/`,
         method: 'post',
@@ -32,7 +32,7 @@ export const create_course = (data) => {
  * @param {*} data 课程对象
  * @returns 修改的课程对象
  */
-export const update_course = (course_id, data) => {
+function update_data(course_id, data) {
     return request({
         url: `./course/${course_id}`,
         method: 'put',
@@ -45,9 +45,16 @@ export const update_course = (course_id, data) => {
  * @param {*} course_id 课程id
  * @returns 删除的课程信息
  */
-export const delete_course = course_id => {
+function delete_data(course_id) {
     return request({
         url: `./course/${course_id}`,
         method: 'delete'
     });
 };
+
+export default {
+    read_datas,
+    create_data,
+    update_data,
+    delete_data
+} 

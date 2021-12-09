@@ -74,7 +74,7 @@
 import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Edit, Delete } from '@element-plus/icons'; // 图标
-import HeaderName from '../components/tables/HeaderName.vue';
+import HeaderName from '../components/tables/PageName.vue';
 import HeaderHandle from '../components/tables/HeaderHandle.vue';
 import Pagination from '../components/tables/Pagination.vue';
 import { userData, delele_User, update_User, add_User } from '../api/baseTable';

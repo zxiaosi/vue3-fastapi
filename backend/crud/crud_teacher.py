@@ -16,28 +16,6 @@ from schemas import TeacherReturn, TeacherCreate, TeacherUpdate
 
 
 class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):
-    def get_multi_teacher(
-            self, db: Session, *, skip: int = 0, limit: int = 100, id: Any = None
-    ) -> Union[TeacherReturn, List[TeacherReturn]]:
-        """
-        获取 skip-limit 的教师信息
-
-        :param db: Session
-        :param skip: 起始 (默认值0)
-        :param limit: 结束 (默认值100)
-        :param id: 教师id (可选参数)
-        :return: 所有教师对象
-        """
-        custom_filter = [
-            self.model.id, self.model.name, self.model.sex, self.model.birthday, self.model.education,
-            self.model.title, self.model.department_id, Department.name.label('department_name')
-        ]
-
-        if id:
-            return db.query(*custom_filter).filter(self.model.id == id).first()
-        else:
-            return db.query(*custom_filter).join(Department).offset(skip).limit(limit).all()
-
     def create(self, db: Session, *, obj_in: TeacherCreate) -> Teacher:
         """
         添加教师信息

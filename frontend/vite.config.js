@@ -1,10 +1,25 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   // 用于开发环境
   base: './',
+
+  // 根路径
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, "src"),
+      "@api": path.resolve(__dirname, "src/api"),
+      '@components': path.resolve(__dirname, "src/components"),
+      '@plugins': path.resolve(__dirname, "src/plugins"),
+      '@router': path.resolve(__dirname, "src/router"),
+      '@store': path.resolve(__dirname, "src/store"),
+      "@utils": path.resolve(__dirname, "src/utils"),
+      '@views': path.resolve(__dirname, "src/views"),
+    },
+  },
 
   // 插件
   plugins: [vue()],

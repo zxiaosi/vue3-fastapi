@@ -39,7 +39,7 @@ class StudentInDBBase(StudentBase):
 # 通过API返回的附加JSON字段
 class StudentReturn(StudentInDBBase):
     """ 通过API返回的附加JSON字段 """
-    major_name: Optional[str] = Field(max_length=20, example='专业名字', title='专业名字')
+    pass
 
 
 # 存储在DB中的附加JSON字段

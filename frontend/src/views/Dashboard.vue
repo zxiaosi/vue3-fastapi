@@ -38,7 +38,7 @@
             </el-table-column>
             <el-table-column style="width: calc(100% - 140px);">
               <template #default="scope">
-                <el-progress :percentage=scope.row.percentage :color=scope.row.color></el-progress>
+                <el-progress :percentage=scope.row.percentage :color=scope.row.color />
               </template>
             </el-table-column>
           </el-table>

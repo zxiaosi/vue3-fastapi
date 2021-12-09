@@ -37,9 +37,7 @@ class SelectCourseInDBBase(SelectCourseBase):
 # 通过API返回的附加JSON字段
 class SelectCourseReturn(SelectCourseInDBBase):
     """ 通过API返回的附加JSON字段 """
-    student_name: str = Field(default=None, max_length=10, example='学生姓名', title='学生姓名')
-    teacher_name: str = Field(default=None, max_length=10, example='教师姓名', title='教师姓名')
-    course_name: str = Field(default=None, max_length=20, example='课程名字', title='课程名字')
+    pass
 
 
 # 存储在DB中的附加JSON字段

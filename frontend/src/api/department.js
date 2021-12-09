@@ -5,7 +5,7 @@ import request from '../utils/request';
  * @param {*} id 
  * @returns 所有院系信息 || 某个院系信息
  */
-export const read_departments = (id) => {
+function read_datas(id) {
     return request({
         url: `./department/?skip=0&limit=100`,
         method: 'get',
@@ -18,7 +18,7 @@ export const read_departments = (id) => {
  * @param {*} data 院系对象
  * @returns 添加的院系对象
  */
-export const create_department = (data) => {
+function create_data(data) {
     return request({
         url: `./department/`,
         method: 'post',
@@ -32,7 +32,7 @@ export const create_department = (data) => {
  * @param {*} data 院系对象
  * @returns 修改的院系对象
  */
-export const update_department = (department_id, data) => {
+function update_data(department_id, data) {
     return request({
         url: `./department/${department_id}`,
         method: 'put',
@@ -45,9 +45,16 @@ export const update_department = (department_id, data) => {
  * @param {*} department_id 院系id
  * @returns 删除的院系信息
  */
-export const delete_department = department_id => {
+function delete_data(department_id) {
     return request({
         url: `./department/${department_id}`,
         method: 'delete'
     });
 };
+
+export default {
+    read_datas,
+    create_data,
+    update_data,
+    delete_data
+} 
