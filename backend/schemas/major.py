@@ -11,11 +11,11 @@ from pydantic import BaseModel, Field
 
 # 共享JSON字段属性
 class MajorBase(BaseModel):
-    id: str = Field(regex=r'^10\d{4}$', min_length=6, max_length=6, example='专业编号', title='专业编号')
+    id: str = Field(regex=r'^10[0-9]{4}$', min_length=6, max_length=6, example='专业编号', title='专业编号')
     name: str = Field(max_length=20, example='专业名字', title='专业名字')
     assistant: str = Field(max_length=10, example='辅导员名', title='辅导员名')
     phone: Optional[str] = Field(default=None, max_length=11, example='辅导员手机号', title='辅导员手机号')  # 默认值为空
-    department_id: str = Field(regex=r'^10\d{2}$', min_length=4, max_length=4, example='院系编号', title='院系编号')
+    department_id: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='院系编号', title='院系编号')
 
 
 # 通过API创建时接收的JSON字段

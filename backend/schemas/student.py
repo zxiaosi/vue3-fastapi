@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 # 共享JSON字段属性
 class StudentBase(BaseModel):
-    id: str = Field(regex=r'^[1-9]\d{9}$', min_length=10, max_length=10, example='学号：1810020401', title='学号')
+    id: str = Field(regex=r'^[1-9][0-9]{9}$', min_length=10, max_length=10, example='学号：1810020401', title='学号')
     name: str = Field(max_length=10, example='姓名', title='学生姓名')
     sex: Literal['man', 'woman'] = Field(example='性别：man->男, woman->女', title='学生性别')
     birthday: date = Field(example='生日: 1998-7-2', title='学生生日')

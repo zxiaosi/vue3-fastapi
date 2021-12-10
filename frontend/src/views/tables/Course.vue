@@ -8,8 +8,8 @@
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="课程编号" width="140" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="课程编号" width="140" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="课程名字" width="220" align="center" />
       <el-table-column prop="credit" label="学分" width="140" align="center" />
       <el-table-column prop="period" label="课时" min-width="140" align="center" />
@@ -18,17 +18,17 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="课程编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="4" show-word-limit
+        <el-input v-model="form.data.id" placeholder="请输入编号" maxlength="4" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="课程名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="名字" maxlength="20" />
+        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="学分" prop="credit">
-        <el-input v-model="form.data.credit" placeholder="学分" maxlength="2" />
+        <el-input v-model="form.data.credit" placeholder="请输入学分" maxlength="1" show-word-limit />
       </el-form-item>
       <el-form-item label="课时" prop="period">
-        <el-input v-model="form.data.period" placeholder="课时" maxlength="2" />
+        <el-input v-model="form.data.period" placeholder="请输入课时" maxlength="2" show-word-limit />
       </el-form-item>
     </template>
 
@@ -74,13 +74,11 @@ const form = reactive({
   // 定义校验规则
   rules: {
     id: [
-      {
-        required: 'true',
-        pattern: /^[1-9]/,
-        message: '请输入课程编号(以1-9开头)',
-        trigger: 'change',
-      },
-      { min: 4, message: '课程编号的长度应为4' },
+      { required: 'true', trigger: 'change', message: '请输入课程编号' },
+      { pattern: /^[1-9]/, message: '课程编号不能以0开头' },
+      { min: 4, max: 4, message: '课程编号的长度应为4' },
+      { pattern: /^[1-9][0-9]{3}$/, message: '课程编号必须是正整数' },
+      { validator: checkId },
     ],
     name: [
       {
@@ -90,10 +88,15 @@ const form = reactive({
       },
     ],
     credit: [
-      { required: 'true', message: '请输入学时', trigger: ['change', 'blur'] },
+      { required: 'true', message: '请输入学分', trigger: ['change', 'blur'] },
+      { pattern: /^[1-4]$/, message: '学分应在1-4之间' },
     ],
     period: [
-      { required: 'true', message: '请输入学分', trigger: ['change', 'blur'] },
+      { required: 'true', message: '请输入课时', trigger: ['change', 'blur'] },
+      {
+        pattern: /^[1-9]$|^([1-2][0-9])$|^3[0-2]$/,
+        message: '学时应在1-32之间',
+      },
     ],
   },
 });
@@ -116,6 +119,27 @@ function getData() {
 onMounted(() => {
   getData();
 });
+
+/**
+ * 检查id是否存在(验证规则)
+ */
+function checkId(rule, value, callback) {
+  if (state.isDisabled) {
+    callback(); // 验证通过
+  } else {
+    if (
+      state.courseData
+        .map((item) => {
+          return item.id;
+        })
+        .indexOf(value) != -1
+    ) {
+      callback(new Error('院系编号已经存在'));
+    } else {
+      callback(); // 验证通过
+    }
+  }
+}
 
 /**
  * 是否禁用编辑框id(子组件传值)

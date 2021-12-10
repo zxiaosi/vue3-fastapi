@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models import Teacher, Department
-from schemas import TeacherReturn, TeacherCreate, TeacherUpdate
+from models import Teacher
+from schemas import TeacherCreate, TeacherUpdate
 
 
 class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):

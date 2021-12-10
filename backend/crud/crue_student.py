@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models import Student, Major
-from schemas import StudentReturn, StudentCreate, StudentUpdate
+from models import Student
+from schemas import StudentCreate, StudentUpdate
 
 
 class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):

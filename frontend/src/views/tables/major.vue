@@ -8,8 +8,8 @@
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="专业编号" width="140" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="专业编号" width="140" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="专业名字" width="220" align="center" />
       <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center" />
       <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
@@ -22,17 +22,18 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="专业编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="6" show-word-limit
+        <el-input v-model="form.data.id" placeholder="请输入编号" maxlength="6" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="专业名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="名字" maxlength="20" />
+        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员姓名" prop="assistant">
-        <el-input v-model="form.data.assistant" placeholder="辅导员姓名" maxlength="10" />
+        <el-input v-model="form.data.assistant" placeholder="请输入辅导员姓名" maxlength="10"
+          show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员手机号" prop="phone">
-        <el-input v-model="form.data.phone" placeholder="辅导员手机号" maxlength="11" />
+        <el-input v-model="form.data.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
       </el-form-item>
       <el-form-item label="院系名字" prop="department_id">
         <el-select v-model="form.data.department_id" placeholder="请选择院系"
@@ -88,25 +89,23 @@ const form = reactive({
   // 定义校验规则
   rules: {
     id: [
-      {
-        required: 'true',
-        pattern: /^10[0-9]{2}/,
-        message: '请输入专业编号(以10开头)',
-        trigger: 'change',
-      },
-      { min: 6, message: '专业编号的长度应为6' },
+      { required: 'true', trigger: 'change', message: '请输入专业编号' },
+      { pattern: /^10/, message: '专业编号要以10开头' },
+      { min: 6, max: 6, message: '专业编号的长度应为6' },
+      { pattern: /^10[0-9]{4}$/, message: '专业编号必须为正整数)' },
+      { validator: checkId },
     ],
     name: [
       {
         required: 'true',
-        message: '请输入专业名称(最大长度为20)',
+        message: '请输入专业名称',
         trigger: ['change', 'blur'],
       },
     ],
     assistant: [
       {
         required: 'true',
-        message: '请输入辅导员姓名(最大长度为10)',
+        message: '请输入辅导员姓名',
         trigger: ['change', 'blur'],
       },
     ],
@@ -151,6 +150,27 @@ function getData() {
 onMounted(() => {
   getData();
 });
+
+/**
+ * 检查id是否存在(验证规则)
+ */
+function checkId(rule, value, callback) {
+  if (state.isDisabled) {
+    callback(); // 验证通过
+  } else {
+    if (
+      state.majorData
+        .map((item) => {
+          return item.id;
+        })
+        .indexOf(value) != -1
+    ) {
+      callback(new Error('专业编号已经存在'));
+    } else {
+      callback(); // 验证通过
+    }
+  }
+}
 
 /**
  * 是否禁用编辑框id(子组件传值)

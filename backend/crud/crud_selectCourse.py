@@ -9,8 +9,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
-from models import SelectCourse, Teacher, Student, Course
-from schemas import SelectCourseReturn, SelectCourseCreate, SelectCourseUpdate
+from models import SelectCourse
+from schemas import SelectCourseCreate, SelectCourseUpdate
 
 
 class CRUDSelectCourse(CRUDBase[SelectCourse, SelectCourseCreate, SelectCourseUpdate]):

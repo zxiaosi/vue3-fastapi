@@ -38,7 +38,7 @@ def read_departments(
             return response(code=404, msg=f"系统中不存在 id 为 {departments_id} 的院系.")
         return response(data=get_department, msg=f"查询到了 id 为 {departments_id} 的院系.")
     else:  # 查询从 skip 到 limit 的院系
-        get_departments = crud.department.get_multi_department(db, skip=skip, limit=limit)
+        get_departments = crud.department.get_multi(db, skip=skip, limit=limit)
         return response(data=get_departments, msg=f"查询了从 {skip} 到 {limit} 之间的院系.")
 
 

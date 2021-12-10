@@ -8,8 +8,8 @@
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="学号" width="140" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="学号" width="140" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="学生名字" width="140" align="center" />
       <el-table-column prop="sex" label="学生性别" width="140" align="center">
         <template #default="scope">
@@ -18,8 +18,8 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="birthday" label="学生生日" width="220" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="birthday" label="学生生日" width="220" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="major_id" label="专业名字" min-width="220" align="center">
         <template #default="scope">{{byIdGetName(scope.row.major_id, state.majorData)}}</template>
@@ -28,12 +28,12 @@
 
     <!-- 弹出框内容 -->
     <template #showDialog>
-      <el-form-item label="学生编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="10" show-word-limit
+      <el-form-item label="学号" prop="id">
+        <el-input v-model="form.data.id" placeholder="请输入学号" maxlength="10" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="学生名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="名字" maxlength="10" />
+        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="10" show-word-limit />
       </el-form-item>
 
       <el-form-item label="学生性别" prop="sex">
@@ -52,7 +52,7 @@
       </el-form-item>
 
       <el-form-item label="学生密码" prop="password">
-        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" />
+        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" show-word-limit />
       </el-form-item>
 
       <el-form-item label="专业名字" prop="major_id">
@@ -110,12 +110,11 @@ const form = reactive({
   // 定义校验规则
   rules: {
     id: [
-      {
-        required: true,
-        min: 10,
-        message: '学生编号的长度应为10',
-        trigger: 'change',
-      },
+      { required: 'true', trigger: 'change', message: '请输入学号' },
+      { pattern: /^[1-9]/, message: '学号不能以0开头' },
+      { min: 10, max: 10, message: '学号的长度应为10' },
+      { pattern: /^[1-9][0-9]{9}$/, message: '学号必须是正整数' },
+      { validator: checkId },
     ],
     name: [
       {
@@ -163,6 +162,27 @@ function getData() {
 onMounted(() => {
   getData();
 });
+
+/**
+ * 检查id是否存在(验证规则)
+ */
+function checkId(rule, value, callback) {
+  if (state.isDisabled) {
+    callback(); // 验证通过
+  } else {
+    if (
+      state.studentData
+        .map((item) => {
+          return item.id;
+        })
+        .indexOf(value) != -1
+    ) {
+      callback(new Error('院系编号已经存在'));
+    } else {
+      callback(); // 验证通过
+    }
+  }
+}
 
 /**
  * 是否禁用编辑框id(子组件传值)

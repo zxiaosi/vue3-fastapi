@@ -8,8 +8,8 @@
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="编号" width="140" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="编号" width="140" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="grade" label="成绩" width="140" align="center" />
       <el-table-column prop="student_id" width="140" label="学生姓名" align="center">
         <template
@@ -29,32 +29,30 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="编号" prop="id" v-show="!state.addOrUpdate">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="10"
+        <el-input v-model="form.data.id" placeholder="请输入编号(自增)" maxlength="10" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="成绩" prop="grade">
-        <el-input v-model="form.data.grade" placeholder="成绩(默认为0)" maxlength="3" show-word-limit />
+        <el-input v-model="form.data.grade" placeholder="请输入成绩(默认为0)" maxlength="3"
+          show-word-limit />
       </el-form-item>
 
       <el-form-item label="学生" prop="student_id">
-        <el-select v-model="form.data.student_id" placeholder="学生名"
-          @change="getChange(form.data.student_id)">
+        <el-select v-model="form.data.student_id" placeholder="学生名">
           <el-option v-for="(student, index) in state.studentData" :key=index :label=student.name
             :value=student.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="教师" prop="teacher_id">
-        <el-select v-model="form.data.teacher_id" placeholder="教师名"
-          @change="getChange(form.data.teacher_id)">
+        <el-select v-model="form.data.teacher_id" placeholder="教师名">
           <el-option v-for="(teacher, index) in state.teacherData" :key=index :label=teacher.name
             :value=teacher.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="课程" prop="course_id">
-        <el-select v-model="form.data.course_id" placeholder="课程名"
-          @change="getChange(form.data.course_id)">
+        <el-select v-model="form.data.course_id" placeholder="课程名">
           <el-option v-for="(course, index) in state.courseData" :key=index :label=course.name
             :value=course.id />
         </el-select>
@@ -102,16 +100,22 @@ const form = reactive({
   // 表单对象
   data: {
     id: '',
-    grade: 0,
+    grade: '',
     student_id: '',
     teacher_id: '',
     course_id: '',
   },
   // 定义校验规则
   rules: {
-    grade: [{ message: '请输入成绩(默认为0)', trigger: ['change', 'blur'] }],
+    grade: [
+      { message: '请输入成绩', trigger: ['change', 'blur'] },
+      {
+        pattern: /^100|(^([1-9]{0,1})([0-9]{1}))$/,
+        message: '请输入正确的成绩分数',
+      },
+    ],
     student_id: [
-      { required: 'true', message: '请选课学生', trigger: 'change' },
+      { required: 'true', message: '请选择学生', trigger: 'change' },
     ],
     teacher_id: [
       { required: 'true', message: '请选择教师', trigger: 'change' },
@@ -183,13 +187,6 @@ function emitIsDisabled(res) {
  */
 function emitIsShowSearched(res) {
   state.isShowSearched = res;
-}
-
-/**
- * 获取下拉框的值
- */
-function getChange(res) {
-  console.log('下拉框的值为--', res);
 }
 </script>
 

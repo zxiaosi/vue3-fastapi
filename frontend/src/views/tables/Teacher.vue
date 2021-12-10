@@ -8,8 +8,8 @@
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="职工号" width="140" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="职工号" width="140" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="教师名字" width="140" align="center" />
 
       <el-table-column prop="sex" label="教师性别" width="140" align="center">
@@ -20,8 +20,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="birthday" label="教师生日" width="220" align="center" sortable
-        :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="birthday" label="教师生日" width="220" align="center"
+        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="education" label="教师学历" width="140" align="center">
         <template #default="scope">
@@ -63,12 +63,12 @@
 
     <!-- 弹出框内容 -->
     <template #showDialog>
-      <el-form-item label="教师编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="6" show-word-limit
+      <el-form-item label="职工号" prop="id">
+        <el-input v-model="form.data.id" placeholder="请输入职工号" maxlength="6" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="教师名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="名字" maxlength="10" />
+        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="10" show-word-limit />
       </el-form-item>
 
       <el-form-item label="教师性别" prop="sex">
@@ -87,7 +87,7 @@
       </el-form-item>
 
       <el-form-item label="教师密码" prop="password">
-        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" />
+        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" show-word-limit />
       </el-form-item>
 
       <el-form-item label="教师学历" prop="education">
@@ -164,12 +164,11 @@ const form = reactive({
   // 定义校验规则
   rules: {
     id: [
-      {
-        required: true,
-        min: 6,
-        message: '教师编号的长度应为6',
-        trigger: 'change',
-      },
+      { required: 'true', trigger: 'change', message: '请输入职工号' },
+      { pattern: /^[1-9]/, message: '职工号不能以0开头' },
+      { min: 6, max: 6, message: '职工号的长度应为6' },
+      { pattern: /^[1-9]{5}$/, message: '职工号必须是正整数' },
+      { validator: checkId },
     ],
     name: [
       {
@@ -221,6 +220,27 @@ function getData() {
 onMounted(() => {
   getData();
 });
+
+/**
+ * 检查id是否存在(验证规则)
+ */
+function checkId(rule, value, callback) {
+  if (state.isDisabled) {
+    callback(); // 验证通过
+  } else {
+    if (
+      state.teacherData
+        .map((item) => {
+          return item.id;
+        })
+        .indexOf(value) != -1
+    ) {
+      callback(new Error('院系编号已经存在'));
+    } else {
+      callback(); // 验证通过
+    }
+  }
+}
 
 /**
  * 是否禁用编辑框id(子组件传值)

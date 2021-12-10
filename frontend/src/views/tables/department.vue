@@ -18,14 +18,14 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="院系编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="编号" maxlength="4"
-          show-word-limit :disabled=state.isDisabled />
+        <el-input v-model="form.data.id" placeholder="请输入编号" maxlength="4" show-word-limit
+          :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="院系名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="名字" maxlength="20" />
+        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="主任名" prop="chairman">
-        <el-input v-model="form.data.chairman" placeholder="主任名" maxlength="10" />
+        <el-input v-model="form.data.chairman" placeholder="请输入主任名" maxlength="10" show-word-limit />
       </el-form-item>
       <el-form-item label="主任手机号" prop="phone">
         <el-input v-model="form.data.phone" type="tel" placeholder="手机号" maxlength="11" />
@@ -74,21 +74,22 @@ const form = reactive({
   rules: {
     id: [
       { required: 'true', trigger: 'change', message: '请输入院系编号' },
-      { pattern: /^10/, message: '请输入院系编号(以10开头)' },
-      { pattern: /^10[0-9]{2}/, message: '院系编号为四位整数' },
+      { pattern: /^10/, message: '院系编号要以10开头' },
       { min: 4, max: 4, message: '院系编号的长度应为4' },
+      { pattern: /^10[0-9]{2}$/, message: '院系编号必须是正整数' },
+      { validator: checkId },
     ],
     name: [
       {
         required: 'true',
-        message: '请输入院系名称(最大长度为20)',
+        message: '请输入院系名称',
         trigger: ['change', 'blur'],
       },
     ],
     chairman: [
       {
         required: 'true',
-        message: '请输入院系主任名(最大长度为10)',
+        message: '请输入院系主任名',
         trigger: ['change', 'blur'],
       },
     ],
@@ -120,6 +121,27 @@ function getData() {
 onMounted(() => {
   getData();
 });
+
+/**
+ * 检查id是否存在(验证规则)
+ */
+function checkId(rule, value, callback) {
+  if (state.isDisabled) {
+    callback(); // 验证通过
+  } else {
+    if (
+      state.deptData
+        .map((item) => {
+          return item.id;
+        })
+        .indexOf(value) != -1
+    ) {
+      callback(new Error('院系编号已经存在'));
+    } else {
+      callback(); // 验证通过
+    }
+  }
+}
 
 /**
  * 是否禁用编辑框id(子组件传值)

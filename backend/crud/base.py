@@ -7,6 +7,7 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
+from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 
 from db.base_class import Base
@@ -54,6 +55,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param limit: 结束 (默认值100)
         :return: 查询到的对象集
         """
+        # list = db.query(self.model).offset(skip).limit(limit).all()
+        # count = db.query(func.count(distinct(self.model.id))).scalar()
+        # print({'list': list, 'count': count})
         return db.query(self.model).offset(skip).limit(limit).all()
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:

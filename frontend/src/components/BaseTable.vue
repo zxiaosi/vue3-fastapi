@@ -81,8 +81,7 @@
     <el-dialog :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`" v-model="state.showDialog"
       width="30%">
 
-      <el-form status-icon label-width="100px" ref="formRef" :model="form.data" :rules="form.rules"
-        autocomplete="on">
+      <el-form status-icon label-width="100px" ref="formRef" :model="form.data" :rules="form.rules">
 
         <slot name="showDialog" />
 
@@ -248,7 +247,11 @@ function saveAdd() {
   state.addOrUpdate = true;
 
   formRef.value.validate((valid) => {
-    console.log('saveAdd--', form.value.data);
+    // 设置默认成绩
+    if (page.value.pageName == '选课' && form.value.data.grade === '') {
+      form.value.data.grade = 0;
+    }
+
     if (valid) {
       props.apis
         .create_data(form.value.data)
@@ -298,6 +301,11 @@ function handleEdit(index, row) {
  */
 function saveEdit() {
   state.showDialog = state.addOrUpdate = false;
+
+  // 设置默认成绩
+  if (page.value.pageName == '选课' && form.value.data.grade === '') {
+    form.value.data.grade = 0;
+  }
 
   formRef.value.validate((valid) => {
     if (valid) {

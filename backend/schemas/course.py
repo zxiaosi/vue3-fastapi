@@ -8,10 +8,10 @@ from pydantic import BaseModel, Field
 
 # 共享JSON字段属性
 class CourseBase(BaseModel):
-    id: str = Field(regex=r'^[1-9]\d{3}$', min_length=4, max_length=4, example='课程编号：1101', title='课程编号')
+    id: str = Field(regex=r'^[1-9][0-9]{3}$', min_length=4, max_length=4, example='课程编号：1101', title='课程编号')
     name: str = Field(max_length=20, example='课程名字', title='课程名字')
-    credit: float = Field(example='学分', title='学分')
-    period: int = Field(example='课时', title='课时')
+    credit: float = Field(regex=r'^[1-4]$', example='学分', title='学分')
+    period: int = Field(regex=r'^[1-9]$|^([1-2][0-9])$|^3[0-2]$', example='课时', title='课时')
 
 
 # 通过API创建时接收的JSON字段
