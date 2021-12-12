@@ -5,7 +5,7 @@
         <el-breadcrumb-item><i class="el-icon-ali-copy" /> tab选项卡</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    
+
     <div class="container">
       <el-tabs v-model="message">
         <el-tab-pane :label="`未读消息(${state.unread.length})`" name="first">
@@ -70,6 +70,14 @@
     </div>
   </div>
 </template>
+
+<script>
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'tabs',
+});
+</script>
 
 <script setup>
 import { ref, reactive } from 'vue';

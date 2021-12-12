@@ -12,7 +12,7 @@ from core.config import settings
 from db import init_db
 from initial_data import sqlalchemy_core_initial
 from api.api_router import api_router
-from utils import logger
+from utils.logger import logger
 
 # 配置接口文档信息
 app = FastAPI(

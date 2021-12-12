@@ -6,8 +6,8 @@
       <div class="plugins-tips">测试用户信息表格</div>
 
       <!-- 排序和添加 -->
-      <header-handle :query="query" :data="tableData" :form-data="formData"
-        @isAddDialog='isAddDialog' />
+      <!-- <header-handle :query="query" :data="tableData" :form-data="formData"
+        @isAddDialog='isAddDialog' /> -->
 
       <!-- 表格信息 -->
       <el-table
@@ -70,14 +70,22 @@
   </div>
 </template>
 
+<script>
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'test',
+});
+</script>
+
+
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Edit, Delete } from '@element-plus/icons'; // 图标
-import HeaderName from '../components/tables/PageName.vue';
-import HeaderHandle from '../components/tables/HeaderHandle.vue';
-import Pagination from '../components/tables/Pagination.vue';
-import { userData, delele_User, update_User, add_User } from '../api/baseTable';
+import HeaderName from '@components/tables/PageName.vue';
+import Pagination from '@components/tables/Pagination.vue';
+import { userData, delele_User, update_User, add_User } from '@api/baseTable';
 
 const iconName = ref('test');
 const pageName = ref('测试页面');

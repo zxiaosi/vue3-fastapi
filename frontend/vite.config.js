@@ -33,6 +33,21 @@ export default defineConfig({
     https: false, // 是否开启https
   },
 
+  // 打包限制
+  build: {
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    }
+  },
+
   // 全局常量
   define: {
     BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),

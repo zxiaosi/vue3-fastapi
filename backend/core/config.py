@@ -55,9 +55,9 @@ class Settings(BaseSettings):
     LOGGER_ENCODING = 'utf-8'
     LOGGER_LEVEL = 'DEBUG'  # ['DEBUG' | 'INFO']
     # 按 时间段 切分日志
-    LOGGER_ROTATION = "1 minute"  # ["500 MB" | "12:00" | "1 week"]
+    LOGGER_ROTATION = "100 MB"  # ["500 MB" | "12:00" | "1 week"]
     # 日志保留的时间, 超出将删除最早的日志
-    LOGGER_RETENTION = "3 minute"  # ["1 days"]
+    LOGGER_RETENTION = "1 days"  # ["1 days"]
 
 
 # 初始化配置信息

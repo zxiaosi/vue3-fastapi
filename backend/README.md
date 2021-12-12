@@ -27,6 +27,7 @@
 + `V4.0` 删除了获取所有数据以及获取单个数据的方法
 + `V4.1` 修改了校验规则
 + `V4.1.1` 删除了整型和浮点型的正则校验规则
++ `v4.2` 尝试部署中。。。
 
 ## 安装
 
@@ -35,7 +36,7 @@
 2. 安装运行所需的包
 
    ```python
-   pip install requirements.txt
+   pip install requirements.txt(未安装mysql支持)
    
    # 或者
    pip install fastapi

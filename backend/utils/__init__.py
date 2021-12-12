@@ -4,4 +4,4 @@
 # @Author : 小四先生
 # @desc : 抛出工具类
 from .response_code import RestfulModel, response
-from .logger import logger  # noqa
+# from .logger import logger  # noqa

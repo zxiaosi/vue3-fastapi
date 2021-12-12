@@ -1,6 +1,6 @@
 {
   "name": "vue3-elementplus-vite",
-  "version": "1.9",
+  "version": "2.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

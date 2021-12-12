@@ -25,7 +25,8 @@
         <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="主任名" prop="chairman">
-        <el-input v-model="form.data.chairman" placeholder="请输入主任名" maxlength="10" show-word-limit />
+        <el-input v-model="form.data.chairman" placeholder="请输入主任名" maxlength="10"
+          show-word-limit />
       </el-form-item>
       <el-form-item label="主任手机号" prop="phone">
         <el-input v-model="form.data.phone" type="tel" placeholder="手机号" maxlength="11" />
@@ -34,6 +35,14 @@
 
   </base-table>
 </template>
+
+<script>
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'department',
+});
+</script>
 
 <script setup>
 import { reactive, onMounted } from 'vue';

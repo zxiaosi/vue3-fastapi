@@ -1,5 +1,9 @@
 # 学生选课系统
 
+## 预览
+
++ [FastAPI接口预览](https://reecyf.deta.dev/)
+
 ## 介绍
 
 + Python Web框架 [FastAPI](https://fastapi.tiangolo.com/zh/) 📖

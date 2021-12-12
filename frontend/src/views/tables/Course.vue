@@ -35,6 +35,14 @@
   </base-table>
 </template>
 
+<script>
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'course',
+});
+</script>
+
 <script setup>
 import { reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
