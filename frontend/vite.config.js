@@ -51,7 +51,7 @@ export default defineConfig({
   // 全局常量
   define: {
     // BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
-    BASE_URL: JSON.stringify('https://zxiaosi.deta.dev:8000/api/'),
+    BASE_URL: JSON.stringify('https://zxiaosi.deta.dev/api/'),
     TIMEOUT: 20000,
     TITLE: JSON.stringify('学生选课系统'),
   }
