@@ -2,7 +2,7 @@
 
 ## 预览
 
-+ [FastAPI接口预览](https://reecyf.deta.dev/)
++ [FastAPI接口预览](https://reecyf.deta.dev/)（访问可能较慢）
 
 ## 介绍
 
