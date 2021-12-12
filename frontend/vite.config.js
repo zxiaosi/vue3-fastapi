@@ -52,7 +52,7 @@ export default defineConfig({
   define: {
     // BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
     BASE_URL: JSON.stringify('https://zxiaosi.deta.dev/api/'),
-    TIMEOUT: 20000,
+    TIMEOUT: 10000,
     TITLE: JSON.stringify('学生选课系统'),
   }
 })

@@ -2,8 +2,8 @@
 
 ## 预览
 
++ [Vue3+Vite+ElementPlus](http://vue3.zxiaosi.cn/)（部署成功）
 + [FastAPI接口预览](https://zxiaosi.deta.dev/)（访问可能较慢）
-+ [Vue3+Vite+ElementPlus](http://vue3.zxiaosi.cn/)
 
 ## 介绍
 
