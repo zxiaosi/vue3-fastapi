@@ -46,4 +46,4 @@ if __name__ == '__main__':
     # sqlalchemy_orm_initial()  # 速度略慢,性能正常
     sqlalchemy_core_initial()  # 速度与性能并行
 
-    uvicorn.run(app='main:app', host="127.0.0.1", port=8000)
+    # uvicorn.run(app='main:app', host="127.0.0.1", port=8000)
