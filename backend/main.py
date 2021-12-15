@@ -46,4 +46,6 @@ if __name__ == '__main__':
     # sqlalchemy_orm_initial()  # 速度略慢,性能正常
     sqlalchemy_core_initial()  # 速度与性能并行
 
+    # 平常调试可以开启下面代码,右键运行即可
+    # docker部署时注释下面代码
     # uvicorn.run(app='main:app', host="127.0.0.1", port=8000)

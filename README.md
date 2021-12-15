@@ -2,8 +2,8 @@
 
 ## 预览
 
-+ [Vue3+Vite+ElementPlus](http://vue3.zxiaosi.cn/)（部署成功）
-+ [FastAPI接口预览](http://8.136.82.204/)
++ [Vue3+Vite+ElementPlus](https://vue.zxiaosi.net/)
++ [FastAPI接口预览](http://fastapi.zxiaosi.net/)
 
 ## 介绍
 
@@ -28,6 +28,7 @@
 + `1.7` 重构前端代码
 + `1.8` 封装组件，取出冗余代码
 + `1.9` 自定义表格组件
++ `2.0` 部署项目
 
 ## 开启服务
 
