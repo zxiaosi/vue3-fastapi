@@ -12,9 +12,9 @@ class Settings(BaseSettings):
     # 接口文档的 名字
     PROJECT_NAME = "FastAPI"
     # 接口文档的 描述
-    PROJECT_DESCRIPTION = "FastAPI接口"
+    PROJECT_DESCRIPTION = "部署FastAPI接口"
     # 接口文档的 版本
-    PROJECT_VERSION = "3.0"
+    PROJECT_VERSION = "4.0"
     # 接口文档的 路径
     PROJECT_DIR = "/"  # 默认是/docs
 
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost", "http://localhost:3000", "http://localhost:8000",
-                                              "https://vue.zxiaosi.net"]
+                                              "https://vue.zxiaosi.net", "https://vue3.zxiaosi.cn"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
