@@ -1,8 +1,9 @@
 <template>
   <!-- 分页 -->
   <div class="pagination">
-    <el-pagination background :page-size="pageSize" :total="pageTotal" :current-page="pageIndex"
-      :layout="layout" :disabled="disabled" @current-change="handlePageChange" />
+    <el-pagination background :page-size="pageSize" :total="!disabled ? pageTotal : pageIndex"
+      :current-page="pageIndex" :layout="layout" :disabled="disabled"
+      @current-change="handlePageChange" />
   </div>
 </template>
 

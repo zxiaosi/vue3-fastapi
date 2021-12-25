@@ -1,7 +1,10 @@
-fastapi
-uvicorn
-loguru
-SQLAlchemy
+fastapi~=0.70.0
+uvicorn~=0.16.0
+loguru~=0.5.3
+SQLAlchemy~=1.4.28
 python-jose
-passlib
+passlib~=1.7.4
 bcrypt
+
+pydantic~=1.8.2
+starlette~=0.16.0

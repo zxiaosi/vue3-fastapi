@@ -26,10 +26,10 @@ app = FastAPI(
 app.include_router(api_router, prefix=settings.API_STR)
 
 # 设置所有CORS(跨域请求)
-if settings.BACKEND_CORS_ORIGINS:
+if settings.CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

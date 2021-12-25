@@ -45,8 +45,8 @@
       <el-table
         :data="state.isShowSearched ? state.searched : data.slice((query.currentPage-1)*(query.pageSize),(query.currentPage)*(query.pageSize))"
         border stripe class="table" max-height="578"
-        :default-sort="{ prop: 'id', order: 'ascending' }"
-        @selection-change="handleSelectionChange">
+        :default-sort="{ prop: 'id', order: 'ascending' }" @selection-change="handleSelectionChange"
+        v-loading="data == ''" element-loading-text="拼命加载中...">
 
         <!-- 勾选框 -->
         <el-table-column type="selection" width="80" align="center" />
@@ -101,7 +101,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, toRefs, watchEffect } from 'vue';
+import { ref, reactive, toRefs, watch, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Remove, Delete, Plus, Edit } from '@element-plus/icons'; // 图标
 import PageName from '@components/tables/PageName.vue';
@@ -134,6 +135,18 @@ const { page, query, data, form } = toRefs(props);
 
 const emit = defineEmits(['emitIsDisabled', 'emitIsShowSearched']);
 
+// 路由
+const route = useRoute();
+
+// 监听路由是否发生变化
+watch(
+  () => route.path,
+  (oldValue, newValue) => {
+    console.log(oldValue, newValue);
+    removeSearch();
+  }
+);
+
 // 监听属性
 watchEffect(() => {
   // 当搜索框没有值时,恢复默认表格
@@ -141,7 +154,7 @@ watchEffect(() => {
     removeSearch();
   }
 
-  // 每页个数变化
+  // 监听每页个数变化
   state.pageTotal = data.value.length || query.value.pageSize;
 
   // 是否显示被选择的值
@@ -154,13 +167,20 @@ watchEffect(() => {
 function handleSearch(event) {
   clickRecover(event);
 
+  ElMessage({
+    message: '搜索中...',
+    grouping: true,
+    type: 'success',
+    duration: 1000,
+  });
+
   props.apis
     .read_datas(query.value.id)
     .then((res) => {
       if (res.code == 200) {
-        console.log('被搜索的数据--', res.data);
         state.isShowSearched = true;
         state.searched.splice(0, 1, res.data);
+        console.log('被搜索的数据--', res.data);
       } else {
         ElMessage.warning('编号不存在');
       }
@@ -210,9 +230,9 @@ function handleSelectedDelete(event) {
           .delete_data(item.id)
           .then((res) => {
             if (res.code === 200) {
+              ElMessage.success(`删除编号为 ${item.id} 的数据成功！`);
               data.value.splice(item.index, 1);
               removeSearch(true);
-              ElMessage.success(`删除编号为 ${item.id} 的数据成功！`);
             } else {
               ElMessage.warning(`删除编号为 ${item.id} 的数据失败！`);
             }
@@ -257,10 +277,10 @@ function saveAdd() {
         .create_data(form.value.data)
         .then((res) => {
           if (res.code == 200) {
-            data.value.push(res.data);
             ElMessage.success(
               `成功添加编号为 ${res.data.id} 的${page.value.pageName}信息！`
             );
+            data.value.push(res.data);
             removeSearch(true);
           } else {
             ElMessage.warning(`${page.value.pageName}信息填写有误，添加失败！`);
@@ -312,17 +332,17 @@ function saveEdit() {
       props.apis
         .update_data(state.idx, form.value.data)
         .then((res) => {
+          ElMessage.success(
+            `修改${page.value.pageName}ID为 ${state.idx} 成功！`
+          );
           Object.keys(res.data).forEach((item) => {
             data.value[state.reIndex][item] = res.data[item];
           });
           if (query.value.id.length != 0) {
             state.searched[0] = form.value.data;
-            console.log('我执行了', state.searched[0]);
+            console.log('saveEdit--', state.searched[0]);
           }
           props.getData();
-          ElMessage.success(
-            `修改${page.value.pageName}ID为 ${state.idx} 成功！`
-          );
         })
         .catch(() => {
           ElMessage.error(`修改${page.value.pageName}信息失败！`);
@@ -348,11 +368,11 @@ function handleDelete(index, row) {
         .delete_data(row.id)
         .then((res) => {
           if (res.code === 200) {
-            data.value.splice(index, 1);
-            removeSearch(true);
             ElMessage.success(
               `删除编号为 ${row.id} 的${page.value.pageName}信息成功！`
             );
+            data.value.splice(index, 1);
+            removeSearch(true);
           } else {
             ElMessage.warning(
               `删除编号为 ${row.id} 的${page.value.pageName}信息失败！`
