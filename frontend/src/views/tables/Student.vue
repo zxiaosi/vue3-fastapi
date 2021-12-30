@@ -1,7 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.studentData" :form="form" :get-data="getData"
-    :apis="student_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.studentData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="student_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
@@ -29,15 +29,15 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="学号" prop="id">
-        <el-input v-model="form.data.id" placeholder="请输入学号" maxlength="10" show-word-limit
+        <el-input v-model="formData.id" placeholder="请输入学号" maxlength="10" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="学生名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="10" show-word-limit />
+        <el-input v-model="formData.name" placeholder="请输入名字" maxlength="10" show-word-limit />
       </el-form-item>
 
       <el-form-item label="学生性别" prop="sex">
-        <el-select v-model="form.data.sex" placeholder="请选择性别">
+        <el-select v-model="formData.sex" placeholder="请选择性别">
           <el-option key="1" label="男" value="man" />
           <el-option key="2" label="女" value="woman" />
         </el-select>
@@ -45,19 +45,19 @@
 
       <el-form-item label="学生生日">
         <el-form-item prop="birthday">
-          <el-date-picker type="date" placeholder="请选择日期" v-model="form.data.birthday"
+          <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday"
             format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;">
           </el-date-picker>
         </el-form-item>
       </el-form-item>
 
       <el-form-item label="学生密码" prop="password">
-        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" show-word-limit />
+        <el-input v-model="formData.password" placeholder="请输入密码" maxlength="20" show-word-limit />
       </el-form-item>
 
       <el-form-item label="专业名字" prop="major_id">
-        <el-select v-model="form.data.major_id" placeholder="请选择专业"
-          @change="getChange(form.data.major_id)">
+        <el-select v-model="formData.major_id" placeholder="请选择专业"
+          @change="getChange(formData.major_id)">
           <el-option v-for="(major, index) in state.majorData" :key=index :label=major.name
             :value=major.id />
         </el-select>
@@ -67,16 +67,9 @@
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'student',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import student_apis from '@api/student';
@@ -104,43 +97,42 @@ const query = reactive({
   pageSize: 10,
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    name: '',
-    sex: '',
-    birthday: '',
-    password: '',
-    major_id: '',
-  },
-  // 定义校验规则
-  rules: {
-    id: [
-      { required: 'true', trigger: 'change', message: '请输入学号' },
-      { pattern: /^[1-9]/, message: '学号不能以0开头' },
-      { min: 10, max: 10, message: '学号的长度应为10' },
-      { pattern: /^[1-9][0-9]{9}$/, message: '学号必须是正整数' },
-      { validator: checkId },
-    ],
-    name: [
-      {
-        required: 'true',
-        message: '请输入学生名称',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    sex: [{ required: 'true', message: '请输入学生性别', trigger: 'change' }],
-    birthday: [{ required: 'true', message: '请选择生日', trigger: 'change' }],
-    password: [
-      { required: 'true', message: '请输入密码', trigger: ['change', 'blur'] },
-    ],
-    major_id: [
-      { required: 'true', message: '请选择专业', trigger: ['change'] },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  name: '',
+  sex: '',
+  birthday: '',
+  password: '',
+  major_id: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    { required: 'true', trigger: 'change', message: '请输入学号' },
+    { pattern: /^[1-9]/, message: '学号不能以0开头' },
+    { min: 10, max: 10, message: '学号的长度应为10' },
+    { pattern: /^[1-9][0-9]{9}$/, message: '学号必须是正整数' },
+    { validator: checkId },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入学生名称',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  sex: [{ required: 'true', message: '请输入学生性别', trigger: 'change' }],
+  birthday: [{ required: 'true', message: '请选择生日', trigger: 'change' }],
+  password: [
+    { required: 'true', message: '请输入密码', trigger: ['change', 'blur'] },
+  ],
+  major_id: [{ required: 'true', message: '请选择专业', trigger: ['change'] }],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -150,20 +142,28 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.studentData = res.data;
+      // 存储数据
+      store.commit('handleData', ['student', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载学生信息数据失败！');
     });
 
   // 获取专业信息
-  major_apis
-    .read_datas()
-    .then((res) => {
-      state.majorData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载专业信息数据失败！');
-    });
+  if (store.state.majorData == '') {
+    major_apis
+      .read_datas()
+      .then((res) => {
+        state.majorData = res.data;
+        // 存储数据
+        store.commit('handleData', ['major', res.data]);
+      })
+      .catch(() => {
+        ElMessage.error('加载专业信息数据失败！');
+      });
+  } else {
+    state.majorData = store.state.majorData;
+  }
 }
 
 // 页面加载后调用函数

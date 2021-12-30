@@ -1,8 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.majorData" :form="form" :get-data="getData"
-    :apis="major_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
-
+  <base-table :page="page" :query="query" :data="state.majorData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="major_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
     <!-- 暂无 -->
     <template #filter />
 
@@ -15,48 +14,40 @@
       <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
       <el-table-column prop="department_id" label="院系名字" min-width="220" align="center">
         <template
-          #default="scope">{{byIdGetName(scope.row.department_id, state.deptData)}}</template>
+          #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
       </el-table-column>
     </template>
 
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="专业编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="请输入编号" maxlength="6" show-word-limit
-          :disabled=state.isDisabled />
+        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="6" show-word-limit
+          :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="专业名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
+        <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员姓名" prop="assistant">
-        <el-input v-model="form.data.assistant" placeholder="请输入辅导员姓名" maxlength="10"
+        <el-input v-model="formData.assistant" placeholder="请输入辅导员姓名" maxlength="10"
           show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员手机号" prop="phone">
-        <el-input v-model="form.data.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
+        <el-input v-model="formData.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
       </el-form-item>
       <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="form.data.department_id" placeholder="请选择院系"
-          @change="getChange(form.data.department_id)">
-          <el-option v-for="(dept, index) in state.deptData" :key=index :label=dept.name
-            :value=dept.id />
+        <el-select v-model="formData.department_id" placeholder="请选择院系"
+          @change="getChange(formData.department_id)">
+          <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name"
+            :value="dept.id" />
         </el-select>
       </el-form-item>
     </template>
-
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'major',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import major_apis from '@api/major';
@@ -84,51 +75,52 @@ const query = reactive({
   pageSize: 10,
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    name: '',
-    assistant: '',
-    phone: '',
-    department_id: '',
-  },
-  // 定义校验规则
-  rules: {
-    id: [
-      { required: 'true', trigger: 'change', message: '请输入专业编号' },
-      { pattern: /^10/, message: '专业编号要以10开头' },
-      { min: 6, max: 6, message: '专业编号的长度应为6' },
-      { pattern: /^10[0-9]{4}$/, message: '专业编号必须为正整数)' },
-      { validator: checkId },
-    ],
-    name: [
-      {
-        required: 'true',
-        message: '请输入专业名称',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    assistant: [
-      {
-        required: 'true',
-        message: '请输入辅导员姓名',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    phone: [
-      {
-        pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
-        message: '请输入正确的手机号',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    department_id: [
-      { required: 'true', message: '请选择院系', trigger: ['change'] },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  name: '',
+  assistant: '',
+  phone: '',
+  department_id: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    { required: 'true', trigger: 'change', message: '请输入专业编号' },
+    { pattern: /^10/, message: '专业编号要以10开头' },
+    { min: 6, max: 6, message: '专业编号的长度应为6' },
+    { pattern: /^10[0-9]{4}$/, message: '专业编号必须为正整数)' },
+    { validator: checkId },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入专业名称',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  assistant: [
+    {
+      required: 'true',
+      message: '请输入辅导员姓名',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  phone: [
+    {
+      pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
+      message: '请输入正确的手机号',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  department_id: [
+    { required: 'true', message: '请选择院系', trigger: ['change'] },
+  ],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -138,20 +130,28 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.majorData = res.data;
+      // 存储数据
+      store.commit('handleData', ['major', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载专业信息数据失败！');
     });
 
   // 获取院系信息
-  department_apis
-    .read_datas()
-    .then((res) => {
-      state.deptData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载院系信息数据失败！');
-    });
+  if (store.state.departmentData == '') {
+    department_apis
+      .read_datas()
+      .then((res) => {
+        state.deptData = res.data;
+        // 存储数据
+        store.commit('handleData', ['department', res.data]);
+      })
+      .catch(() => {
+        ElMessage.error('加载院系信息数据失败！');
+      });
+  } else {
+    state.deptData = store.state.departmentData;
+  }
 }
 
 // 页面加载后调用函数

@@ -64,8 +64,9 @@ def get_password_hash(password: str) -> str:
 # https://www.cnblogs.com/CharmCode/p/14191112.html?ivk_sa=1024320u
 # 解密token
 def check_jwt_token(token, secret_key=pwd_context, algorithms=ALGORITHM) -> dict:
+    global payload
     try:
-        payload = jwt.decode(token=token, secret_key=secret_key, algorithms=algorithms)
+        payload = jwt.decode(token=token, key=secret_key, algorithms=algorithms)
         print(payload)
     # 当然两个异常捕获也可以写在一起，不区分
     except ExpiredSignatureError as e:

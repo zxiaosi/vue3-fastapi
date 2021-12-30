@@ -81,7 +81,7 @@
     <el-dialog :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`" v-model="state.showDialog"
       width="30%">
 
-      <el-form status-icon label-width="100px" ref="formRef" :model="form.data" :rules="form.rules">
+      <el-form status-icon label-width="100px" ref="formRef" :model="formData" :rules="formRules">
 
         <slot name="showDialog" />
 
@@ -126,12 +126,13 @@ const props = defineProps({
   page: Object, // 页面配置
   query: Object, // 搜索和页码
   data: Object, // 数据
-  form: Object, // form对象
+  formData: Object, // 表单对象
+  formRules: Object, // 校验规则
   getData: Function, // 得到数据
   apis: Object, // 增删改查api
 });
 
-const { page, query, data, form } = toRefs(props);
+const { page, query, data, formData, formRules } = toRefs(props);
 
 const emit = defineEmits(['emitIsDisabled', 'emitIsShowSearched']);
 
@@ -142,7 +143,7 @@ const route = useRoute();
 watch(
   () => route.path,
   (oldValue, newValue) => {
-    console.log(oldValue, newValue);
+    // console.log(oldValue, newValue);
     removeSearch();
   }
 );
@@ -252,7 +253,14 @@ function handleAdd(event) {
   clickRecover(event);
 
   // 重置表单
-  Object.keys(form.value.data).forEach((key) => (form.value.data[key] = ''));
+  Object.keys(formData.value).forEach((key) => {
+    formData.value[key] = '';
+  });
+
+  // 设置默认成绩
+  if (page.value.pageName == '选课' && formData.value.grade === '') {
+    formData.value.grade = 0;
+  }
 
   // 显示添加弹窗
   state.showDialog = state.addOrUpdate = true;
@@ -267,14 +275,11 @@ function saveAdd() {
   state.addOrUpdate = true;
 
   formRef.value.validate((valid) => {
-    // 设置默认成绩
-    if (page.value.pageName == '选课' && form.value.data.grade === '') {
-      form.value.data.grade = 0;
-    }
-
+    console.log('formData.value', formData.value);
+    // debugger 
     if (valid) {
       props.apis
-        .create_data(form.value.data)
+        .create_data(formData.value)
         .then((res) => {
           if (res.code == 200) {
             ElMessage.success(
@@ -302,8 +307,8 @@ function saveAdd() {
  * 编辑院系信息
  */
 function handleEdit(index, row) {
-  Object.keys(form.value.data).forEach((item) => {
-    form.value.data[item] = row[item];
+  Object.keys(formData.value).forEach((item) => {
+    formData.value[item] = row[item];
   });
 
   // 显示更新弹窗
@@ -322,15 +327,10 @@ function handleEdit(index, row) {
 function saveEdit() {
   state.showDialog = state.addOrUpdate = false;
 
-  // 设置默认成绩
-  if (page.value.pageName == '选课' && form.value.data.grade === '') {
-    form.value.data.grade = 0;
-  }
-
   formRef.value.validate((valid) => {
     if (valid) {
       props.apis
-        .update_data(state.idx, form.value.data)
+        .update_data(state.idx, formData.value)
         .then((res) => {
           ElMessage.success(
             `修改${page.value.pageName}ID为 ${state.idx} 成功！`
@@ -339,7 +339,7 @@ function saveEdit() {
             data.value[state.reIndex][item] = res.data[item];
           });
           if (query.value.id.length != 0) {
-            state.searched[0] = form.value.data;
+            state.searched[0] = formData.value;
             console.log('saveEdit--', state.searched[0]);
           }
           props.getData();
@@ -409,7 +409,8 @@ defineExpose({
   page,
   query,
   data,
-  form,
+  formData,
+  formRules,
   handleSearch,
   handleRemove,
   handleSelectionChange,

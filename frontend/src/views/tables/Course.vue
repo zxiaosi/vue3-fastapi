@@ -1,7 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.courseData" :form="form" :get-data="getData"
-    :apis="course_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.courseData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="course_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
@@ -35,16 +35,9 @@
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'course',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import course_apis from '@api/course';
@@ -70,44 +63,45 @@ const query = reactive({
   pageSize: 10,
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    name: '',
-    credit: '',
-    period: '',
-  },
-  // 定义校验规则
-  rules: {
-    id: [
-      { required: 'true', trigger: 'change', message: '请输入课程编号' },
-      { pattern: /^[1-9]/, message: '课程编号不能以0开头' },
-      { min: 4, max: 4, message: '课程编号的长度应为4' },
-      { pattern: /^[1-9][0-9]{3}$/, message: '课程编号必须是正整数' },
-      { validator: checkId },
-    ],
-    name: [
-      {
-        required: 'true',
-        message: '请输入课程名称',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    credit: [
-      { required: 'true', message: '请输入学分', trigger: ['change', 'blur'] },
-      { pattern: /^[1-4]$/, message: '学分应在1-4之间' },
-    ],
-    period: [
-      { required: 'true', message: '请输入课时', trigger: ['change', 'blur'] },
-      {
-        pattern: /^[1-9]$|^([1-2][0-9])$|^3[0-2]$/,
-        message: '学时应在1-32之间',
-      },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  name: '',
+  credit: '',
+  period: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    { required: 'true', trigger: 'change', message: '请输入课程编号' },
+    { pattern: /^[1-9]/, message: '课程编号不能以0开头' },
+    { min: 4, max: 4, message: '课程编号的长度应为4' },
+    { pattern: /^[1-9][0-9]{3}$/, message: '课程编号必须是正整数' },
+    { validator: checkId },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入课程名称',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  credit: [
+    { required: 'true', message: '请输入学分', trigger: ['change', 'blur'] },
+    { pattern: /^[1-4]$/, message: '学分应在1-4之间' },
+  ],
+  period: [
+    { required: 'true', message: '请输入课时', trigger: ['change', 'blur'] },
+    {
+      pattern: /^[1-9]$|^([1-2][0-9])$|^3[0-2]$/,
+      message: '学时应在1-32之间',
+    },
+  ],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -117,6 +111,8 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.courseData = res.data;
+      // 存储数据
+      store.commit('handleData', ['course', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载课程信息数据失败');

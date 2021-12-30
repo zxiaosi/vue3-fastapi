@@ -18,14 +18,6 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'Home',
-});
-</script>
-
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';

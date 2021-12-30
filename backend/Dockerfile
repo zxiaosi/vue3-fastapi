@@ -8,7 +8,10 @@ WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 
 # 使用缓存下载安装包
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+#RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+# 使用镜像
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --default-timeout=1000 --no-cache-dir --upgrade -r /code/requirements.txt
 
 # docker部署(https://fastapi.tiangolo.com/zh/deployment/docker/)
 # .表示同级目录下

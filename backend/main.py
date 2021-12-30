@@ -48,4 +48,4 @@ if __name__ == '__main__':
 
     # 平常调试可以开启下面代码,右键运行即可
     # docker部署时注释下面代码
-    # uvicorn.run(app='main:app', host="127.0.0.1", port=8000)
+    uvicorn.run(app='main:app', host="127.0.0.1", port=8000)

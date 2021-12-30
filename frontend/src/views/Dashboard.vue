@@ -164,14 +164,6 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'dashboard',
-});
-</script>
-
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { UserFilled, Message, Goods, Edit, Delete } from '@element-plus/icons'; // 图标

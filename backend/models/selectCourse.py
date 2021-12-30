@@ -5,7 +5,7 @@
 # @desc : 选课表
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, String, ForeignKey, Integer, SmallInteger
+from sqlalchemy import Column, String, ForeignKey, Integer, text
 from sqlalchemy.orm import relationship
 
 from db.base_class import Base
@@ -24,7 +24,7 @@ class SelectCourse(Base):
                 index=True,
                 doc='编号')
 
-    grade = Column(SmallInteger, server_default='0', doc='成绩')
+    grade = Column(Integer, default=0, server_default=text('0'), doc='成绩')
 
     student_id = Column(String(10), ForeignKey('student.id'), doc='学号')
 

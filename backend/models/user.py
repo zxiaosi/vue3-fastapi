@@ -3,7 +3,7 @@
 # @Time : 2021/9/19 17:13
 # @Author : 小四先生
 # @desc : user表(调试)
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 
 from db.base_class import Base
 
@@ -41,5 +41,5 @@ class User(Base):
     #                   )
     hashed_password = Column(String(60), nullable=False)
 
-    # is_active = Column(Boolean(), default=True)
+    is_active = Column(Boolean(), default=True)
     # is_superuser = Column(Boolean(), default=False)

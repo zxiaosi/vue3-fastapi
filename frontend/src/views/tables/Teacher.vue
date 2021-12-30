@@ -1,7 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.teacherData" :form="form" :get-data="getData"
-    :apis="teacher_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.teacherData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="teacher_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
@@ -64,15 +64,15 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="职工号" prop="id">
-        <el-input v-model="form.data.id" placeholder="请输入职工号" maxlength="6" show-word-limit
+        <el-input v-model="formData.id" placeholder="请输入职工号" maxlength="6" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="教师名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="10" show-word-limit />
+        <el-input v-model="formData.name" placeholder="请输入名字" maxlength="10" show-word-limit />
       </el-form-item>
 
       <el-form-item label="教师性别" prop="sex">
-        <el-select v-model="form.data.sex" placeholder="请选择性别">
+        <el-select v-model="formData.sex" placeholder="请选择性别">
           <el-option key="1" label="男" value="man" />
           <el-option key="2" label="女" value="woman" />
         </el-select>
@@ -80,18 +80,18 @@
 
       <el-form-item label="教师生日">
         <el-form-item prop="birthday">
-          <el-date-picker type="date" placeholder="请选择日期" v-model="form.data.birthday"
+          <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday"
             format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;">
           </el-date-picker>
         </el-form-item>
       </el-form-item>
 
       <el-form-item label="教师密码" prop="password">
-        <el-input v-model="form.data.password" placeholder="请输入密码" maxlength="20" show-word-limit />
+        <el-input v-model="formData.password" placeholder="请输入密码" maxlength="20" show-word-limit />
       </el-form-item>
 
       <el-form-item label="教师学历" prop="education">
-        <el-select v-model="form.data.education" placeholder="请选择学历">
+        <el-select v-model="formData.education" placeholder="请选择学历">
           <el-option key="1" label="学士" value="Bachelor" />
           <el-option key="2" label="硕士" value="Master" />
           <el-option key="3" label="博士" value="Doctor" />
@@ -99,7 +99,7 @@
       </el-form-item>
 
       <el-form-item label="教师职称" prop="title">
-        <el-select v-model="form.data.title" placeholder="请选择职称">
+        <el-select v-model="formData.title" placeholder="请选择职称">
           <el-option key="1" label="助教" value="Assistant" />
           <el-option key="2" label="讲师" value="Lecturer" />
           <el-option key="3" label="副教授" value="Associate" />
@@ -108,8 +108,8 @@
       </el-form-item>
 
       <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="form.data.department_id" placeholder="请选择院系"
-          @change="getChange(form.data.department_id)">
+        <el-select v-model="formData.department_id" placeholder="请选择院系"
+          @change="getChange(formData.department_id)">
           <el-option v-for="(dept, index) in state.deptData" :key=index :label=dept.name
             :value=dept.id />
         </el-select>
@@ -119,16 +119,9 @@
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'teacher',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import teacher_apis from '@api/teacher';
@@ -156,49 +149,50 @@ const query = reactive({
   pageSize: 10,
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    name: '',
-    sex: '',
-    birthday: '',
-    password: '',
-    education: '',
-    title: '',
-    department_id: '',
-  },
-  // 定义校验规则
-  rules: {
-    id: [
-      { required: 'true', trigger: 'change', message: '请输入职工号' },
-      { pattern: /^[1-9]/, message: '职工号不能以0开头' },
-      { min: 6, max: 6, message: '职工号的长度应为6' },
-      { pattern: /^[1-9]{5}$/, message: '职工号必须是正整数' },
-      { validator: checkId },
-    ],
-    name: [
-      {
-        required: 'true',
-        message: '请输入教师名称(最大长度为10)',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    sex: [{ required: 'true', message: '请输入教师性别', trigger: 'change' }],
-    birthday: [{ required: 'true', message: '请选择生日', trigger: 'change' }],
-    password: [
-      { required: 'true', message: '请输入密码', trigger: ['change', 'blur'] },
-    ],
-    education: [
-      { required: 'true', message: '请选择教师学历', trigger: 'change' },
-    ],
-    title: [{ required: 'true', message: '请选择教师职称', trigger: 'change' }],
-    department_id: [
-      { required: 'true', message: '请选择院系', trigger: ['change'] },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  name: '',
+  sex: '',
+  birthday: '',
+  password: '',
+  education: '',
+  title: '',
+  department_id: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    { required: 'true', trigger: 'change', message: '请输入职工号' },
+    { pattern: /^[1-9]/, message: '职工号不能以0开头' },
+    { min: 6, max: 6, message: '职工号的长度应为6' },
+    { pattern: /^[1-9]{5}$/, message: '职工号必须是正整数' },
+    { validator: checkId },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入教师名称(最大长度为10)',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  sex: [{ required: 'true', message: '请输入教师性别', trigger: 'change' }],
+  birthday: [{ required: 'true', message: '请选择生日', trigger: 'change' }],
+  password: [
+    { required: 'true', message: '请输入密码', trigger: ['change', 'blur'] },
+  ],
+  education: [
+    { required: 'true', message: '请选择教师学历', trigger: 'change' },
+  ],
+  title: [{ required: 'true', message: '请选择教师职称', trigger: 'change' }],
+  department_id: [
+    { required: 'true', message: '请选择院系', trigger: ['change'] },
+  ],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -208,20 +202,28 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.teacherData = res.data;
+      // 存储数据
+      store.commit('handleData', ['teacher', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载教师信息数据失败！');
     });
 
   // 获取院系信息
-  department_apis
-    .read_datas()
-    .then((res) => {
-      state.deptData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载院系信息数据失败！');
-    });
+  if (store.state.departmentData == '') {
+    department_apis
+      .read_datas()
+      .then((res) => {
+        state.deptData = res.data;
+        // 存储数据
+        store.commit('handleData', ['department', res.data]);
+      })
+      .catch(() => {
+        ElMessage.error('加载院系信息数据失败！');
+      });
+  } else {
+    state.deptData = store.state.departmentData;
+  }
 }
 
 // 页面加载后调用函数

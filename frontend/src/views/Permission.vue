@@ -18,12 +18,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'permission',
-};
-</script>
-
 <style scoped>
 h1 {
   text-align: center;

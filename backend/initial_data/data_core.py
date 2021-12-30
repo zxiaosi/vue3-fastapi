@@ -11,6 +11,7 @@ from datetime import date
 userData = [
     {'full_name': '小刘', 'hashed_password': '123'},
     {'full_name': '小赵', 'hashed_password': '123'},
+    {'full_name': 'admin', 'hashed_password': '$2b$12$fSWir4aZ2fVI1jZLAjvltOmW/S0XV5s3C5VeoYlKYtkpBmDQipPJa'},
 ]
 
 departmentData = [

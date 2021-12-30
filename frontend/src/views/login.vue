@@ -27,14 +27,6 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'Home',
-});
-</script>
-
 <script setup>
 import { ref, reactive } from 'vue';
 import { useStore } from 'vuex';

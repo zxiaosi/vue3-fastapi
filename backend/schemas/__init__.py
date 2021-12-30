@@ -11,3 +11,4 @@ from .teacher import TeacherCreate, TeacherUpdate, TeacherReturn, TeacherInDB
 from .student import StudentCreate, StudentUpdate, StudentReturn, StudentInDB
 from .course import CourseCreate, CourseUpdate, CourseReturn, CourseInDB
 from .selectCourse import SelectCourseCreate, SelectCourseUpdate, SelectCourseReturn, SelectCourseInDB
+from .token import Token, TokenPayload

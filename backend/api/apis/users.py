@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
+import models
 from api import deps
 from utils.logger import logger
 
@@ -22,6 +23,7 @@ def read_users(
         db: Session = Depends(deps.get_db),
         skip: int = 0,
         limit: int = 100,
+        current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     查询从 skip 到 limit 的用户
@@ -36,6 +38,7 @@ def read_users(
 def read_user(
         user_id: int,
         db: Session = Depends(deps.get_db),
+        current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     通过 id 查询用户
@@ -57,6 +60,7 @@ def create_user(
         *,
         db: Session = Depends(deps.get_db),
         user_in: schemas.UserCreate,
+        # current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     添加用户信息
@@ -80,6 +84,7 @@ def update_user(
         db: Session = Depends(deps.get_db),
         user_id: int,
         user_in: schemas.UserUpdate,
+        current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     通过 id 更新用户信息
@@ -101,7 +106,8 @@ def update_user(
 def delete_user(
         *,
         db: Session = Depends(deps.get_db),
-        user_id: int
+        user_id: int,
+        current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     通过 id 删除用户信息

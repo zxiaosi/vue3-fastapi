@@ -2,4 +2,3 @@
 __pycache__
 *.log*
 logs
-sql_app.db

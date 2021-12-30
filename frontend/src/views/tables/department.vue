@@ -1,8 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.deptData" :form="form" :get-data="getData"
-    :apis="department_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
-
+  <base-table :page="page" :query="query" :data="state.deptData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="department_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
     <!-- 暂无 -->
     <template #filter />
 
@@ -18,34 +17,25 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="院系编号" prop="id">
-        <el-input v-model="form.data.id" placeholder="请输入编号" maxlength="4" show-word-limit
-          :disabled=state.isDisabled />
+        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="4" show-word-limit
+          :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="院系名字" prop="name">
-        <el-input v-model="form.data.name" placeholder="请输入名字" maxlength="20" show-word-limit />
+        <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="主任名" prop="chairman">
-        <el-input v-model="form.data.chairman" placeholder="请输入主任名" maxlength="10"
-          show-word-limit />
+        <el-input v-model="formData.chairman" placeholder="请输入主任名" maxlength="10" show-word-limit />
       </el-form-item>
       <el-form-item label="主任手机号" prop="phone">
-        <el-input v-model="form.data.phone" type="tel" placeholder="手机号" maxlength="11" />
+        <el-input v-model="formData.phone" type="tel" placeholder="手机号" maxlength="11" />
       </el-form-item>
     </template>
-
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'department',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import department_apis from '@api/department';
@@ -70,47 +60,48 @@ const query = reactive({
   pageSize: 10, // 每页个数
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    name: '',
-    chairman: '',
-    phone: '',
-  },
-  // 定义校验规则
-  rules: {
-    id: [
-      { required: 'true', trigger: 'change', message: '请输入院系编号' },
-      { pattern: /^10/, message: '院系编号要以10开头' },
-      { min: 4, max: 4, message: '院系编号的长度应为4' },
-      { pattern: /^10[0-9]{2}$/, message: '院系编号必须是正整数' },
-      { validator: checkId },
-    ],
-    name: [
-      {
-        required: 'true',
-        message: '请输入院系名称',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    chairman: [
-      {
-        required: 'true',
-        message: '请输入院系主任名',
-        trigger: ['change', 'blur'],
-      },
-    ],
-    phone: [
-      {
-        pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
-        message: '请输入正确的手机号',
-        trigger: ['change', 'blur'],
-      },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  name: '',
+  chairman: '',
+  phone: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  id: [
+    { required: 'true', trigger: 'change', message: '请输入院系编号' },
+    { pattern: /^10/, message: '院系编号要以10开头' },
+    { min: 4, max: 4, message: '院系编号的长度应为4' },
+    { pattern: /^10[0-9]{2}$/, message: '院系编号必须是正整数' },
+    { validator: checkId },
+  ],
+  name: [
+    {
+      required: 'true',
+      message: '请输入院系名称',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  chairman: [
+    {
+      required: 'true',
+      message: '请输入院系主任名',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  phone: [
+    {
+      pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/,
+      message: '请输入正确的手机号',
+      trigger: ['change', 'blur'],
+    },
+  ],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -120,6 +111,8 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.deptData = res.data;
+      // 存储数据
+      store.commit('handleData', ['department', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载院系信息数据失败!');
@@ -171,7 +164,8 @@ defineExpose({
   page,
   state,
   query,
-  form,
+  formData,
+  formRules,
   getData,
   emitIsDisabled,
   emitIsShowSearched,

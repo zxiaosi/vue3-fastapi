@@ -1,7 +1,7 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.selectCourseData" :form="form"
-    :get-data="getData" :apis="selectCourse_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.selectCourseData" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="selectCourse_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
@@ -29,30 +29,29 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="编号" prop="id" v-show="!state.addOrUpdate">
-        <el-input v-model="form.data.id" placeholder="请输入编号(自增)" maxlength="10" show-word-limit
+        <el-input v-model="formData.id" placeholder="请输入编号(自增)" maxlength="10" show-word-limit
           :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="成绩" prop="grade">
-        <el-input v-model="form.data.grade" placeholder="请输入成绩(默认为0)" maxlength="3"
-          show-word-limit />
+        <el-input v-model="formData.grade" placeholder="请输入成绩" maxlength="3" show-word-limit />
       </el-form-item>
 
       <el-form-item label="学生" prop="student_id">
-        <el-select v-model="form.data.student_id" placeholder="学生名">
+        <el-select v-model="formData.student_id" placeholder="学生名">
           <el-option v-for="(student, index) in state.studentData" :key=index :label=student.name
             :value=student.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="教师" prop="teacher_id">
-        <el-select v-model="form.data.teacher_id" placeholder="教师名">
+        <el-select v-model="formData.teacher_id" placeholder="教师名">
           <el-option v-for="(teacher, index) in state.teacherData" :key=index :label=teacher.name
             :value=teacher.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="课程" prop="course_id">
-        <el-select v-model="form.data.course_id" placeholder="课程名">
+        <el-select v-model="formData.course_id" placeholder="课程名">
           <el-option v-for="(course, index) in state.courseData" :key=index :label=course.name
             :value=course.id />
         </el-select>
@@ -62,16 +61,9 @@
   </base-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'selectcourse',
-});
-</script>
-
 <script setup>
 import { reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import selectCourse_apis from '@api/selectCourse';
@@ -103,36 +95,33 @@ const query = reactive({
   pageSize: 10,
 });
 
-// 表单信息
-const form = reactive({
-  // 表单对象
-  data: {
-    id: '',
-    grade: '',
-    student_id: '',
-    teacher_id: '',
-    course_id: '',
-  },
-  // 定义校验规则
-  rules: {
-    grade: [
-      { message: '请输入成绩', trigger: ['change', 'blur'] },
-      {
-        pattern: /^100|(^([1-9]{0,1})([0-9]{1}))$/,
-        message: '请输入正确的成绩分数',
-      },
-    ],
-    student_id: [
-      { required: 'true', message: '请选择学生', trigger: 'change' },
-    ],
-    teacher_id: [
-      { required: 'true', message: '请选择教师', trigger: 'change' },
-    ],
-    course_id: [
-      { required: 'true', message: '请选课课程', trigger: ['change', 'blur'] },
-    ],
-  },
+// 表单对象
+const formData = reactive({
+  id: '',
+  grade: 0,
+  student_id: '',
+  teacher_id: '',
+  course_id: '',
 });
+
+// 定义校验规则
+const formRules = reactive({
+  grade: [
+    { required: 'true', message: '请输入成绩', trigger: ['change', 'blur'] },
+    {
+      pattern: /^100|(^([0]{0})([1-9]{0,1})([0-9]{1}))$/,
+      message: '请输入正确的成绩分数',
+    },
+  ],
+  student_id: [{ required: 'true', message: '请选择学生', trigger: 'change' }],
+  teacher_id: [{ required: 'true', message: '请选择教师', trigger: 'change' }],
+  course_id: [
+    { required: 'true', message: '请选课课程', trigger: ['change', 'blur'] },
+  ],
+});
+
+// 状态管理
+const store = useStore();
 
 /**
  * 获取表格数据
@@ -142,40 +131,58 @@ function getData() {
     .read_datas()
     .then((res) => {
       state.selectCourseData = res.data;
+      // 存储数据
+      store.commit('handleData', ['selectCourse', res.data]);
     })
     .catch(() => {
       ElMessage.error('加载选课信息数据失败！');
     });
 
   // 获取学生信息
-  student_apis
-    .read_datas()
-    .then((res) => {
-      state.studentData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载学生信息数据失败！');
-    });
+  if (store.state.studentData == '') {
+    student_apis
+      .read_datas()
+      .then((res) => {
+        state.studentData = res.data;
+        // 存储数据
+        store.commit('handleData', ['student', res.data]);
+      })
+      .catch(() => {
+        ElMessage.error('加载学生信息数据失败！');
+      });
+  } else {
+    state.studentData = store.state.studentData;
+  }
 
   // 获取教师信息
-  teacher_apis
-    .read_datas()
-    .then((res) => {
-      state.teacherData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载教师信息数据失败！');
-    });
+  if (store.state.teacherData == '') {
+    teacher_apis
+      .read_datas()
+      .then((res) => {
+        state.teacherData = res.data;
+        // 存储数据
+        store.commit('handleData', ['teacher', res.data]);
+      })
+      .catch(() => {
+        ElMessage.error('加载教师信息数据失败！');
+      });
+  } else {
+    state.teacherData = store.state.teacherData;
+  }
 
   // 获取课程信息
-  course_apis
-    .read_datas()
-    .then((res) => {
-      state.courseData = res.data;
-    })
-    .catch(() => {
-      ElMessage.error('加载课程信息数据失败！');
-    });
+  if (store.state.courseData == '') {
+    course_apis
+      .read_datas()
+      .then((res) => {
+        state.courseData = res.data;
+      })
+      .catch(() => {
+        ElMessage.error('加载课程信息数据失败！');
+      });
+  } else {
+    state.courseData = store.state.courseData;
+  }
 }
 
 // 页面加载后调用函数

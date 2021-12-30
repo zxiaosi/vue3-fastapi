@@ -30,6 +30,7 @@
 + `v4.2` 尝试部署中。。。
 + `v4.3` 部署成功,修复了部分bug
 + `v4.4` 测试token
++ `v4.5` 调试token成功(admin, 123)
 
 ## 安装
 
@@ -48,6 +49,7 @@
    pip install python-jose
    pip install passlib
    pip install bcrypt
+   pip install python-multipart
    
    # 使用mysql, 请安装下面包
    pip install mysqlclient

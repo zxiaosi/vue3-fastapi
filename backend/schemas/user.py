@@ -12,6 +12,7 @@ from pydantic.schema import datetime
 class UserBase(BaseModel):
     id: Optional[int] = None
     full_name: Optional[str] = None
+    is_active: Optional[bool] = True
     # sex: Optional[str] = None
     # birthday: Optional[datetime] = datetime.now()
     # is_active: Optional[bool] = True
