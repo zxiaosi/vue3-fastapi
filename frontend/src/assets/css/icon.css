@@ -1,0 +1,10 @@
+/* 修改图标见 https://www.jianshu.com/p/59dd28f0b9c9 */
+[class*=" el-icon-ali"],
+[class^=el-icon-ali] {
+    font-family: "iconfont" !important;
+    /* 图标整体上移 */
+    font-size: 1rem;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

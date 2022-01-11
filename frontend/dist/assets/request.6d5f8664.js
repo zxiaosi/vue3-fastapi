@@ -1,0 +1,1 @@
+import{a as t}from"./axios.7aed06b8.js";const s=t.create({baseURL:"https://fastapi.zxiaosi.net/api/",timeout:1e4});s.interceptors.request.use(e=>e,e=>(console.log(e),Promise.reject()));s.interceptors.response.use(e=>{if(e.status===200)return e.data;Promise.reject()},e=>(console.log(e),Promise.reject()));export{s};
