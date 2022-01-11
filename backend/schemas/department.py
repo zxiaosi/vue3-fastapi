@@ -1,47 +1,35 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/22 9:59
-# @Author : 小四先生
-# @desc : 院系表的Pydantic数据验证
-# 共享属性
+# @Author : zxiaosi
+# @desc : JSON字段验证[院系表]
 from typing import Optional
-
 from pydantic import BaseModel, Field
 
 
-# 共享JSON字段属性
-class DepartmentBase(BaseModel):
+# id 使用 str 为了能够使用正则表达式匹配
+# ... 表示必填, 和max_length冲突, 使用max_length可以输入空值
+# Optional[str]: union[str, None] --> 表示 数据可以为str类型或者为空
+
+# 共享JSON字段
+class DepartmentIn(BaseModel):
+    name: str = Field(min_length=1, max_length=20, example='院系名字', title='院系名字')
+    chairman: str = Field(min_length=1, max_length=10, example='主任名', title='主任名')
+    phone: Optional[str] = Field(regex=r'(^\s{0}$)|^(0\d{2,3}-\d{7,8})|(1[34578]\d{9})$',  # 匹配 '' || 手机号
+                                 max_length=11, example='主任手机号', title='主任手机号')
+
+
+# 添加数据的JSON字段
+class DepartmentCreate(DepartmentIn):
     id: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='院系编号', title='院系编号')
-    name: str = Field(max_length=20, example='院系名字', title='院系名字')
-    chairman: str = Field(max_length=10, example='主任名', title='主任名')
-    phone: Optional[str] = Field(default=None, max_length=11, example='主任手机号', title='主任手机号')  # 默认值为空
 
 
-# 通过API创建时接收的JSON字段
-class DepartmentCreate(DepartmentBase):
-    """ 通过API创建时接收的JSON字段 """
+# 更新数据的JSON字段
+class DepartmentUpdate(DepartmentIn):
     pass
 
 
-# 通过API更新时接收的JSON字段
-class DepartmentUpdate(DepartmentBase):
-    """ 通过API更新时接收的JSON字段 """
-    pass
-
-
-# 创建数据库
-class DepartmentInDBBase(DepartmentBase):
+# 查询数据的JSON字段
+class DepartmentOut(DepartmentCreate):
     class Config:
-        orm_mode = True  # 是否为orm模型
-
-
-# 通过API返回的附加JSON字段
-class DepartmentReturn(DepartmentInDBBase):
-    """ 通过API返回的附加JSON字段 """
-    pass
-
-
-# 存储在DB中的附加JSON字段
-class DepartmentInDB(DepartmentInDBBase):
-    """ 存储在DB中的附加JSON字段 """
-    pass
+        orm_mode = True  # 是否使用orm模型

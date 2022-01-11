@@ -31,6 +31,7 @@
 + `v4.3` 部署成功,修复了部分bug
 + `v4.4` 测试token
 + `v4.5` 调试token成功(admin, 123)
++ `v4.6` 重构FastAPI
 
 ## 安装
 
@@ -39,7 +40,7 @@
 2. 安装运行所需的包
 
    ```python
-   pip install requirements.txt(未安装mysql支持)
+   pip install requirements.txt
    
    # 或者
    pip install fastapi
@@ -50,6 +51,8 @@
    pip install passlib
    pip install bcrypt
    pip install python-multipart
+   pip install orjson
+   pip install aioredis
    
    # 使用mysql, 请安装下面包
    pip install mysqlclient
@@ -78,15 +81,28 @@
 
 ```sh
 |-- backend
-    |-- api					    # 接口文档
+    |-- api					            # 接口文档
         |-- __init__.py	        
-        |-- deps.py	            # 获取数据库连接对象
-        |-- api_v1              # api版本1
+        |-- apis                        # api版本1
             |-- __init__.py	       	        
-            |-- api_router.py	       	# 接口汇总       
-            |-- apis	    # 接口
-                |-- __init__.py	           
-                |-- users.py	# 用户表接口
+            |-- admin
+                |-- __init__.py       	       	        
+                |-- admin_api.py        # 管理员api汇总	       	                  
+                |-- course.py	        # 课程表接口
+                |-- department.py	    # 院系表接口
+                |-- major.py	        # 专业表接口
+                |-- selectCourse.py	    # 选课表接口
+                |-- student.py	        # 学生表接口
+                |-- teacher.py	        # 教师表接口
+                |-- users.py	        # 用户表接口
+            |-- teacher
+                |-- __init__.py       	       	        
+                |-- teacher_api.py      # 教师api汇总	       	                  
+            |-- student
+                |-- __init__.py       	       	        
+                |-- student_api.py      # 学生api汇总	       	                  
+        |-- deps.py	                    # 获取数据库连接对象
+        |-- api_router.py	       	    # 接口汇总    
                          
 	|-- core					# 核心内容
 		|-- __init__.py			    
@@ -96,10 +112,12 @@
 	|-- crud					# 数据库的增删改查操作
 		|-- __init__.py			# 抛出操作表数据文件中的类
 		|-- base.py     		# 封装数据库增删改查方法
-		|-- crud_user.py		# 用户表--增删改查方法
+		|-- crud_course.py	    # 课程表--增删改查方法
 		|-- crud_department.py	# 院系表--增删改查方法
 		|-- crud_major.py		# 专业表--增删改查方法
+		|-- crud_selectCourse.py # 选课表--增删改查方法
 		|-- crud_teacher.py		# 教师表--增删改查方法
+		|-- crud_user.py		# 用户表--增删改查方法
 		|-- crud_student.py		# 学生表--增删改查方法
 		
  	|-- db						# 数据库相关
@@ -111,8 +129,7 @@
 		
 	|-- initial_data            # 初始化表数据
     	|-- __init__.py			# 抛出初始化表数据的两种方法
-    	|-- data_core.py		# 所有数据
-    	|-- data_orm.py			# 加工 data_core 中的数据
+    	|-- data.py		        # 所有数据
     	|-- init_data.py		# 两种初始化表数据的方式
     	
     |-- logs                    # 日志模块(自动生成)
@@ -123,7 +140,6 @@
 	|-- models                  # ORM模型映射
 		|-- __init__.py			# 抛出ORM模型对象
 		|-- admin.py			# 管理员表
-		|-- control.py			# 控制表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
 		|-- major.py			# 专业表
@@ -132,10 +148,18 @@
 		|-- teacher.py			# 教师表
 		|-- user.py				# 调试表
 		
+	|-- register                # 加载注册中心
+	    |-- __init__.py			# 抛出加载注册中心
+	    |-- app.py			    # 挂载其他app
+	    |-- cors.py			    # 注册跨域请求
+	    |-- exception.py		# 注册全局异常
+	    |-- middleware.py		# 注册请求响应拦截
+	    |-- redis.py		    # 注册Redis
+	    |-- router.py		    # 注册路由
+	    
 	|-- schemas                 # Pydantic数据验证
 		|-- __init__.py			# 抛出Pydantic数据验证
 		|-- admin.py			# 管理员表数据验证
-		|-- control.py			# 控制表数据验证
 		|-- course.py			# 课程表数据验证
 		|-- department.py		# 院系表数据验证
 		|-- major.py			# 专业表数据验证
@@ -144,27 +168,16 @@
 		|-- teacher.py			# 教师表数据验证
 		|-- user.py				# 调试表数据验证
 		
-	|-- utils                   # 封装工具
+	|-- utils                   # 工具
 	    |-- __init__.py		    # 抛出工具类
-	    |-- logger.py		    # 封装日志模块
-	    |-- response.py	# 封装统一的响应JSON数据
-		
-	|-- test                    # 测试文件夹
-    	|-- __init__.py				
-    	|-- db_init				# 调试初始化表数据
-    		|-- __init__.py			
-    		|-- data_core.py	# 需要初始化数据
-    		|-- initial_data.py	# 初始化的方法
-    		
-    	|-- logger              # 调试日志模块
-    	    |-- __init__.py			
-    	    |-- logger_01.py	# 创建单个日志
-    	    |-- logger_02.py	# 创建日志文件夹
-    	    |-- logger_03.py	# 创建日志文件夹(自动删除)
-    	    |-- logger_04.py	# 创建日志(单线程)
-    	    
+	    |-- custon_exc.py		# 自定义异常
+	    |-- logger.py		    # 日志模块
+	    |-- response.py	        # 状态码
+	
 	|-- __init__.py
 	|-- main.py					# 主程序
+	|-- Dockerfile              # Dockerfile文件
+	|-- README.md               # Readme文件
 	|-- requirements.txt		# 所需的包
 	|-- sql_app.db              # sqlite数据库
 ```

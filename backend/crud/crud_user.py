@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/14 17:01
-# @Author : 小四先生
+# @Author : zxiaosi
 # @desc : 用户表--增删改查方法
 from utils.logger import logger
 from typing import Any, Dict, Union, Optional
 
 from sqlalchemy.orm import Session
 
-from core.security import get_password_hash, verify_password
+from core import get_password_hash, verify_password
 from crud.base import CRUDBase
 from models import User
 from schemas import UserCreate, UserUpdate

@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 # @Time : 2021/11/17 11:05
-# @Author : 小四先生
+# @Author : zxiaosi
 # @desc : 操作学生表
 from datetime import datetime
-from typing import Union, Dict, Any, List
-
+from typing import Union, Dict, Any
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from core.security import get_password_hash
+from core import get_password_hash
 from crud.base import CRUDBase
 from models import Student
 from schemas import StudentCreate, StudentUpdate
@@ -38,16 +37,13 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
         db.refresh(db_obj)
         return db_obj
 
-    def update(
-            self, db: Session, *, db_obj: Student, obj_in: Union[StudentUpdate, Dict[str, Any]]
-    ) -> Student:
+    def update(self, db: Session, *, db_obj: Student, obj_in: Union[StudentUpdate, Dict[str, Any]]) -> Student:
         """
         更新学生信息
 
         :param db: Session
         :param db_obj: MStudent 学生对象
-        :param obj_in: UpdateSchemaType schemas类型
-        :param obj_in: Dict[str, Any] 字典数据
+        :param obj_in: schemas类型 或者 字典数据
         :return: 学生对象
         """
         if isinstance(obj_in, dict):

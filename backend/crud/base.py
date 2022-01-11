@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/14 17:00
-# @Author : 小四先生
+# @Author : zxiaosi
 # @desc : 封装数据库增删改查方法
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
-
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import func, distinct
@@ -24,8 +23,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         参数 :
 
-        * `model`: A SQLAlchemy model class
-        * `schema`: A Pydantic model (schema) class
+        * `model`: ORM模型类
+        * `schema`: 数据验证模型类
         """
         self.model = model
 
@@ -35,7 +34,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         :param db: Session
         :param id: ID
-        :return: 查询到的对象
+        :return: 查询到的orm模型对象
         """
         # table_name = self.model.__tablename__
         # table_id = table_name + '_id'
@@ -44,29 +43,26 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         return db.query(self.model).filter(self.model.id == id).first()
 
-    def get_multi(
-            self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[ModelType]:
+    def get_multi(self, db: Session, *, pageIndex: int = 1, pageSize: int = 10) -> dict[str, List[ModelType]]:
         """
         获取 skip-limit 的对象集
 
         :param db: Session
-        :param skip: 起始 (默认值0)
-        :param limit: 结束 (默认值100)
-        :return: 查询到的对象集
+        :param pageIndex: 页码 (默认值1)
+        :param pageSize: 页码 (默认10)
+        :return: 查询到的orm模型对象集
         """
-        # list = db.query(self.model).offset(skip).limit(limit).all()
-        # count = db.query(func.count(distinct(self.model.id))).scalar()
-        # print({'list': list, 'count': count})
-        return db.query(self.model).offset(skip).limit(limit).all()
+        data = db.query(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).all()
+        count: int = db.query(func.count(distinct(self.model.id))).scalar()
+        return {'count': count, 'dataList': data}
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         """
-        创建对象
+        添加对象
 
         :param db: Session
-        :param obj_in: CreateSchemaType schemas类型
-        :return: 模型对象
+        :param obj_in: 创建模型
+        :return: orm模型对象
         """
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
@@ -75,21 +71,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def update(
-            self,
-            db: Session,
-            *,
-            db_obj: ModelType,
-            obj_in: Union[UpdateSchemaType, Dict[str, Any]]
-    ) -> ModelType:
+    def update(self, db: Session, *, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
         """
         更新对象
 
         :param db: Session
-        :param db_obj: ModelType 模型对象
-        :param obj_in: UpdateSchemaType schemas类型
-        :param obj_in: Dict[str, Any] 字典数据
-        :return: 模型对象
+        :param db_obj: orm模型对象
+        :param obj_in: 更新模型 或者 字典数据
+        :return: orm模型对象
         """
         obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):
@@ -110,9 +99,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         :param db: Session
         :param id: ID
-        :return: 删除对象的结果
+        :return: orm模型对象
         """
         obj = db.query(self.model).get(id)
         db.delete(obj)
         db.commit()
         return obj
+
+    def get_multi_relation(self, db: Session):
+        """
+        只获取关系字段
+
+        :param db: Session
+        :return: 查询到的关系字段
+        """
+        return db.query(self.model.id, self.model.name).distinct().all()

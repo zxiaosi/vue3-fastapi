@@ -13,7 +13,7 @@
 
 ## 安装
 
-+ **后端安装**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md
++ **后端安装**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md（参考[CharmCode](https://www.charmcode.cn/category/FastAPI?page=1)）
 + **前端安装**：Vue3+ElementPlus+Vite --> `frontend` --> README.md (参考[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system))
 
 ## 版本
@@ -29,6 +29,7 @@
 + `1.8` 封装组件，取出冗余代码
 + `1.9` 自定义表格组件
 + `2.0` 部署项目
++ `2.1` 重构FastAPI
 
 ## 开启服务
 

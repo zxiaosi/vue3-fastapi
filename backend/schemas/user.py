@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 # @Time : 2021/9/22 9:41
-# @Author : 小四先生
+# @Author : zxiaosi
 # @desc : user的Pydantic数据验证
 from typing import Optional
 from pydantic import BaseModel
