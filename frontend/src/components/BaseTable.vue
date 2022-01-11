@@ -162,7 +162,7 @@ watchEffect(() => {
     removeSearch();
   }
 
-  if (pageTotal.value == 0) {
+  if (data.value == '') {
     loading = setTimeout(function () {
       state.isLoading = false;
     }, 3000);
