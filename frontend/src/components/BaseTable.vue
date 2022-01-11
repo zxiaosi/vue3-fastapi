@@ -44,7 +44,7 @@
       <!-- 表格数据 -->
       <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table"
         max-height="578" :default-sort="{ prop: 'id', order: 'ascending' }"
-        @selection-change="handleSelectionChange" v-loading="state.isLoading"
+        @selection-change="handleSelectionChange" v-loading="state.isLoading || data == ''"
         element-loading-text="拼命加载中...">
 
         <!-- 勾选框 -->
@@ -162,12 +162,14 @@ watchEffect(() => {
     removeSearch();
   }
 
-  if (data.value == '') {
+  if (pageTotal.value == 0) {
     loading = setTimeout(function () {
       state.isLoading = false;
     }, 3000);
   } else {
-    state.isLoading = false;
+    loading = setTimeout(function () {
+      state.isLoading = false;
+    }, 1000);
   }
 
   // 是否显示被选择的值
