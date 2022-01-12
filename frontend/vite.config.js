@@ -50,8 +50,8 @@ export default defineConfig({
 
   // 全局常量
   define: {
-    BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
-    // BASE_URL: JSON.stringify('https://fastapi.zxiaosi.net/api/'),
+    // BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
+    BASE_URL: JSON.stringify('https://fastapi.zxiaosi.net/api/'),
     TIMEOUT: 10000,
     TITLE: JSON.stringify('学生选课系统'),
   }

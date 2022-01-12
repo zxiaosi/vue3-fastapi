@@ -110,7 +110,7 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   course_apis
-    .read_datas(currentPage)
+    .read_datas(currentPage, query.pageSize)
     .then((res) => {
       state.courseData = res.data.dataList;
       state.pageTotal = res.data.count;

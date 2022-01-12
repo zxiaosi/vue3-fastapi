@@ -129,7 +129,7 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   major_apis
-    .read_datas(currentPage)
+    .read_datas(currentPage, query.pageSize)
     .then((res) => {
       state.majorData = res.data.dataList;
       state.pageTotal = res.data.count;
