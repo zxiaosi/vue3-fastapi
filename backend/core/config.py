@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     # 跨域请求
     CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost", "http://localhost:3000", "http://localhost:8000",
-                                      "http://8.136.82.204"]
+                                      "http://8.136.82.204:8001"]
 
     # token
     SECRET_KEY: str = secrets.token_urlsafe(32)  # 加密密钥

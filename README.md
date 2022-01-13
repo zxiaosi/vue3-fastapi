@@ -2,7 +2,7 @@
 
 ## 预览
 
-+ [Vue3+Vite+ElementPlus](http://8.136.82.204/)
++ [Vue3+Vite+ElementPlus](http://8.136.82.204:8001/)
 + [FastAPI接口预览](http://8.136.82.204:8000/)
 
 ## 介绍
