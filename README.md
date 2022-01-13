@@ -2,8 +2,8 @@
 
 ## 预览
 
-+ [Vue3+Vite+ElementPlus](https://vue.zxiaosi.net/)
-+ [FastAPI接口预览](http://fastapi.zxiaosi.net/)
++ [Vue3+Vite+ElementPlus](http://8.136.82.204/)
++ [FastAPI接口预览](http://8.136.82.204:8000/)
 
 ## 介绍
 

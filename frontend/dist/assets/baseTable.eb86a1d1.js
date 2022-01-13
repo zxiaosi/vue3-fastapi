@@ -1,1 +1,0 @@
-import{s as t}from"./request.6d5f8664.js";const a=e=>t({url:"http://localhost:3000/table.json",method:"get",params:e}),u=e=>t({url:"./users/?skip=0&limit=100",method:"get",params:e}),o=e=>t({url:`./users/${e}`,method:"delete"}),d=(e,s)=>t({url:`./users/${e}`,method:"put",data:s}),l=e=>t({url:"./users/",method:"post",data:e});export{l as a,d as b,o as d,a as f,u};
