@@ -69,11 +69,3 @@ def delete_teacher(*, db: Session = Depends(deps.get_db), id: int) -> Any:
     """ 通过 id 删除教师信息 """
     del_teacher = crud.teacher.remove(db, id=id)
     return resp_200(data=del_teacher, msg=f"删除了 id 为 {id} 的教师信息.")
-
-
-# 只获取关系字段
-@router.get("/relation/", response_class=ORJSONResponse, summary='获取到 教师表 中的关系字段')
-def get_teacher_relation(db: Session = Depends(deps.get_db)) -> Any:
-    """ 只获取关系字段 """
-    get_teachers = crud.teacher.get_multi_relation(db)
-    return resp_200(data=get_teachers, msg="获取到 教师表 中的关系字段.")

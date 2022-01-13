@@ -6,11 +6,11 @@ import request from '../utils/request';
  * @param {*} pageSize 10
  * @returns 所有院系信息(根据页码和每页个数)
  */
-function read_datas(pageIndex = 1, pageSize = 10) {
+function read_datas(data) {
   return request({
     url: `./department/`,
     method: 'get',
-    params: { pageIndex: pageIndex, pageSize: pageSize }
+    params: data
   });
 };
 
@@ -65,22 +65,10 @@ function delete_data(id) {
   });
 };
 
-/**
- * 获取关系字段
- * @returns 
- */
-function department_relation() {
-  return request({
-    url: `./department/relation/`,
-    method: 'get'
-  });
-}
-
 export default {
   read_datas,
   read_data,
   create_data,
   update_data,
   delete_data,
-  department_relation
 } 

@@ -1,15 +1,15 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.teacherData" :page-total="state.pageTotal"
-    :form-data="formData" :form-rules="formRules" :get-data="getData" :apis="teacher_apis"
-    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.teacherData" :page-total="state.pageTotal" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="teacher_apis" @emit-is-disabled="emitIsDisabled"
+    @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="职工号" width="140" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="职工号" width="140" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="教师名字" width="140" align="center" />
 
       <el-table-column prop="sex" label="教师性别" width="140" align="center">
@@ -20,8 +20,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="birthday" label="教师生日" width="220" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="birthday" label="教师生日" width="220" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="education" label="教师学历" width="140" align="center">
         <template #default="scope">
@@ -56,16 +56,14 @@
       </el-table-column>
 
       <el-table-column prop="department_id" label="院系名字" min-width="220" align="center">
-        <template
-          #default="scope">{{byIdGetName(scope.row.department_id, state.deptData)}}</template>
+        <template #default="scope">{{byIdGetName(scope.row.department_id, state.deptData)}}</template>
       </el-table-column>
     </template>
 
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="职工号" prop="id">
-        <el-input v-model="formData.id" placeholder="请输入职工号" maxlength="6" show-word-limit
-          :disabled=state.isDisabled />
+        <el-input v-model="formData.id" placeholder="请输入职工号" maxlength="6" show-word-limit :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="教师名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="10" show-word-limit />
@@ -80,8 +78,8 @@
 
       <el-form-item label="教师生日">
         <el-form-item prop="birthday">
-          <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday"
-            format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;">
+          <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday" format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD" style="width: 100%;">
           </el-date-picker>
         </el-form-item>
       </el-form-item>
@@ -108,10 +106,8 @@
       </el-form-item>
 
       <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="formData.department_id" placeholder="请选择院系"
-          @change="getChange(formData.department_id)">
-          <el-option v-for="(dept, index) in state.deptData" :key=index :label=dept.name
-            :value=dept.id />
+        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
+          <el-option v-for="(dept, index) in state.deptData" :key=index :label=dept.name :value=dept.id />
         </el-select>
       </el-form-item>
     </template>
@@ -127,6 +123,7 @@ import BaseTable from '@components/BaseTable.vue';
 import teacher_apis from '@api/teacher';
 import department_apis from '@api/department';
 import { byIdGetName } from '@utils/byIdGetName';
+import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -201,10 +198,15 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   teacher_apis
-    .read_datas(currentPage, query.pageSize)
+    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
     .then((res) => {
       state.teacherData = res.data.dataList;
       state.pageTotal = res.data.count;
+      // 存储关系数据
+      store.commit('handleData', [
+        page.pageNameEn,
+        storeData(res.data.dataList),
+      ]);
     })
     .catch(() => {
       ElMessage.error(`加载${page.pageName}表数据失败!`);
@@ -213,10 +215,11 @@ function getData(currentPage = 1) {
   // 获取院系信息
   if (store.state.departmentData == '') {
     department_apis
-      .department_relation()
+      .read_datas()
       .then((res) => {
-        state.deptData = res.data;
-        store.commit('handleData', ['department', res.data]);
+        let dataList = storeData(res.data.dataList);
+        state.deptData = dataList;
+        store.commit('handleData', ['department', dataList]);
       })
       .catch(() => {
         ElMessage.error(`存储院系表数据失败!`);

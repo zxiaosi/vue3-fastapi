@@ -1,20 +1,19 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.majorData" :page-total="state.pageTotal"
-    :form-data="formData" :form-rules="formRules" :get-data="getData" :apis="major_apis"
-    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.majorData" :page-total="state.pageTotal" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="major_apis" @emit-is-disabled="emitIsDisabled"
+    @emit-is-show-searched="emitIsShowSearched">
     <!-- 暂无 -->
     <template #filter />
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="专业编号" width="140" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="专业编号" width="140" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="专业名字" width="220" align="center" />
       <el-table-column prop="assistant" label="辅导员姓名" width="140" align="center" />
       <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
       <el-table-column prop="department_id" label="院系名字" min-width="220" align="center">
-        <template
-          #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
+        <template #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
       </el-table-column>
     </template>
 
@@ -28,17 +27,14 @@
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员姓名" prop="assistant">
-        <el-input v-model="formData.assistant" placeholder="请输入辅导员姓名" maxlength="10"
-          show-word-limit />
+        <el-input v-model="formData.assistant" placeholder="请输入辅导员姓名" maxlength="10" show-word-limit />
       </el-form-item>
       <el-form-item label="辅导员手机号" prop="phone">
         <el-input v-model="formData.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
       </el-form-item>
       <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="formData.department_id" placeholder="请选择院系"
-          @change="getChange(formData.department_id)">
-          <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name"
-            :value="dept.id" />
+        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
+          <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name" :value="dept.id" />
         </el-select>
       </el-form-item>
     </template>
@@ -53,6 +49,7 @@ import BaseTable from '@components/BaseTable.vue';
 import major_apis from '@api/major';
 import department_apis from '@api/department';
 import { byIdGetName } from '@utils/byIdGetName';
+import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -129,22 +126,25 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   major_apis
-    .read_datas(currentPage, query.pageSize)
+    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
     .then((res) => {
       state.majorData = res.data.dataList;
       state.pageTotal = res.data.count;
+      // 存储关系数据
+      store.commit('handleData', [page.pageNameEn, storeData(res.data.dataList)]);
     })
     .catch(() => {
       ElMessage.error(`加载${page.pageName}表数据失败!`);
     });
 
-  // 存储关系数据
+  // 获取下拉数据
   if (store.state.departmentData == '') {
     department_apis
-      .department_relation()
+      .read_datas({ pageIndex: 1, pageSize: 100 }) // 取前100数据
       .then((res) => {
-        state.deptData = res.data;
-        store.commit('handleData', ['department', res.data]);
+        let dataList = storeData(res.data.dataList);
+        state.deptData = dataList;
+        store.commit('handleData', ['department', dataList]);
       })
       .catch(() => {
         ElMessage.error(`存储院系表数据失败!`);

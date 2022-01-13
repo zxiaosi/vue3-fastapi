@@ -6,11 +6,11 @@ import request from '../utils/request';
  * @param {*} pageSize 10
  * @returns 所有课程信息
  */
-function read_datas(pageIndex = 1, pageSize = 10) {
+function read_datas(data) {
   return request({
     url: './course/',
     method: 'get',
-    params: { pageIndex: pageIndex, pageSize: pageSize }
+    params: data
   });
 };
 
@@ -65,22 +65,10 @@ function delete_data(id) {
   });
 };
 
-/**
- * 获取关系字段
- * @returns 
- */
-function course_relation() {
-  return request({
-    url: `./course/relation/`,
-    method: 'get'
-  });
-}
-
 export default {
   read_datas,
   read_data,
   create_data,
   update_data,
   delete_data,
-  course_relation
 } 

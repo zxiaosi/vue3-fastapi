@@ -68,11 +68,3 @@ def delete_department(*, db: Session = Depends(deps.get_db), id: int) -> Any:
     """ 通过 id 删除院系信息(已添加异常捕获) """
     del_department = crud.department.remove(db, id=id)
     return resp_200(data=del_department, msg=f'成功删除 id 为 {id} 的院系信息.')
-
-
-# 只获取关系字段 TODO response_model_exclude 未生效
-@router.get("/relation/", response_class=ORJSONResponse, summary='获取到 院系表 中的关系字段')
-def get_department_relation(db: Session = Depends(deps.get_db)) -> Any:
-    """ 获取所有关系字段 """
-    get_departments = crud.department.get_multi_relation(db)
-    return resp_200(data=get_departments, msg="获取到了 院系表 中的关系字段.")

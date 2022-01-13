@@ -1,14 +1,14 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.deptData" :page-total="state.pageTotal"
-    :form-data="formData" :form-rules="formRules" :get-data="getData" :apis="department_apis"
-    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.deptData" :page-total="state.pageTotal" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="department_apis" @emit-is-disabled="emitIsDisabled"
+    @emit-is-show-searched="emitIsShowSearched">
     <!-- 暂无 -->
     <template #filter />
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="院系编号" width="140" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="院系编号" width="140" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="院系名字" width="220" align="center" />
       <el-table-column prop="chairman" label="主任名" width="140" align="center" />
       <el-table-column prop="phone" label="主任手机号" min-width="180" align="center" />
@@ -39,6 +39,7 @@ import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import department_apis from '@api/department';
+import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -110,10 +111,15 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   department_apis
-    .read_datas(currentPage, query.pageSize)
+    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
     .then((res) => {
       state.deptData = res.data.dataList;
       state.pageTotal = res.data.count;
+      // 存储关系数据
+      store.commit('handleData', [
+        page.pageNameEn,
+        storeData(res.data.dataList),
+      ]);
     })
     .catch(() => {
       ElMessage.error(`加载${page.pageName}表数据失败!`);

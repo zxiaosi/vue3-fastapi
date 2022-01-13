@@ -69,11 +69,3 @@ def delete_major(*, db: Session = Depends(deps.get_db), id: int) -> Any:
     """ 通过 id 删除专业信息(已添加异常捕获) """
     del_major = crud.major.remove(db, id=id)
     return resp_200(data=del_major, msg=f"删除了 id 为 {id} 的专业信息.")
-
-
-# 只获取关系字段
-@router.get("/relation/", response_class=ORJSONResponse, summary='获取到 专业表 中的关系字段')
-def get_major_relation(db: Session = Depends(deps.get_db)) -> Any:
-    """ 只获取关系字段 """
-    get_majors = crud.major.get_multi_relation(db)
-    return resp_200(data=get_majors, msg="获取到 专业表 中的关系字段.")

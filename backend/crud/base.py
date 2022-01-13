@@ -105,12 +105,3 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.delete(obj)
         db.commit()
         return obj
-
-    def get_multi_relation(self, db: Session):
-        """
-        只获取关系字段
-
-        :param db: Session
-        :return: 查询到的关系字段
-        """
-        return db.query(self.model.id, self.model.name).distinct().all()

@@ -1,25 +1,22 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.selectCourseData"
-    :page-total="state.pageTotal" :form-data="formData" :form-rules="formRules" :get-data="getData"
-    :apis="selectCourse_apis" @emit-is-disabled="emitIsDisabled"
-    @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.selectCourseData" :page-total="state.pageTotal"
+    :form-data="formData" :form-rules="formRules" :get-data="getData" :apis="selectCourse_apis"
+    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="编号" width="140" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="编号" width="140" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="grade" label="成绩" width="140" align="center" />
       <el-table-column prop="student_id" width="140" label="学生姓名" align="center">
-        <template
-          #default="scope">{{byIdGetName(scope.row.student_id, state.studentData)}}</template>
+        <template #default="scope">{{byIdGetName(scope.row.student_id, state.studentData)}}</template>
       </el-table-column>
 
       <el-table-column prop="teacher_id" width="140" label="教师姓名" align="center">
-        <template
-          #default="scope">{{byIdGetName(scope.row.teacher_id, state.teacherData)}}</template>
+        <template #default="scope">{{byIdGetName(scope.row.teacher_id, state.teacherData)}}</template>
       </el-table-column>
 
       <el-table-column prop="course_id" min-width="220" label="课程名" align="center">
@@ -39,22 +36,19 @@
 
       <el-form-item label="学生" prop="student_id">
         <el-select v-model="formData.student_id" placeholder="学生名">
-          <el-option v-for="(student, index) in state.studentData" :key=index :label=student.name
-            :value=student.id />
+          <el-option v-for="(student, index) in state.studentData" :key=index :label=student.name :value=student.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="教师" prop="teacher_id">
         <el-select v-model="formData.teacher_id" placeholder="教师名">
-          <el-option v-for="(teacher, index) in state.teacherData" :key=index :label=teacher.name
-            :value=teacher.id />
+          <el-option v-for="(teacher, index) in state.teacherData" :key=index :label=teacher.name :value=teacher.id />
         </el-select>
       </el-form-item>
 
       <el-form-item label="课程" prop="course_id">
         <el-select v-model="formData.course_id" placeholder="课程名">
-          <el-option v-for="(course, index) in state.courseData" :key=index :label=course.name
-            :value=course.id />
+          <el-option v-for="(course, index) in state.courseData" :key=index :label=course.name :value=course.id />
         </el-select>
       </el-form-item>
     </template>
@@ -72,6 +66,7 @@ import student_apis from '@api/student';
 import teacher_apis from '@api/teacher';
 import course_apis from '@api/course';
 import { byIdGetName } from '@utils/byIdGetName';
+import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -131,10 +126,15 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   selectCourse_apis
-    .read_datas(currentPage, query.pageSize)
+    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
     .then((res) => {
       state.selectCourseData = res.data.dataList;
       state.pageTotal = res.data.count;
+      // 存储关系数据
+      store.commit('handleData', [
+        page.pageNameEn,
+        storeData(res.data.dataList),
+      ]);
     })
     .catch(() => {
       ElMessage.error(`加载${page.pageName}表数据失败!`);
@@ -143,10 +143,11 @@ function getData(currentPage = 1) {
   // 获取学生信息
   if (store.state.studentData == '') {
     student_apis
-      .student_relation()
+      .read_datas({ pageIndex: 1, pageSize: 100 })
       .then((res) => {
-        state.studentData = res.data;
-        store.commit('handleData', ['student', res.data]);
+        let dataList = storeData(res.data.dataList);
+        state.studentData = dataList;
+        store.commit('handleData', ['student', dataList]);
       })
       .catch(() => {
         ElMessage.error(`存储学生表数据失败!`);
@@ -158,10 +159,11 @@ function getData(currentPage = 1) {
   // 获取教师信息
   if (store.state.teacherData == '') {
     teacher_apis
-      .teacher_relation()
+      .read_datas({ pageIndex: 1, pageSize: 100 })
       .then((res) => {
-        state.teacherData = res.data;
-        store.commit('handleData', ['teacher', res.data]);
+        let dataList = storeData(res.data.dataList);
+        state.teacherData = dataList;
+        store.commit('handleData', ['teacher', dataList]);
       })
       .catch(() => {
         ElMessage.error(`存储教师表数据失败!`);
@@ -173,10 +175,11 @@ function getData(currentPage = 1) {
   // 获取课程信息
   if (store.state.courseData == '') {
     course_apis
-      .course_relation()
+      .read_datas({ pageIndex: 1, pageSize: 100 })
       .then((res) => {
-        state.courseData = res.data;
-        store.commit('handleData', ['course', res.data]);
+        let dataList = storeData(res.data.dataList);
+        state.courseData = dataList;
+        store.commit('handleData', ['course', dataList]);
       })
       .catch(() => {
         ElMessage.error(`存储课程表数据失败!`);

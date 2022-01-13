@@ -11,26 +11,23 @@
         <el-row>
           <el-col :span="16">
             <!-- 搜索框 -->
-            <el-input v-model="query.id" maxlength="11" placeholder="编号"
-              class="grid-content handle-input mr10" />
+            <el-input v-model="query.id" maxlength="11" placeholder="编号" class="grid-content handle-input mr10" />
 
             <!-- 其他条件 -->
             <slot name="filter" />
 
             <!-- 搜索按钮 -->
-            <el-button type="primary" :icon="Search" :disabled="!/(^[1-9]\d*$)/.test(query.id)"
-              @click="handleSearch">搜索</el-button>
+            <el-button type="primary" :icon="Search" :disabled="!/(^[1-9]\d*$)/.test(query.id)" @click="handleSearch">搜索
+            </el-button>
 
             <!-- 清除按钮 -->
-            <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0"
-              @click="handleRemove">清除
+            <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0" @click="handleRemove">清除
             </el-button>
           </el-col>
 
           <el-col :span="8">
             <!-- 添加按钮 -->
-            <el-button type="primary" :icon="Plus" class="grid-content float-right"
-              @click="handleAdd">
+            <el-button type="primary" :icon="Plus" class="grid-content float-right" @click="handleAdd">
               添 加</el-button>
 
             <!-- 删除按钮 -->
@@ -42,10 +39,9 @@
       </div>
 
       <!-- 表格数据 -->
-      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table"
-        max-height="578" :default-sort="{ prop: 'id', order: 'ascending' }"
-        @selection-change="handleSelectionChange" v-loading="state.isLoading || data == ''"
-        element-loading-text="拼命加载中...">
+      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" max-height="578"
+        :default-sort="{ prop: 'id', order: 'ascending' }" @selection-change="handleSelectionChange"
+        v-loading="state.isLoading " element-loading-text="拼命加载中...">
 
         <!-- 勾选框 -->
         <el-table-column type="selection" width="80" align="center" />
@@ -63,8 +59,7 @@
             <el-button type="text" :icon="Edit" @click="handleEdit(scope.$index, scope.row)">
               编辑
             </el-button>
-            <el-button type="text" :icon="Delete" class="red"
-              @click="handleDelete(scope.$index, scope.row)">删除
+            <el-button type="text" :icon="Delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -72,14 +67,12 @@
       </el-table>
 
       <!-- 分页 -->
-      <pagination :page-size="query.pageSize" :page-total="pageTotal"
-        :current-page="query.currentPage" :disabled="!state.isShowSearched"
-        @page-index="pageIndex" />
+      <pagination :page-size="query.pageSize" :page-total="pageTotal" :current-page="query.currentPage"
+        :disabled="!state.isShowSearched" @page-index="pageIndex" />
     </div>
 
     <!-- 弹出框 -->
-    <el-dialog :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`" v-model="state.showDialog"
-      width="30%">
+    <el-dialog :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`" v-model="state.showDialog" width="30%">
 
       <el-form status-icon label-width="100px" ref="formRef" :model="formData" :rules="formRules">
 
@@ -167,9 +160,7 @@ watchEffect(() => {
       state.isLoading = false;
     }, 3000);
   } else {
-    loading = setTimeout(function () {
-      state.isLoading = false;
-    }, 1000);
+    state.isLoading = false;
   }
 
   // 是否显示被选择的值

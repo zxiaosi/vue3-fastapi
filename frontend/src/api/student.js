@@ -6,11 +6,11 @@ import request from '../utils/request';
  * @param {*} pageSize 10
  * @returns 所有学生信息
  */
-function read_datas(pageIndex = 1, pageSize = 10) {
+function read_datas(data) {
   return request({
     url: './student/',
     method: 'get',
-    params: { pageIndex: pageIndex, pageSize: pageSize }
+    params: data
   });
 };
 
@@ -65,17 +65,6 @@ function delete_data(id) {
   });
 };
 
-/**
- * 获取关系字段
- * @returns 
- */
-function student_relation() {
-  return request({
-    url: `./student/relation/`,
-    method: 'get'
-  });
-}
-
 
 export default {
   read_datas,
@@ -83,5 +72,4 @@ export default {
   create_data,
   update_data,
   delete_data,
-  student_relation
 } 

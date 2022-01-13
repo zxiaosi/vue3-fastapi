@@ -6,11 +6,11 @@ import request from '../utils/request';
  * @param {*} pageSize 10
  * @returns 所有选课信息
  */
-function read_datas(pageIndex = 1, pageSize = 10) {
+function read_datas(data) {
   return request({
     url: './selectCourse/',
     method: 'get',
-    params: { pageIndex: pageIndex, pageSize: pageSize }
+    params: data
   });
 };
 

@@ -1,15 +1,15 @@
 <template>
-  <base-table :page="page" :query="query" :data="state.courseData" :page-total="state.pageTotal"
-    :form-data="formData" :form-rules="formRules" :get-data="getData" :apis="course_apis"
-    @emit-is-disabled="emitIsDisabled" @emit-is-show-searched="emitIsShowSearched">
+  <base-table :page="page" :query="query" :data="state.courseData" :page-total="state.pageTotal" :form-data="formData"
+    :form-rules="formRules" :get-data="getData" :apis="course_apis" @emit-is-disabled="emitIsDisabled"
+    @emit-is-show-searched="emitIsShowSearched">
 
     <!-- 暂无 -->
     <template #filter />
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="课程编号" width="140" align="center"
-        :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
+      <el-table-column prop="id" label="课程编号" width="140" align="center" :sortable="!state.isShowSearched"
+        :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="课程名字" width="220" align="center" />
       <el-table-column prop="credit" label="学分" width="140" align="center" />
       <el-table-column prop="period" label="课时" min-width="140" align="center" />
@@ -18,8 +18,7 @@
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="课程编号" prop="id">
-        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="4" show-word-limit
-          :disabled=state.isDisabled />
+        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="4" show-word-limit :disabled=state.isDisabled />
       </el-form-item>
       <el-form-item label="课程名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />
@@ -42,6 +41,7 @@ import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import course_apis from '@api/course';
 import { byIdGetName } from '@utils/byIdGetName';
+import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -110,10 +110,15 @@ const store = useStore();
  */
 function getData(currentPage = 1) {
   course_apis
-    .read_datas(currentPage, query.pageSize)
+    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
     .then((res) => {
       state.courseData = res.data.dataList;
       state.pageTotal = res.data.count;
+      // 存储关系数据
+      store.commit('handleData', [
+        page.pageNameEn,
+        storeData(res.data.dataList),
+      ]);
     })
     .catch(() => {
       ElMessage.error(`加载${page.pageName}表数据失败!`);
