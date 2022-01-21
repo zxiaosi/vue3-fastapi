@@ -32,6 +32,7 @@
 + `v4.4` 测试token
 + `v4.5` 调试token成功(admin, 123)
 + `v4.6` 重构FastAPI
++ `v4.7` 添加redis
 
 ## 安装
 
@@ -44,7 +45,7 @@
    
    # 或者
    pip install fastapi
-   pip install uvicorn
+   pip install uvicorn[fastapi]
    pip install loguru
    pip install SQLAlchemy
    pip install python-jose
@@ -139,7 +140,7 @@
         	    
 	|-- models                  # ORM模型映射
 		|-- __init__.py			# 抛出ORM模型对象
-		|-- admin.py			# 管理员表
+		|-- index.py			# 管理员表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
 		|-- major.py			# 专业表
@@ -159,7 +160,7 @@
 	    
 	|-- schemas                 # Pydantic数据验证
 		|-- __init__.py			# 抛出Pydantic数据验证
-		|-- admin.py			# 管理员表数据验证
+		|-- index.py			# 管理员表数据验证
 		|-- course.py			# 课程表数据验证
 		|-- department.py		# 院系表数据验证
 		|-- major.py			# 专业表数据验证

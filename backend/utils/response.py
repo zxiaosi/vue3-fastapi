@@ -13,7 +13,7 @@ from utils import logger
 
 
 # 因为 data 数据要符合 SchemasType 模型，不符合JSONResponse的序列化
-def resp_200(*, data: Type[SchemasType] = None, msg: str = "Success"):
+def resp_200(*, data: Union[Type[SchemasType], dict] = None, msg: str = "Success"):
     logger.info(msg)
     return {'code': 200, 'data': data, 'msg': msg}
 

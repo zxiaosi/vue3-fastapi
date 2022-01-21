@@ -14,7 +14,11 @@ def register_middleware(app: FastAPI):
 
     @app.middleware("http")
     async def logger_request(request: Request, call_next):
-        # https://stackoverflow.com/questions/60098005/fastapi-starlette-get-client-real-ip
+        # 得到真实ip https://stackoverflow.com/questions/60098005/fastapi-starlette-get-client-real-ip
         # logger.info(f"访问记录:{request.method}-url:{request.url}\nheaders:{request.headers}\nIP:{request.client.host}")
+
+        # redis 存储的请求数量 (自增 1)
+        if request.client.host != '127.0.0.1':
+            await request.app.state.redis.incr('request_num')
         logger.info(f"访问记录:IP:{request.client.host}-method:{request.method}-url:{request.url}")
         return await call_next(request)

@@ -20,13 +20,17 @@ router = APIRouter()
 @router.get("/", response_model=ResultPlusModel[List[MajorOut]], summary='查询所有专业(根据页码和每页个数)')
 def read_majors(db: Session = Depends(deps.get_db), pageIndex: int = 1, pageSize: int = 10) -> Any:
     """
-        查询所有专业(根据页码和每页个数)
+        查询所有专业(根据页码和每页个数, pageIndex=-1&&pageSize=-1表示查询所有)
 
         - pageIndex - 页码 (默认值 1)
         - pageSize - 每页个数 (默认值 10)
     """
     get_majors = crud.major.get_multi(db, pageIndex=pageIndex, pageSize=pageSize)
-    return resp_200(data=get_majors, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个专业信息.")
+    if pageIndex == -1 and pageSize == -1:
+        text = "查询了所有的专业信息."
+    else:
+        text = f"查询了第 {pageIndex} 页中的 {pageSize} 个专业信息."
+    return resp_200(data=get_majors, msg=text)
 
 
 # 根据 id 查询专业信息
@@ -69,3 +73,11 @@ def delete_major(*, db: Session = Depends(deps.get_db), id: int) -> Any:
     """ 通过 id 删除专业信息(已添加异常捕获) """
     del_major = crud.major.remove(db, id=id)
     return resp_200(data=del_major, msg=f"删除了 id 为 {id} 的专业信息.")
+
+
+# 只获取关系字段
+@router.get("/relation/", response_class=ORJSONResponse, summary='获取到 专业表 中的关系字段')
+def get_major_relation(db: Session = Depends(deps.get_db)) -> Any:
+    """ 只获取关系字段 """
+    get_majors = crud.major.get_multi_relation(db)
+    return resp_200(data=get_majors, msg="获取到 专业表 中的关系字段.")

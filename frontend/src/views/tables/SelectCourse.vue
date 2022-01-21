@@ -124,66 +124,35 @@ const store = useStore();
 /**
  * 获取表格数据
  */
-function getData(currentPage = 1) {
-  selectCourse_apis
-    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
-    .then((res) => {
-      state.selectCourseData = res.data.dataList;
-      state.pageTotal = res.data.count;
-      // 存储关系数据
-      store.commit('handleData', [
-        page.pageNameEn,
-        storeData(res.data.dataList),
-      ]);
-    })
-    .catch(() => {
-      ElMessage.error(`加载${page.pageName}表数据失败!`);
-    });
+async function getData(currentPage = 1) {
+  let params = { pageIndex: currentPage, pageSize: query.pageSize };
+  const selectCourseRes = await selectCourse_apis.read_datas(params);
+  state.selectCourseData = selectCourseRes.data.dataList;
+  state.pageTotal = selectCourseRes.data.count;
 
   // 获取学生信息
   if (store.state.studentData == '') {
-    student_apis
-      .read_datas({ pageIndex: 1, pageSize: 100 })
-      .then((res) => {
-        let dataList = storeData(res.data.dataList);
-        state.studentData = dataList;
-        store.commit('handleData', ['student', dataList]);
-      })
-      .catch(() => {
-        ElMessage.error(`存储学生表数据失败!`);
-      });
+    const studentRes = await student_apis.student_relation();
+    state.studentData = studentRes.data;
+    store.commit('handleData', ['student', studentRes.data]);
   } else {
     state.studentData = store.state.studentData;
   }
 
   // 获取教师信息
   if (store.state.teacherData == '') {
-    teacher_apis
-      .read_datas({ pageIndex: 1, pageSize: 100 })
-      .then((res) => {
-        let dataList = storeData(res.data.dataList);
-        state.teacherData = dataList;
-        store.commit('handleData', ['teacher', dataList]);
-      })
-      .catch(() => {
-        ElMessage.error(`存储教师表数据失败!`);
-      });
+    const teacherRes = await teacher_apis.teacher_relation();
+    state.teacherData = teacherRes.data;
+    store.commit('handleData', ['teacher', teacherRes.data]);
   } else {
     state.teacherData = store.state.teacherData;
   }
 
   // 获取课程信息
   if (store.state.courseData == '') {
-    course_apis
-      .read_datas({ pageIndex: 1, pageSize: 100 })
-      .then((res) => {
-        let dataList = storeData(res.data.dataList);
-        state.courseData = dataList;
-        store.commit('handleData', ['course', dataList]);
-      })
-      .catch(() => {
-        ElMessage.error(`存储课程表数据失败!`);
-      });
+    const courseRes = await course_apis.course_relation();
+    state.courseData = courseRes.data;
+    store.commit('handleData', ['course', courseRes.data]);
   } else {
     state.courseData = store.state.courseData;
   }

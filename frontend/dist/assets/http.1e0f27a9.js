@@ -1,0 +1,1 @@
+import{s as r}from"./request.f59588e8.js";const s={get(o,t){const e={method:"get",url:o};return t&&(e.params=t),r(e)},post(o,t){const e={method:"post",url:o};return t&&(e.data=t),r(e)},put(o,t){const e={method:"put",url:o};return t&&(e.data=t),r(e)},delete(o,t){const e={method:"delete",url:o};return t&&(e.params=t),r(e)}};export{s as h};

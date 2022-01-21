@@ -13,9 +13,9 @@ router = APIRouter()
 async def health_check(request: Request):
     try:
         # key:test:keys => key/test/keys
-        await request.app.state.redis.set('key:test:keys', 'value')
-        value = await request.app.state.redis.get('key')
+        value = await request.app.state.redis.get('request_num')
+        msg = "开启Redis成功！！！"
     except Exception as e:  # noqa: E722
-        print("对不起,不能打开Redis!!!", e)
-        value = 'down'
-    return {"web_server": "up", "request": value}
+        value = 0
+        msg = f"对不起,不能打开Redis!!! {e}"
+    return {"request": f"总计请求次数 {value}", "msg": msg}

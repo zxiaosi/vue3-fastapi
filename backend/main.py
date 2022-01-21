@@ -45,5 +45,5 @@ if __name__ == '__main__':
     sqlalchemy_core_initial()  # 速度与性能并行
 
     # Docker启动方式
-    # uvicorn.run(app='main:app', host="0.0.0.0", port=80)
+    # uvicorn.run(app='main:app', host="0.0.0.0", port=8000)
     uvicorn.run(app='main:app', host="127.0.0.1", port=8000)

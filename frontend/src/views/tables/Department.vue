@@ -1,6 +1,6 @@
 <template>
   <base-table :page="page" :query="query" :data="state.deptData" :page-total="state.pageTotal" :form-data="formData"
-    :form-rules="formRules" :get-data="getData" :apis="department_apis" @emit-is-disabled="emitIsDisabled"
+    :form-rules="formRules" :get-data="getData" :apis="dept_apis" @emit-is-disabled="emitIsDisabled"
     @emit-is-show-searched="emitIsShowSearched">
     <!-- 暂无 -->
     <template #filter />
@@ -38,7 +38,7 @@ import { reactive, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
-import department_apis from '@api/department';
+import dept_apis from '@api/department';
 import { storeData } from '@utils/storeData';
 
 // 页面配置
@@ -109,21 +109,13 @@ const store = useStore();
 /**
  * 获取表格数据
  */
-function getData(currentPage = 1) {
-  department_apis
-    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
-    .then((res) => {
-      state.deptData = res.data.dataList;
-      state.pageTotal = res.data.count;
-      // 存储关系数据
-      store.commit('handleData', [
-        page.pageNameEn,
-        storeData(res.data.dataList),
-      ]);
-    })
-    .catch(() => {
-      ElMessage.error(`加载${page.pageName}表数据失败!`);
-    });
+async function getData(currentPage = 1) {
+  const res = await dept_apis.read_datas({
+    pageIndex: currentPage,
+    pageSize: query.pageSize,
+  });
+  state.deptData = res.data.dataList;
+  state.pageTotal = res.data.count;
 }
 
 // 页面加载后调用函数

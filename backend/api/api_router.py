@@ -5,13 +5,14 @@
 # @desc : 接口汇总
 from fastapi import APIRouter
 
-from api.apis.admin import users, department, major, teacher, student, course, selectCourse
+from api.apis.admin import users, department, major, teacher, student, course, selectCourse, index
 from api.apis import login, redis_check
 
 api_router = APIRouter()
 
 # redis
 api_router.include_router(redis_check.router, tags=["Redis"])
+api_router.include_router(index.router, tags=["Dashboard"])
 
 # login
 api_router.include_router(login.router, tags=["Login"])

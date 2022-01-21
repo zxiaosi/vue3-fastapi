@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/15 20:10
 # @Author : zxiaosi
-# @desc : 获取数据库连接对象 TODO
+# @desc : 依赖项 TODO
 from jose import jwt
 from typing import Generator
 from fastapi import Depends, HTTPException, status

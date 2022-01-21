@@ -22,9 +22,9 @@ log_path = base_path + os.sep + settings.LOGGER_FOLDER + os.sep
 os.makedirs(log_path, exist_ok=True)
 
 """ 保留日志文件夹下最大个数(自己调试用) """
-file_list = os.listdir(log_path)
-if len(file_list) > 4:
-    os.remove(os.path.join(log_path, file_list[0]))
+# file_list = os.listdir(log_path)
+# if len(file_list) > 4:
+#     os.remove(os.path.join(log_path, file_list[0]))
 
 # 日志输出路径
 log_path_name = os.path.join(log_path, settings.LOGGER_NAME)

@@ -108,21 +108,12 @@ const store = useStore();
 /**
  * 获取表格数据
  */
-function getData(currentPage = 1) {
-  course_apis
-    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
-    .then((res) => {
-      state.courseData = res.data.dataList;
-      state.pageTotal = res.data.count;
-      // 存储关系数据
-      store.commit('handleData', [
-        page.pageNameEn,
-        storeData(res.data.dataList),
-      ]);
-    })
-    .catch(() => {
-      ElMessage.error(`加载${page.pageName}表数据失败!`);
-    });
+async function getData(currentPage = 1) {
+  // 获取课程表数据
+  let params = { pageIndex: currentPage, pageSize: query.pageSize };
+  const courseRes = await course_apis.read_datas(params);
+  state.courseData = courseRes.data.dataList;
+  state.pageTotal = courseRes.data.count;
 }
 
 // 页面加载后调用函数

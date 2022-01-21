@@ -19,13 +19,17 @@ router = APIRouter()
 @router.get("/", response_model=ResultPlusModel[List[SelectCourseOut]], summary='查询所有选课(根据页码和每页个数)')
 def read_select_courses(db: Session = Depends(deps.get_db), pageIndex: int = 1, pageSize: int = 10) -> Any:
     """
-        查询所有选课(根据页码和每页个数)
+        查询所有选课(根据页码和每页个数, pageIndex=-1&&pageSize=-1表示查询所有)
 
         - pageIndex - 页码 (默认值 1)
         - pageSize - 每页个数 (默认值 10)
     """
     get_select_courses = crud.selectCourse.get_multi(db, pageIndex=pageIndex, pageSize=pageSize)
-    return resp_200(data=get_select_courses, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个选课信息.")
+    if pageIndex == -1 and pageSize == -1:
+        text = "查询了所有的选课信息."
+    else:
+        text = f"查询了第 {pageIndex} 页中的 {pageSize} 个选课信息."
+    return resp_200(data=get_select_courses, msg=text)
 
 
 # 根据 id 查询选课信息

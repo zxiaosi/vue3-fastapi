@@ -54,7 +54,7 @@
         <slot name="tableColumn" />
 
         <!-- 操作 -->
-        <el-table-column label="操作" width="220" align="center" fixed='right'>
+        <el-table-column label="操作" width="180" align="center" fixed='right'>
           <template #default="scope">
             <el-button type="text" :icon="Edit" @click="handleEdit(scope.$index, scope.row)">
               编辑
@@ -184,29 +184,12 @@ function cascadeDelete() {
 /**
  * 搜索数据
  */
-function handleSearch(event) {
+async function handleSearch(event) {
   clickRecover(event);
 
-  ElMessage({
-    message: '搜索中...',
-    grouping: true,
-    type: 'success',
-    duration: 1000,
-  });
-
-  props.apis
-    .read_data(query.value.id)
-    .then((res) => {
-      if (res.code == 200) {
-        state.isShowSearched = true;
-        state.searched.splice(0, 1, res.data);
-      } else {
-        ElMessage.warning('编号不存在');
-      }
-    })
-    .catch(() => {
-      ElMessage.error('搜索数据失败!');
-    });
+  const res = await props.apis.read_data(query.value.id);
+  state.isShowSearched = true;
+  state.searched.splice(0, 1, res.data);
 }
 
 /**
@@ -222,9 +205,7 @@ function handleRemove(event) {
  */
 function handleSelectionChange(val) {
   // 如果没有勾选,清空勾选列表
-  if (val.length == 0) {
-    state.selectedList = [];
-  }
+  if (val.length == 0) state.selectedList = [];
 
   val.forEach((item, index) => {
     state.selectedList.splice(index, 1, { index: index, id: item.id });
@@ -246,20 +227,15 @@ function handleSelectedDelete(event) {
   })
     .then(() => {
       state.selectedList.map((item) => {
-        props.apis
-          .delete_data(item.id)
-          .then((res) => {
-            if (res.code === 200) {
-              ElMessage.success(`删除编号为 ${item.id} 的数据成功！`);
-              data.value.splice(item.index, 1);
-              removeSearch(true);
-            } else {
-              ElMessage.warning(`删除编号为 ${item.id} 的数据失败！`);
-            }
-          })
-          .catch(() => {
-            ElMessage.error('删除数据失败！');
-          });
+        props.apis.delete_data(item.id).then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(`删除编号为 ${item.id} 的数据成功！`);
+            data.value.splice(item.index, 1);
+            removeSearch(true);
+          } else {
+            ElMessage.warning(`删除编号为 ${item.id} 的数据失败！`);
+          }
+        });
       });
     })
     .catch(() => {});
@@ -295,22 +271,17 @@ function saveAdd() {
 
   formRef.value.validate((valid) => {
     if (valid) {
-      props.apis
-        .create_data(formData.value)
-        .then((res) => {
-          if (res.code == 200) {
-            ElMessage.success(
-              `成功添加编号为 ${res.data.id} 的${page.value.pageName}信息！`
-            );
-            data.value.push(res.data);
-            removeSearch(true);
-          } else {
-            ElMessage.warning(`${page.value.pageName}信息填写有误，添加失败！`);
-          }
-        })
-        .catch(() => {
-          ElMessage.error(`添加${page.value.pageName}信息失败！`);
-        });
+      props.apis.create_data(formData.value).then((res) => {
+        if (res.code == 200) {
+          ElMessage.success(
+            `成功添加编号为 ${res.data.id} 的${page.value.pageName}信息！`
+          );
+          data.value.push(res.data);
+          removeSearch(true);
+        } else {
+          ElMessage.warning(`${page.value.pageName}信息填写有误，添加失败！`);
+        }
+      });
     } else {
       ElMessage.warning(`${page.value.pageName}信息不符合校验规则，添加失败！`);
     }
@@ -346,24 +317,17 @@ function saveEdit() {
 
   formRef.value.validate((valid) => {
     if (valid) {
-      props.apis
-        .update_data(state.idx, formData.value)
-        .then((res) => {
-          ElMessage.success(
-            `修改${page.value.pageName}ID为 ${state.idx} 成功！`
-          );
-          Object.keys(res.data).forEach((item) => {
-            data.value[state.reIndex][item] = res.data[item];
-          });
-          if (query.value.id.length != 0) {
-            state.searched[0] = formData.value;
-            console.log('saveEdit--', state.searched[0]);
-          }
-          props.getData();
-        })
-        .catch(() => {
-          ElMessage.error(`修改${page.value.pageName}信息失败！`);
+      props.apis.update_data(state.idx, formData.value).then((res) => {
+        ElMessage.success(`修改${page.value.pageName}ID为 ${state.idx} 成功！`);
+        Object.keys(res.data).forEach((item) => {
+          data.value[state.reIndex][item] = res.data[item];
         });
+        if (query.value.id.length != 0) {
+          state.searched[0] = formData.value;
+          console.log('saveEdit--', state.searched[0]);
+        }
+        props.getData();
+      });
     } else {
       ElMessage.warning(`填写${page.value.pageName}不符合校验规则，修改失败！`);
     }
@@ -381,28 +345,21 @@ function handleDelete(index, row) {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning',
-  })
-    .then(() => {
-      props.apis
-        .delete_data(row.id)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(
-              `删除编号为 ${row.id} 的${page.value.pageName}信息成功！`
-            );
-            data.value.splice(index, 1);
-            removeSearch(true);
-          } else {
-            ElMessage.warning(
-              `删除编号为 ${row.id} 的${page.value.pageName}信息失败！`
-            );
-          }
-        })
-        .catch(() => {
-          ElMessage.error(`删除${page.value.pageName}信息失败！`);
-        });
-    })
-    .catch(() => {});
+  }).then(() => {
+    props.apis.delete_data(row.id).then((res) => {
+      if (res.code === 200) {
+        ElMessage.success(
+          `删除编号为 ${row.id} 的${page.value.pageName}信息成功！`
+        );
+        data.value.splice(index, 1);
+        removeSearch(true);
+      } else {
+        ElMessage.warning(
+          `删除编号为 ${row.id} 的${page.value.pageName}信息失败！`
+        );
+      }
+    });
+  });
 }
 
 /**

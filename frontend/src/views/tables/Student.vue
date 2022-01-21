@@ -137,34 +137,17 @@ const store = useStore();
 /**
  * 获取表格数据
  */
-function getData(currentPage = 1) {
-  student_apis
-    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
-    .then((res) => {
-      state.studentData = res.data.dataList;
-      state.pageTotal = res.data.count;
-      // 存储关系数据
-      store.commit('handleData', [
-        page.pageNameEn,
-        storeData(res.data.dataList),
-      ]);
-    })
-    .catch(() => {
-      ElMessage.error(`加载${page.pageName}表数据失败!`);
-    });
+async function getData(currentPage = 1) {
+  let params = { pageIndex: currentPage, pageSize: query.pageSize };
+  const studentRes = await student_apis.read_datas(params);
+  state.studentData = studentRes.data.dataList;
+  state.pageTotal = studentRes.data.count;
 
   // 获取专业信息
   if (store.state.majorData == '') {
-    major_apis
-      .read_datas({ pageIndex: 1, pageSize: 100 }) // 取前100数据
-      .then((res) => {
-        let dataList = storeData(res.data.dataList);
-        state.majorData = dataList;
-        store.commit('handleData', ['major', dataList]);
-      })
-      .catch(() => {
-        ElMessage.error(`存储专业表数据失败!`);
-      });
+    const majorRes = await major_apis.major_relation();
+    state.majorData = majorRes.data;
+    store.commit('handleData', ['major', majorRes.data]);
   } else {
     state.majorData = store.state.majorData;
   }

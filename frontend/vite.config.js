@@ -50,9 +50,9 @@ export default defineConfig({
 
   // 全局常量
   define: {
-    // BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
-    BASE_URL: JSON.stringify('http://8.136.82.204:8000/api/'),
-    TIMEOUT: 10000,
+    BASE_URL: JSON.stringify('http://127.0.0.1:8000/api/'),
+    // BASE_URL: JSON.stringify('http://8.136.82.204:8000/api/'),
+    TIMEOUT: 5000,
     TITLE: JSON.stringify('学生选课系统'),
   }
 })

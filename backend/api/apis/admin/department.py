@@ -20,13 +20,17 @@ router = APIRouter()
 @router.get("/", response_model=ResultPlusModel[List[DepartmentOut]], summary='查询所有院系(根据页码和每页个数)')
 def read_departments(db: Session = Depends(deps.get_db), pageIndex: int = 1, pageSize: int = 10) -> Any:
     """
-        查询所有院系(根据页码和每页个数)
+        查询所有院系(根据页码和每页个数, pageIndex=-1&&pageSize=-1表示查询所有)
 
         - pageIndex - 页码 (默认值 1)
         - pageSize - 每页个数 (默认值 10)
     """
     get_departments = crud.department.get_multi(db, pageIndex=pageIndex, pageSize=pageSize)
-    return resp_200(data=get_departments, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个院系信息.")
+    if pageIndex == -1 and pageSize == -1:
+        text = "查询了所有的院系信息."
+    else:
+        text = f"查询了第 {pageIndex} 页中的 {pageSize} 个院系信息."
+    return resp_200(data=get_departments, msg=text)
 
 
 # 根据 id 查询院系信息
@@ -68,3 +72,11 @@ def delete_department(*, db: Session = Depends(deps.get_db), id: int) -> Any:
     """ 通过 id 删除院系信息(已添加异常捕获) """
     del_department = crud.department.remove(db, id=id)
     return resp_200(data=del_department, msg=f'成功删除 id 为 {id} 的院系信息.')
+
+
+# 只获取关系字段 TODO response_model_exclude 未生效
+@router.get("/relation/", response_class=ORJSONResponse, summary='获取到 院系表 中的关系字段')
+def get_department_relation(db: Session = Depends(deps.get_db)) -> Any:
+    """ 获取所有关系字段 """
+    get_departments = crud.department.get_multi_relation(db)
+    return resp_200(data=get_departments, msg="获取到了 院系表 中的关系字段.")

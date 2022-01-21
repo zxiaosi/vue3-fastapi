@@ -3,21 +3,20 @@
 # @Time : 2022/1/8 15:48
 # @Author : zxiaosi
 # @desc :
-import json
 import traceback
-
 from fastapi import FastAPI
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError, OperationalError
 from sqlalchemy.orm.exc import UnmappedInstanceError
+from aioredis.exceptions import ConnectionError
 from starlette.requests import Request
 
 from utils import logger, resp_400, resp_500, resp_422
 from utils.custom_exc import IdNotExist
 
 
+# 参考: https://www.charmcode.cn/article/2020-07-19_fastapi_exception
 def register_exception(app: FastAPI):
     """
     全局异常捕获
@@ -32,9 +31,14 @@ def register_exception(app: FastAPI):
     :return:
     """
 
-    # 自定义异常 捕获
+    # redis连接错误
+    @app.exception_handler(ConnectionError)
+    async def connection_error_handler(request: Request, exc: ConnectionError):
+        """ redis连接错误 """
+        logger.warning(f"redis连接错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\n{exc}")
+        return resp_400(msg=str(exc))
 
-    # 查询id不存在
+    # 查询id不存在(自定义异常)
     @app.exception_handler(IdNotExist)
     async def id_not_exist_handler(request: Request, exc: IdNotExist):
         """ 查询id不存在 """
@@ -54,6 +58,13 @@ def register_exception(app: FastAPI):
         """ 请求参数验证异常 """
         logger.error(f"请求参数格式错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
         return resp_422(msg=exc.errors())
+
+    # 请求参数丢失
+    @app.exception_handler(ProgrammingError)
+    async def programming_error_handle(request: Request, exc: ProgrammingError):
+        """ 请求参数丢失 """
+        logger.error(f"请求参数丢失\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc}")
+        return resp_400(msg='请求参数丢失!(实际请求参数错误)')
 
     # 添加的值与数据库中数据冲突(MySQL报错返回会携带错误码(1062, 1452), Sqlite报错只有报错内容)
     @app.exception_handler(IntegrityError)

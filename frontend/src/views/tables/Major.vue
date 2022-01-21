@@ -47,9 +47,8 @@ import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import major_apis from '@api/major';
-import department_apis from '@api/department';
+import dept_apis from '@api/department';
 import { byIdGetName } from '@utils/byIdGetName';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -124,31 +123,18 @@ const store = useStore();
 /**
  * 获取表格数据
  */
-function getData(currentPage = 1) {
-  major_apis
-    .read_datas({ pageIndex: currentPage, pageSize: query.pageSize })
-    .then((res) => {
-      state.majorData = res.data.dataList;
-      state.pageTotal = res.data.count;
-      // 存储关系数据
-      store.commit('handleData', [page.pageNameEn, storeData(res.data.dataList)]);
-    })
-    .catch(() => {
-      ElMessage.error(`加载${page.pageName}表数据失败!`);
-    });
+async function getData(currentPage = 1) {
+  // 获取专业数据
+  let params = { pageIndex: currentPage, pageSize: query.pageSize };
+  const majorRes = await major_apis.read_datas(params);
+  state.majorData = majorRes.data.dataList;
+  state.pageTotal = majorRes.data.count;
 
-  // 获取下拉数据
+  // 获取院系数据
   if (store.state.departmentData == '') {
-    department_apis
-      .read_datas({ pageIndex: 1, pageSize: 100 }) // 取前100数据
-      .then((res) => {
-        let dataList = storeData(res.data.dataList);
-        state.deptData = dataList;
-        store.commit('handleData', ['department', dataList]);
-      })
-      .catch(() => {
-        ElMessage.error(`存储院系表数据失败!`);
-      });
+    const deptRes = await dept_apis.department_relation();
+    state.deptData = deptRes.data;
+    store.commit('handleData', ['department', deptRes.data]);
   } else {
     state.deptData = store.state.departmentData;
   }

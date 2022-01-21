@@ -52,7 +52,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param pageSize: 页码 (默认10)
         :return: 查询到的orm模型对象集
         """
-        data = db.query(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).all()
+        if pageIndex == -1 and pageSize == -1:
+            data = db.query(self.model).all()
+        else:
+            data = db.query(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).all()
         count: int = db.query(func.count(distinct(self.model.id))).scalar()
         return {'count': count, 'dataList': data}
 
@@ -105,3 +108,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.delete(obj)
         db.commit()
         return obj
+
+    def get_multi_relation(self, db: Session):
+        """
+        只获取关系字段
+
+        :param db: Session
+        :return: 查询到的关系字段
+        """
+        return db.query(self.model.id, self.model.name).distinct().all()

@@ -3,7 +3,6 @@
     <!-- 用户信息、访问量、语言详情、待办事项 -->
     <el-row :gutter="20">
       <el-col :span="8">
-
         <!-- 用户信息 -->
         <el-card shadow="hover" class="mgb20" style="height:252px;">
           <div class="user-info">
@@ -14,10 +13,12 @@
             </div>
           </div>
           <div class="user-info-list">
-            当前登录时间：<span>{{currentTime}}</span>
+            当前登录时间：
+            <span>{{ state.currentTime }}</span>
           </div>
           <div class="user-info-list">
-            当前登录地点：<span>测试地点</span>
+            当前登录地点：
+            <span>测试地点</span>
           </div>
         </el-card>
 
@@ -32,22 +33,18 @@
           <!-- 进度条 -->
           <el-table :show-header="false" :data="languages" class="language">
             <el-table-column width="100">
-              <template #default="scope">
-                {{scope.row.title}}
-              </template>
+              <template #default="scope">{{ scope.row.title }}</template>
             </el-table-column>
             <el-table-column style="width: calc(100% - 140px);">
               <template #default="scope">
-                <el-progress :percentage=scope.row.percentage :color=scope.row.color />
+                <el-progress :percentage="scope.row.percentage" :color="scope.row.color" />
               </template>
             </el-table-column>
           </el-table>
         </el-card>
-
       </el-col>
 
       <el-col :span="16">
-
         <!-- 访问量、消息、数量 -->
         <el-row :gutter="20" class="mgb20">
           <el-col :span="8">
@@ -80,11 +77,11 @@
             <el-card shadow="hover" :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-3">
                 <el-icon class="grid-con-icon">
-                  <goods />
+                  <promotion />
                 </el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">5000</div>
-                  <div>数量</div>
+                  <div class="grid-num">{{ state.request_num }}</div>
+                  <div>请求次数</div>
                 </div>
               </div>
             </el-card>
@@ -96,47 +93,31 @@
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text"
-                @click="showDialog = true">添加</el-button>
+              <el-button style="float: right; padding: 3px 0" type="text" @click="showDialog = true">添加</el-button>
             </div>
           </template>
 
-          <el-table :show-header="false" :data="todoList" style="width:100%;">
+          <el-table :show-header="false" :data="state.todoList" style="width:100%;">
             <!-- 选择框 -->
             <el-table-column width="40">
               <template #default="scope">
-                <el-checkbox v-model="scope.row.status"></el-checkbox>
+                <el-checkbox v-model="scope.row.status" @change="update(scope.$index)" />
               </template>
             </el-table-column>
 
             <!-- 待办内容 -->
             <el-table-column>
               <template #default="scope">
-                <div class="todo-item" :class="{'todo-item-del': scope.row.status,}">
-                  {{ scope.row.title }}</div>
-              </template>
-            </el-table-column>
-
-            <!-- 编辑待办(暂无) -->
-            <el-table-column width="60">
-              <template>
-                <el-icon size="20">
-                  <edit />
-                </el-icon>
-                <el-icon size="20">
-                  <delete />
-                </el-icon>
+                <div class="todo-item" :class="{ 'todo-item-del': scope.row.status }">{{ scope.row.title }}</div>
               </template>
             </el-table-column>
           </el-table>
         </el-card>
-
       </el-col>
 
       <el-row class="githubCard">
         <el-col :span="8">
-          <img
-            src="https://github-readme-stats.vercel.app/api/top-langs/?username=zxiaosi&layout=compact" />
+          <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=zxiaosi&layout=compact" />
         </el-col>
 
         <el-col :span="10">
@@ -144,14 +125,13 @@
             src="https://github-readme-stats.vercel.app/api?username=zxiaosi&hide=prs&show_icons=true&theme=tokyonight" />
         </el-col>
       </el-row>
-
     </el-row>
 
     <!-- 待办事项弹窗 -->
     <el-dialog title="添加待办" v-model="showDialog" width="30%">
       <el-form label-width="100px" autocomplete="on">
         <el-form-item label="待办事项">
-          <el-input v-model="text" placeholder="请输入待办事项"></el-input>
+          <el-input v-model="state.todoText" placeholder="请输入待办事项"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -166,23 +146,48 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import { UserFilled, Message, Goods, Edit, Delete } from '@element-plus/icons'; // 图标
+import {
+  UserFilled,
+  Message,
+  Goods,
+  Edit,
+  Delete,
+  Promotion,
+} from '@element-plus/icons'; // 图标
+import { get_dashboard, add_todo, update_todo } from '@api/dashboard';
 
 const name = localStorage.getItem('ms_username');
 const role = name === 'admin' ? '超级管理员' : '普通用户';
-const currentTime = ref(0);
+
+const state = reactive({
+  currentTime: 0, // 当前时间
+  request_num: 0, // 请求次数
+  todoList: [], // 待办列表
+  todoText: '', // 待办文本
+});
 
 // 当前登录时间
 onMounted(() => {
   var aData = new Date();
-  currentTime.value =
+  state.currentTime =
     aData.getFullYear() +
     '年' +
     (aData.getMonth() + 1) +
     '月' +
     aData.getDate() +
     '日';
+
+  getData();
 });
+
+/**
+ * 获取数据
+ */
+async function getData() {
+  let res = await get_dashboard();
+  state.request_num = res.data.request_num;
+  state.todoList = res.data.todoList;
+}
 
 // 语言使用详情
 const languages = reactive([
@@ -192,29 +197,27 @@ const languages = reactive([
   { title: 'CSS', percentage: 1.7, color: '#f56c6c' },
 ]);
 
-// 待办
+// 待办添加弹框
 const showDialog = ref(false);
-const todoList = reactive([
-  { title: '重构前端代码', status: false },
-  { title: '添加所有表信息', status: false },
-  { title: '调整代码结构', status: true },
-  { title: '添加学生表信息', status: true },
-  { title: '添加教师表信息', status: true },
-]);
 
 // 添加待办
-const text = ref('');
-const add = () => {
-  todoList.pop();
-  todoList.unshift({ title: text.value, status: false });
+async function add() {
+  let res = await add_todo(state.todoText);
+  state.todoList = res.data;
   showDialog.value = false;
-  text.value = '';
-};
+  state.todoText = '';
+}
+
+// 勾选待办
+async function update(res) {
+  console.log(res);
+  await update_todo(res);
+}
 
 // 取消
 const cancel = () => {
   showDialog.value = false;
-  text.value = '';
+  state.todoText = '';
 };
 
 // 默认开启,可不要
