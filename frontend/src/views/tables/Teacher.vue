@@ -20,7 +20,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="birthday" label="教师生日" width="220" align="center" :sortable="!state.isShowSearched"
+      <el-table-column prop="birthday" label="教师生日" width="180" align="center" :sortable="!state.isShowSearched"
         :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="education" label="教师学历" width="140" align="center">
@@ -123,7 +123,6 @@ import BaseTable from '@components/BaseTable.vue';
 import teacher_apis from '@api/teacher';
 import dept_apis from '@api/department';
 import { byIdGetName } from '@utils/byIdGetName';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -199,15 +198,14 @@ const store = useStore();
 async function getData(currentPage = 1) {
   // 获取教师表数据
   let params = { pageIndex: currentPage, pageSize: query.pageSize };
-  const teacherRes = await teacher_apis.read_datas(params);
-  state.teacherData = teacherRes.data.dataList;
-  state.pageTotal = teacherRes.data.count;
+  const { data } = await teacher_apis.read_datas(params);
+  state.teacherData = data.dataList;
+  state.pageTotal = data.count;
 
   // 获取院系信息
   if (store.state.departmentData == '') {
-    const deptRes = await dept_apis.department_relation();
-    state.deptData = deptRes.data;
-    store.commit('handleData', ['department', deptRes.data]);
+    const { data } = await dept_apis.department_relation();
+    store.commit('handleData', ['department', (state.deptData = data)]);
   } else {
     state.deptData = store.state.departmentData;
   }

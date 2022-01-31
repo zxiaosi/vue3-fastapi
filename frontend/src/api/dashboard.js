@@ -4,7 +4,7 @@ import http from '@/utils/http';
  * 获取首页数据
  * @returns 
  */
-export const get_dashboard = () => { return http.get(`./dashboard/`) }
+export const get_dashboard = () => { return http.get(`./dashboard`) }
 
 /**
  * 添加待办

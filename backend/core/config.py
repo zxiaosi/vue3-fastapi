@@ -42,12 +42,14 @@ class Settings(BaseSettings):
     # DATABASE_URI: str = "sqlite:///./sql_app.db"  # Sqlite链接
     # (开启MySQL 需注释 db/session 下Sqlite的多线程)
     # DATABASE_URI: str = "mysql://user:password@host:port/dbname?charset=utf8"
+    # DATABASE_URI: str = "mysql://root:123456@mysql/elective_system?charset=utf8" # docker
     DATABASE_URI: str = "mysql://root:123456@localhost:3306/elective_system?charset=utf8"
     DATABASE_ECHO: bool = False  # 数据库日志 (可看到创建表、表数据增删改查的信息)
 
     # redis
     # REDIS_URI: str = "redis://user:password@host:port/db"
-    REDIS_URI: str = "redis://:123456@8.136.82.204:6379/1"
+    # REDIS_URI: str = "redis://:123456@redis/db" # docker
+    REDIS_URI: str = "redis://@localhost:6379/1"
 
     # 日志
     LOGGER_FOLDER: str = "logs"  # 文件夹名

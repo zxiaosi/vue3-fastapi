@@ -73,10 +73,6 @@ def register_exception(app: FastAPI):
         code: str = str(exc.orig)[1:5]  # 1062(唯一) || 1452(外键)
         if code == "1062":  # 添加的值与数据库中已存在(主键、唯一索引)
             text: str = f"添加数据的 id-{exc.params[0]} 或 name-{exc.params[1]} 已存在, 添加失败!"
-        # elif code == "1452" and request.method == "POST":  # 添加的值数据库中不存在(外键)
-        #     text: str = f"添加数据的 外键-{exc.params[-1]} 不存在, 添加失败!"
-        # elif code == "1452" and request.method == "PUT":  # 更新的值数据库中不存在(外键)
-        #     text: str = f"更新数据的 外键-{exc.params[-2]} 不存在, 添加失败!"
         elif code == "1452" and request.method == "POST":  # 添加的值数据库中不存在(外键)
             text: str = f"添加数据的外键不存在, 添加失败!"
         elif code == "1452" and request.method == "PUT":  # 更新的值数据库中不存在(外键)

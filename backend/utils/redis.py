@@ -4,7 +4,7 @@
 # @Author : zxiaosi
 # @desc : redis
 import json
-from typing import Union
+from typing import Union, Any
 from aioredis import Redis, from_url
 
 from core.config import settings
@@ -31,7 +31,34 @@ class MoleculesRepository:
         """ 将字符串转为对象 """
         return json.loads(data)
 
-    async def list_loads(self, key: str) -> list:
-        """ 将列表字符串转为对象 """
-        todo_list = await self._redis.lrange(key, 0, -1)
+    async def list_loads(self, key: str, num: int = 0) -> list:
+        """
+        将列表字符串转为对象
+
+        :param key: 列表的key
+        :param num: 最大长度(默认值 0-全部)
+        :return: 列表对象
+        """
+        todo_list = await self._redis.lrange(key, 0, num - 1)
         return [json.loads(todo) for todo in todo_list]
+
+    async def lpush(self, key: str, value: Union[str, list, dict]):
+        """
+        向列表右侧插入数据
+
+        :param key: 列表的key
+        :param value: 插入的值
+        """
+        text = await self.dumps(value)
+        await self._redis.lpush(key, text)
+
+    async def get_list_by_index(self, key: str, id: int) -> object:
+        """
+        根据索引得到列表值
+
+        :param key: 列表的值
+        :param id: 索引值
+        :return:
+        """
+        value = await self._redis.lindex(key, id)
+        return await self.loads(value)

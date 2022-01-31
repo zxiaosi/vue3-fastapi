@@ -41,7 +41,6 @@ import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import course_apis from '@api/course';
 import { byIdGetName } from '@utils/byIdGetName';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -111,9 +110,9 @@ const store = useStore();
 async function getData(currentPage = 1) {
   // 获取课程表数据
   let params = { pageIndex: currentPage, pageSize: query.pageSize };
-  const courseRes = await course_apis.read_datas(params);
-  state.courseData = courseRes.data.dataList;
-  state.pageTotal = courseRes.data.count;
+  const { data } = await course_apis.read_datas(params);
+  state.courseData = data.dataList;
+  state.pageTotal = data.count;
 }
 
 // 页面加载后调用函数

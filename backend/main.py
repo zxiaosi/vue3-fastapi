@@ -14,7 +14,7 @@ from register.middleware import register_middleware
 from utils import logger
 
 # 接口文档配置
-app = FastAPI(description=settings.PROJECT_DESCRIPTION, version=settings.PROJECT_VERSION, docs_url=settings.PROJECT_DIR)
+app = FastAPI(description=settings.PROJECT_DESCRIPTION, version=settings.PROJECT_VERSION)
 
 # 挂载其他app
 register_app(app)
@@ -22,17 +22,17 @@ register_app(app)
 # 注册路由
 register_router(app)
 
-# 注册捕获全局异常
-register_exception(app)
+# 注册跨域请求
+register_cors(app)
 
 # 注册Redis
 register_redis(app)
 
-# 注册跨域请求
-register_cors(app)
-
 # 注册请求响应拦截
 register_middleware(app)
+
+# 注册捕获全局异常
+register_exception(app)
 
 if __name__ == '__main__':
     logger.info("日志初始化成功！！！")

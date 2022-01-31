@@ -18,7 +18,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="birthday" label="学生生日" width="220" align="center" :sortable="!state.isShowSearched"
+      <el-table-column prop="birthday" label="学生生日" width="180" align="center" :sortable="!state.isShowSearched"
         :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="major_id" label="专业名字" min-width="220" align="center">
@@ -72,7 +72,6 @@ import BaseTable from '@components/BaseTable.vue';
 import student_apis from '@api/student';
 import major_apis from '@api/major';
 import { byIdGetName } from '@utils/byIdGetName';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -139,15 +138,15 @@ const store = useStore();
  */
 async function getData(currentPage = 1) {
   let params = { pageIndex: currentPage, pageSize: query.pageSize };
-  const studentRes = await student_apis.read_datas(params);
-  state.studentData = studentRes.data.dataList;
-  state.pageTotal = studentRes.data.count;
+  const { data } = await student_apis.read_datas(params);
+  state.studentData = data.dataList;
+  state.pageTotal = data.count;
 
   // 获取专业信息
   if (store.state.majorData == '') {
-    const majorRes = await major_apis.major_relation();
-    state.majorData = majorRes.data;
-    store.commit('handleData', ['major', majorRes.data]);
+    const { data } = await major_apis.major_relation();
+    state.majorData = data;
+    store.commit('handleData', ['major', data]);
   } else {
     state.majorData = store.state.majorData;
   }

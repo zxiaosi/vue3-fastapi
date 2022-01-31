@@ -73,9 +73,9 @@ const collapseChage = () => {
   store.commit('handleCollapse', !collapse.value);
 };
 
-// 当屏幕宽度超多1500,折叠侧边栏
+// 当屏幕宽度小于1490,折叠侧边栏
 onMounted(() => {
-  if (document.body.clientWidth < 1500) {
+  if (document.body.clientWidth < 1490) {
     collapseChage();
   }
 });

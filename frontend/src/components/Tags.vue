@@ -2,8 +2,7 @@
   <div class="tags" v-if="showTags">
     <!-- 标签列表 -->
     <ul>
-      <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}"
-        :key="index">
+      <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
         <router-link :to="item.path" class="tags-li-title">{{item.title}}</router-link>
         <span class="tags-li-icon" @click="closeTags(index)">
           <el-icon color="#606266">
@@ -16,7 +15,7 @@
     <!-- 标签选项 -->
     <div class="tags-close-box">
       <el-dropdown @command="handleTags">
-        <el-button size="mini" type="primary">
+        <el-button size="small" type="primary">
           标签选项
           <el-icon class="el-icon--right">
             <arrow-down />
@@ -180,7 +179,7 @@ defineExpose({
 
 /* 标签后面的关闭图标 */
 .tags-li-icon .el-icon {
-  padding-top: 3px;
+  padding-top: 4px;
 }
 
 .tags-close-box {
@@ -191,6 +190,7 @@ defineExpose({
   text-align: center;
   width: 110px;
   height: 30px;
+  line-height: 28px;
   background: #fff;
   box-shadow: -3px 0 15px 3px rgba(0, 0, 0, 0.1);
   z-index: 10;

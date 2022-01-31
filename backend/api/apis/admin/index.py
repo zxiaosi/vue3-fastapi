@@ -3,7 +3,6 @@
 # @Time : 2022/1/17 15:15
 # @Author : zxiaosi
 # @desc : 首页
-import json
 from typing import Any
 from fastapi import APIRouter
 from fastapi.responses import ORJSONResponse
@@ -13,7 +12,12 @@ from utils import resp_200
 
 router = APIRouter()
 
-todoList = ['重构前端代码', '添加所有表信息', '调整代码结构', '添加学生表信息', '添加教师表信息']
+language = [
+    {'title': 'Vue', 'percentage': 44.3, 'color': '#42b983'},
+    {'title': 'Python', 'percentage': 45.4, 'color': '#f1e05a'},
+    {'title': 'JavaScript', 'percentage': 8.7, 'color': '#409EFF'},
+    {'title': '其他', 'percentage': 1.6, 'color': '#f56c6c'},
+]
 
 
 # 查询首页数据
@@ -21,28 +25,32 @@ todoList = ['重构前端代码', '添加所有表信息', '调整代码结构',
 async def get_dashboard(request: Request) -> Any:
     """ 查询首页数据 """
     request_num = await request.app.state.redis.get('request_num')
-    todo_list = await request.app.state.mol_repo.list_loads('todo')
-    return resp_200(data={'request_num': request_num, 'todoList': todo_list}, msg='查询首页数据')
+    language_details = await request.app.state.mol_repo.list_loads('language_details')
+    todo_list = await request.app.state.mol_repo.list_loads('todo_list', 6)
+    todo_num = await request.app.state.redis.llen('todo_list')
+    return resp_200(data={'request_num': request_num,
+                          'todo': {'list': todo_list, 'num': todo_num},
+                          'language_details': language_details},
+                    msg='查询首页数据')
 
 
-# 添加待办 TODO 换成 hash
+# 添加待办
 @router.post("/add/todo", response_class=ORJSONResponse, summary='添加待办')
 async def add_todo(request: Request, todo_in: str) -> Any:
     """ 添加待办 """
-    text = await request.app.state.mol_repo.dumps({'title': todo_in, 'status': False})
-    await request.app.state.redis.lpush('todo', text)
-    await request.app.state.redis.ltrim('todo', 0, 4)  # 裁剪[0, 4]之间的数据(左右为闭)
-    todo_list = await request.app.state.mol_repo.list_loads('todo')
-    return resp_200(data=todo_list, msg='添加成功！')
+    text = {'title': todo_in, 'status': False}
+    await request.app.state.mol_repo.lpush('todo_list', text)
+    todo_list = await request.app.state.mol_repo.list_loads('todo_list', 6)
+    todo_num = await request.app.state.redis.llen('todo_list')
+    return resp_200(data={'todo_list': todo_list, 'todo_num': todo_num}, msg='添加待办成功！')
 
 
-# 更新待办 TODO 换成 hash
+# 更新待办
 @router.put("/update/todo", response_class=ORJSONResponse, summary='更新待办')
 async def update_todo(request: Request, id: int = None) -> Any:
     """ 更新待办 """
-    value = await request.app.state.redis.lrange('todo', 0, -1)
-    text = await request.app.state.mol_repo.loads(value[id])
-    text["status"] = bool(1 - text["status"])  # 布尔值取反
-    test = await request.app.state.mol_repo.dumps(text)
-    await request.app.state.redis.lset('todo', id, test)
-    return resp_200(data=None, msg='更新成功！')
+    obj = await request.app.state.mol_repo.get_list_by_index('todo_list', id)
+    obj["status"] = bool(1 - obj["status"])  # 取反
+    text = await request.app.state.mol_repo.dumps(obj)
+    await request.app.state.redis.lset('todo_list', id, text)
+    return resp_200(data=None, msg='更新待办成功！')

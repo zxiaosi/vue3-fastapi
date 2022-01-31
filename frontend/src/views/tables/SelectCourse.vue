@@ -66,7 +66,6 @@ import student_apis from '@api/student';
 import teacher_apis from '@api/teacher';
 import course_apis from '@api/course';
 import { byIdGetName } from '@utils/byIdGetName';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -126,33 +125,30 @@ const store = useStore();
  */
 async function getData(currentPage = 1) {
   let params = { pageIndex: currentPage, pageSize: query.pageSize };
-  const selectCourseRes = await selectCourse_apis.read_datas(params);
-  state.selectCourseData = selectCourseRes.data.dataList;
-  state.pageTotal = selectCourseRes.data.count;
+  const { data } = await selectCourse_apis.read_datas(params);
+  state.selectCourseData = data.dataList;
+  state.pageTotal = data.count;
 
   // 获取学生信息
   if (store.state.studentData == '') {
-    const studentRes = await student_apis.student_relation();
-    state.studentData = studentRes.data;
-    store.commit('handleData', ['student', studentRes.data]);
+    const { data } = await student_apis.student_relation();
+    store.commit('handleData', ['student', (state.studentData = data)]);
   } else {
     state.studentData = store.state.studentData;
   }
 
   // 获取教师信息
   if (store.state.teacherData == '') {
-    const teacherRes = await teacher_apis.teacher_relation();
-    state.teacherData = teacherRes.data;
-    store.commit('handleData', ['teacher', teacherRes.data]);
+    const { data } = await teacher_apis.teacher_relation();
+    store.commit('handleData', ['teacher', (state.teacherData = data)]);
   } else {
     state.teacherData = store.state.teacherData;
   }
 
   // 获取课程信息
   if (store.state.courseData == '') {
-    const courseRes = await course_apis.course_relation();
-    state.courseData = courseRes.data;
-    store.commit('handleData', ['course', courseRes.data]);
+    const { data } = await course_apis.course_relation();
+    store.commit('handleData', ['course', (state.courseData = data)]);
   } else {
     state.courseData = store.state.courseData;
   }

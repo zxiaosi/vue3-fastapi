@@ -59,27 +59,8 @@ export default createStore({
     // 存储数据
     handleData(state, data) {
       // console.log(state, data);
-
-      switch (data[0]) {
-        case 'department':
-          state.departmentData = data[1];
-          break;
-        case 'major':
-          state.majorData = data[1];
-          break;
-        case 'teacher':
-          state.teacherData = data[1];
-          break;
-        case 'student':
-          state.studentData = data[1];
-          break;
-        case 'course':
-          state.courseData = data[1];
-          break;
-        case 'selectCourse':
-          state.selectCourseData = data[1];
-          break;
-      }
+      const dataJoin = data[0] + 'Data';
+      state[dataJoin] = data[1];
     },
   },
   actions: {},

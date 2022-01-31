@@ -42,7 +42,14 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue';
+import {
+  reactive,
+  onMounted,
+  onBeforeMount,
+  onUnmounted,
+  onActivated,
+  onDeactivated,
+} from 'vue';
 import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
@@ -126,19 +133,35 @@ const store = useStore();
 async function getData(currentPage = 1) {
   // 获取专业数据
   let params = { pageIndex: currentPage, pageSize: query.pageSize };
-  const majorRes = await major_apis.read_datas(params);
-  state.majorData = majorRes.data.dataList;
-  state.pageTotal = majorRes.data.count;
+  const { data } = await major_apis.read_datas(params);
+  state.majorData = data.dataList;
+  state.pageTotal = data.count;
 
   // 获取院系数据
   if (store.state.departmentData == '') {
-    const deptRes = await dept_apis.department_relation();
-    state.deptData = deptRes.data;
-    store.commit('handleData', ['department', deptRes.data]);
+    const { data } = await dept_apis.department_relation();
+    state.deptData = data;
+    store.commit('handleData', ['department', data]);
   } else {
     state.deptData = store.state.departmentData;
   }
 }
+
+onBeforeMount(() => {
+  console.log('major创建了！');
+});
+
+onUnmounted(() => {
+  console.log('major销毁了！');
+});
+
+onActivated(() => {
+  console.log('major缓存组件激活！');
+});
+
+onDeactivated(() => {
+  console.log('major缓存组件失活！');
+});
 
 // 页面加载后调用函数
 onMounted(() => {

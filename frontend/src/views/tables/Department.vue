@@ -34,12 +34,11 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue';
+import { reactive, onMounted, onBeforeMount, onUnmounted, onActivated, onDeactivated  } from 'vue';
 import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus';
 import BaseTable from '@components/BaseTable.vue';
 import dept_apis from '@api/department';
-import { storeData } from '@utils/storeData';
 
 // 页面配置
 const page = reactive({
@@ -110,13 +109,27 @@ const store = useStore();
  * 获取表格数据
  */
 async function getData(currentPage = 1) {
-  const res = await dept_apis.read_datas({
-    pageIndex: currentPage,
-    pageSize: query.pageSize,
-  });
-  state.deptData = res.data.dataList;
-  state.pageTotal = res.data.count;
+  let params = { pageIndex: currentPage, pageSize: query.pageSize };
+  const { data } = await dept_apis.read_datas(params);
+  state.deptData = data.dataList;
+  state.pageTotal = data.count;
 }
+
+onBeforeMount(()=>{
+  console.log('department创建了！')
+})
+
+onUnmounted(()=>{
+  console.log('department销毁了！')
+})
+
+onActivated(()=>{
+  console.log('department缓存组件激活！')
+})
+
+onDeactivated(()=>{
+  console.log('department缓存组件失活！')
+})
 
 // 页面加载后调用函数
 onMounted(() => {

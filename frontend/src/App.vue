@@ -1,28 +1,20 @@
 <template>
-  <router-view v-if="isRouterAlive" />
+  <!-- TODO -->
+  <router-view v-slot="{ Component }">
+    <transition>
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </transition>
+  </router-view>
 </template>
 
-<script>
-export default {
-  provide() {
-    return {
-      reload: this.reload,
-    };
-  },
-  data() {
-    return {
-      isRouterAlive: true,
-    };
-  },
-  methods: {
-    reload() {
-      this.isRouterAlive = false;
-      this.$nextTick(function () {
-        this.isRouterAlive = true;
-      });
-    },
-  },
-};
+<script setup>
+import { provide } from '@vue/runtime-core';
+import * as echarts from 'echarts';
+
+// 全局声明echarts
+provide('echart', echarts);
 </script>
 
 <style>

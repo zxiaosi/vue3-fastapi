@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="body">
     <!-- 用户信息、访问量、语言详情、待办事项 -->
     <el-row :gutter="20">
       <el-col :span="8">
         <!-- 用户信息 -->
-        <el-card shadow="hover" class="mgb20" style="height:252px;">
+        <el-card class="mgb20" style="height:252px;">
           <div class="user-info">
             <img src="../assets/img/img.jpg" class="user-avator" alt />
             <div class="user-info-cont">
@@ -13,17 +13,16 @@
             </div>
           </div>
           <div class="user-info-list">
-            当前登录时间：
-            <span>{{ state.currentTime }}</span>
+            当前登录时间：<span>{{ state.currentTime }}</span>
           </div>
           <div class="user-info-list">
-            当前登录地点：
-            <span>测试地点</span>
+            当前登录地点：<span>测试地点</span>
           </div>
         </el-card>
 
         <!-- 语言详情 -->
-        <el-card shadow="hover" style="height:252px;">
+        <!-- <el-card style="height:288px;"> -->
+        <el-card style="height:250px;">
           <template #header>
             <div class="clearfix">
               <span>语言使用详情</span>
@@ -31,7 +30,7 @@
           </template>
 
           <!-- 进度条 -->
-          <el-table :show-header="false" :data="languages" class="language">
+          <el-table :show-header="false" :data="state.languageDetails" class="language">
             <el-table-column width="100">
               <template #default="scope">{{ scope.row.title }}</template>
             </el-table-column>
@@ -44,11 +43,12 @@
         </el-card>
       </el-col>
 
+      <!-- 待办事项 -->
       <el-col :span="16">
         <!-- 访问量、消息、数量 -->
         <el-row :gutter="20" class="mgb20">
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-1">
                 <el-icon class="grid-con-icon">
                   <user-filled />
@@ -61,26 +61,26 @@
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-2">
                 <el-icon class="grid-con-icon">
                   <message />
                 </el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">321</div>
-                  <div>系统消息</div>
+                  <div class="grid-num">{{ state.todoNumber }}</div>
+                  <div>待办事项</div>
                 </div>
               </div>
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-3">
                 <el-icon class="grid-con-icon">
                   <promotion />
                 </el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">{{ state.request_num }}</div>
+                  <div class="grid-num">{{ state.requestNumber }}</div>
                   <div>请求次数</div>
                 </div>
               </div>
@@ -89,7 +89,7 @@
         </el-row>
 
         <!-- 待办 -->
-        <el-card shadow="hover" style="height:403px;">
+        <el-card style="height:402px;">
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
@@ -114,24 +114,42 @@
           </el-table>
         </el-card>
       </el-col>
+    </el-row>
 
-      <el-row class="githubCard">
-        <el-col :span="8">
-          <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=zxiaosi&layout=compact" />
-        </el-col>
+    <!-- GitHub卡片、echarts图 -->
+    <el-row :gutter="20" style="margin-bottom:-10px">
+      <el-col :span="8">
+        <el-card>
+          <div id="pie" style="height:220px" />
+        </el-card>
+      </el-col>
 
-        <el-col :span="10">
-          <img
+      <el-col :span="16">
+        <el-card>
+          <div id="bar" style="height:220px" />
+        </el-card>
+      </el-col>
+
+      <!-- <el-card>
+        <a href="https://github.com/zxiaosi/Vue3-FastAPI">
+          <img align="center" style="margin-top:20px"
+            src="https://github-readme-stats.vercel.app/api/pin/?username=zxiaosi&repo=Vue3-FastAPI&theme=dracula" />
+        </a>
+      </el-card> -->
+
+      <!-- <el-card>
+        <a href="https://github.com/zxiaosi">
+          <img align="center"
             src="https://github-readme-stats.vercel.app/api?username=zxiaosi&hide=prs&show_icons=true&theme=tokyonight" />
-        </el-col>
-      </el-row>
+        </a>
+      </el-card> -->
     </el-row>
 
     <!-- 待办事项弹窗 -->
     <el-dialog title="添加待办" v-model="showDialog" width="30%">
       <el-form label-width="100px" autocomplete="on">
         <el-form-item label="待办事项">
-          <el-input v-model="state.todoText" placeholder="请输入待办事项"></el-input>
+          <el-input v-model="state.todoText" placeholder="请输入待办事项" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -145,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, inject } from 'vue';
 import {
   UserFilled,
   Message,
@@ -156,13 +174,17 @@ import {
 } from '@element-plus/icons'; // 图标
 import { get_dashboard, add_todo, update_todo } from '@api/dashboard';
 
+let echarts = inject('echart');
+
 const name = localStorage.getItem('ms_username');
 const role = name === 'admin' ? '超级管理员' : '普通用户';
 
 const state = reactive({
   currentTime: 0, // 当前时间
-  request_num: 0, // 请求次数
+  requestNumber: 0, // 请求次数
+  languageDetails: [], // 语言使用详情
   todoList: [], // 待办列表
+  todoNumber: 0, // 待办条数
   todoText: '', // 待办文本
 });
 
@@ -184,33 +206,31 @@ onMounted(() => {
  * 获取数据
  */
 async function getData() {
-  let res = await get_dashboard();
-  state.request_num = res.data.request_num;
-  state.todoList = res.data.todoList;
-}
+  let { data } = await get_dashboard();
+  state.requestNumber = data.request_num;
+  state.todoList = data.todo.list;
+  state.todoNumber = data.todo.num;
+  state.languageDetails = data.language_details;
 
-// 语言使用详情
-const languages = reactive([
-  { title: 'Vue', percentage: 53.4, color: '#42b983' },
-  { title: 'Python', percentage: 38.2, color: '#f1e05a' },
-  { title: 'JavaScript', percentage: 6.3, color: '#409EFF' },
-  { title: 'CSS', percentage: 1.7, color: '#f56c6c' },
-]);
+  // eacharts图
+    echartPie();
+    eachartBar();
+}
 
 // 待办添加弹框
 const showDialog = ref(false);
 
 // 添加待办
 async function add() {
-  let res = await add_todo(state.todoText);
-  state.todoList = res.data;
+  let { data } = await add_todo(state.todoText);
+  state.todoList = data.todo_list;
+  state.todoNumber = data.todo_num;
   showDialog.value = false;
   state.todoText = '';
 }
 
 // 勾选待办
 async function update(res) {
-  console.log(res);
   await update_todo(res);
 }
 
@@ -220,16 +240,59 @@ const cancel = () => {
   state.todoText = '';
 };
 
-// 默认开启,可不要
-defineExpose({
-  role,
-  languages,
-  add,
-  cancel,
-});
+// echarts-pie
+function echartPie() {
+  let pieChart = echarts.init(document.getElementById('pie'));
+  // 绘制图表
+  pieChart.setOption({
+    title: { text: '信息', left: 'center', top: 'center' },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: ['用户访问量', '待办事项', '请求次数'],
+    },
+    tooltip: { trigger: 'item', formatter: '{b} : {c} ({d}%)' },
+    series: [
+      {
+        type: 'pie',
+        radius: ['40%', '70%'],
+        data: [
+          { value: 335, name: '用户访问量' },
+          { value: state.todoNumber, name: '待办事项' },
+          { value: state.requestNumber, name: '请求次数' },
+        ],
+      },
+    ],
+  });
+  // 自适应大小
+  window.onresize = function () {
+    pieChart.resize();
+  };
+}
+
+// echarts-bar
+function eachartBar() {
+  let barChart = echarts.init(document.getElementById('bar'));
+  barChart.setOption({
+    title: { text: '周进度', left: 'center' },
+    legend: { show: true },
+    tooltip: { trigger: 'item', formatter: '{b} : {c}' },
+    xAxis: { data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'] },
+    yAxis: {},
+    series: [{ type: 'bar', data: [23, 24, 18, 25, 27, 28, 25] }],
+  });
+  window.onresize = function () {
+    barChart.resize();
+  };
+}
 </script>
 
 <style scoped>
+/* 屏幕最大宽度 */
+/* .body {
+  min-width: 1490px;
+} */
+
 .el-row {
   margin-bottom: 20px;
 }
@@ -324,7 +387,7 @@ defineExpose({
 /* 语言使用详情 */
 .language {
   width: 100%;
-  margin-top: -19px;
+  margin-top: -8px;
 }
 
 .mgb20 {
@@ -338,11 +401,5 @@ defineExpose({
 .todo-item-del {
   text-decoration: line-through;
   color: #999;
-}
-
-.githubCard {
-  width: 100%;
-  margin: 20px 0px 0px 70px;
-  justify-content: space-between;
 }
 </style>

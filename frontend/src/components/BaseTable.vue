@@ -39,7 +39,7 @@
       </div>
 
       <!-- 表格数据 -->
-      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" max-height="578"
+      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table"
         :default-sort="{ prop: 'id', order: 'ascending' }" @selection-change="handleSelectionChange"
         v-loading="state.isLoading " element-loading-text="拼命加载中...">
 
@@ -142,7 +142,7 @@ watch(
   (oldValue, newValue) => {
     // console.log(oldValue, newValue);
     // 移除搜索
-    removeSearch();
+    // removeSearch();
     // 清除定时器
     window.clearTimeout(loading);
   }
@@ -151,9 +151,9 @@ watch(
 // 监听属性
 watchEffect(() => {
   // 当搜索框没有值时,恢复默认表格
-  if (query.value.id.length == 0) {
-    removeSearch();
-  }
+  // if (query.value.id.length == 0) {
+  //   removeSearch();
+  // }
 
   if (pageTotal.value == 0) {
     loading = setTimeout(function () {
@@ -187,9 +187,9 @@ function cascadeDelete() {
 async function handleSearch(event) {
   clickRecover(event);
 
-  const res = await props.apis.read_data(query.value.id);
+  const { data } = await props.apis.read_data(query.value.id);
   state.isShowSearched = true;
-  state.searched.splice(0, 1, res.data);
+  state.searched.splice(0, 1, data);
 }
 
 /**

@@ -13,10 +13,8 @@ def init_db():
     try:
         # 删除所有的表
         drop_db()
-
         Base.metadata.create_all(bind=engine)
         logger.info("创建表成功!!!")
-
     except Exception as e:
         logger.warning(f"创建表失败!!! -- 错误信息如下:\n{e}")
 
