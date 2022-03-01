@@ -1,8 +1,53 @@
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { User, Lock } from "@element-plus/icons-vue";
+import { useStore } from "@/stores";
+import { login } from "@/api";
+import { setLocal } from "@/request/auth";
+
+const router = useRouter();
+const param = reactive({
+  username: "admin",
+  password: "123",
+});
+
+// 用户校验
+const loginRules = {
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+};
+
+const loginRef = ref();
+
+const submitForm = () => {
+  loginRef.value.validate(async (valid: any) => {
+    if (valid) {
+      const { data } = await login(param);
+      if (data) {
+        ElMessage.success("登录成功");
+        setLocal("username", param.username);
+        setLocal("Authorization", data.access_token);
+        router.push("/");
+      }
+    } else {
+      ElMessage.error("数据验证失败！");
+      return false;
+    }
+  });
+};
+
+// 状态管理
+const store = useStore();
+store.clearTags; // 清空标签
+</script>
+
 <template>
   <div class="login-wrap">
     <div class="ms-login">
-      <div class="ms-title">基于Vue3+FastAPI的学生选课系统</div>
-      <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+      <div class="ms-title">学生选课系统</div>
+      <el-form :model="param" :rules="loginRules" ref="loginRef" label-width="0px" class="ms-content">
         <el-form-item prop="username">
           <el-input v-model="param.username" placeholder="username">
             <template #prepend>
@@ -11,8 +56,7 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" placeholder="password" v-model="param.password"
-            @keyup.enter="submitForm()">
+          <el-input type="password" placeholder="password" v-model="param.password" @keyup.enter="submitForm()">
             <template #prepend>
               <el-button :icon="Lock" />
             </template>
@@ -21,54 +65,11 @@
         <div class="login-btn">
           <el-button type="primary" @click="submitForm()">登录</el-button>
         </div>
-        <p class="login-tips">Tips : 用户名和密码随便填。</p>
+        <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
       </el-form>
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, reactive } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import { User, Lock } from '@element-plus/icons'; // 图标
-
-const router = useRouter();
-const param = reactive({
-  username: 'admin',
-  password: '123123',
-});
-
-// 用户校验
-const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-};
-const login = ref(null);
-const submitForm = () => {
-  login.value.validate((valid) => {
-    if (valid) {
-      ElMessage.success('登录成功');
-      localStorage.setItem('ms_username', param.username);
-      router.push('/');
-    } else {
-      ElMessage.error('登录成功');
-      return false;
-    }
-  });
-};
-
-// 状态管理
-const store = useStore();
-store.commit('clearTags'); // 清空标签
-
-// defineExpose 可以省略
-defineExpose({
-  rules,
-  submitForm,
-});
-</script>
 
 <style scoped>
 .login-wrap {

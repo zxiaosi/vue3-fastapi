@@ -1,78 +1,49 @@
-<template>
-  <div class="tags" v-if="showTags">
-    <!-- 标签列表 -->
-    <ul>
-      <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
-        <router-link :to="item.path" class="tags-li-title">{{item.title}}</router-link>
-        <span class="tags-li-icon" @click="closeTags(index)">
-          <el-icon color="#606266">
-            <close />
-          </el-icon>
-        </span>
-      </li>
-    </ul>
+<script setup lang="ts">
+import { computed } from "vue";
+import { useStore } from "@/stores";
+import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
+import { Close, ArrowDown } from "@element-plus/icons-vue";
 
-    <!-- 标签选项 -->
-    <div class="tags-close-box">
-      <el-dropdown @command="handleTags">
-        <el-button size="small" type="primary">
-          标签选项
-          <el-icon class="el-icon--right">
-            <arrow-down />
-          </el-icon>
-        </el-button>
-        <template #dropdown>
-          <el-dropdown-menu size="small">
-            <el-dropdown-item command="other">关闭其他</el-dropdown-item>
-            <el-dropdown-item command="all">关闭所有</el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-  </div>
-</template>
+const store = useStore(); // 状态管理
+const route = useRoute(); // 路由对象
+const router = useRouter(); // 全局路由
 
-<script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-import { Close, ArrowDown } from '@element-plus/icons'; // 图标
-
-const route = useRoute();
-const router = useRouter();
-const isActive = (path) => {
+// 当前路由是否活跃
+const isActive = (path: string): boolean => {
   return path === route.fullPath;
 };
 
 // 获取标签列表
-const store = useStore();
-const tagsList = computed(() => store.state.tagsList);
-const showTags = computed(() => tagsList.value.length > 0);
+const showTags = computed((): boolean => store.tagsList.length > 0);
 
-// 关闭单个标签
-const closeTags = (index) => {
-  const delItem = tagsList.value[index];
-  store.commit('delTagsItem', { index });
-  const item = tagsList.value[index]
-    ? tagsList.value[index]
-    : tagsList.value[index - 1];
+/**
+ * 关闭单个标签
+ * @param index 当前标签的索引
+ */
+const closeTags = (index: number) => {
+  const delItem = store.tagsList[index];
+  store.delTagsItem(index);
+  const item = store.tagsList[index] ? store.tagsList[index] : store.tagsList[index - 1];
   if (item) {
     delItem.path === route.fullPath && router.push(item.path);
   } else {
-    router.push('/');
+    router.push("/");
   }
 };
 
-// 设置标签
-const setTags = (route) => {
-  const isExist = tagsList.value.some((item) => {
+/**
+ * 设置标签
+ * @param route 路由对象
+ */
+const setTags = (route: any) => {
+  const isExist = store.tagsList.some((item) => {
     return item.path === route.fullPath;
   });
   if (!isExist) {
-    if (tagsList.value.length >= 8) {
-      store.commit('delTagsItem', { index: 0 });
+    if (store.tagsList.length >= 8) {
+      store.delTagsItem(0);
     }
-    store.commit('setTagsItem', {
+    store.setTagsItem({
       name: route.name,
       title: route.meta.title,
       path: route.fullPath,
@@ -87,38 +58,54 @@ onBeforeRouteUpdate((to) => {
 
 // 关闭全部标签
 const closeAll = () => {
-  store.commit('clearTags');
-  router.push('/');
+  store.clearTags();
+  router.push("/");
 };
 
 // 关闭其他标签
 const closeOther = () => {
-  const curItem = tagsList.value.filter((item) => {
+  const currentItem = store.tagsList.filter((item) => {
     return item.path === route.fullPath;
   });
-  store.commit('closeTagsOther', curItem);
+  store.closeTagsOther(currentItem);
 };
 
 // 标签操作
-const handleTags = (command) => {
-  command === 'other' ? closeOther() : closeAll();
+const handleTags = (command: string) => {
+  command === "other" ? closeOther() : closeAll();
 };
-
-// 关闭当前页面的标签页
-// store.commit("closeCurrentTag", {
-//     $router: router,
-//     $route: route
-// });
-
-// defineExpose 可以省略
-defineExpose({
-  isActive,
-  showTags,
-  closeTags,
-  handleTags,
-});
 </script>
 
+<template>
+  <div class="tags" v-if="showTags">
+    <!-- 标签列表 -->
+    <ul>
+      <li class="tags-li" v-for="(item, index) in store.tagsList" :class="{ active: isActive(item.path) }" :key="index">
+        <router-link :to="item.path" class="tags-li-title">{{ item.title }}</router-link>
+        <span class="tags-li-icon" @click="closeTags(index)">
+          <el-icon color="#606266"><close /></el-icon>
+        </span>
+      </li>
+    </ul>
+
+    <!-- 标签选项 -->
+    <div class="tags-close-box">
+      <el-dropdown @command="handleTags">
+        <el-button size="small" type="primary">
+          <span>标签选项</span>
+          <el-icon class="el-icon--right"><arrow-down /></el-icon>
+        </el-button>
+
+        <template #dropdown>
+          <el-dropdown-menu size="small">
+            <el-dropdown-item command="other">关闭其他</el-dropdown-item>
+            <el-dropdown-item command="all">关闭所有</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+  </div>
+</template>
 
 <style>
 .tags {
@@ -185,7 +172,7 @@ defineExpose({
 .tags-close-box {
   position: absolute;
   right: 0;
-  top: 0;
+  top: 3px;
   box-sizing: border-box;
   text-align: center;
   width: 110px;

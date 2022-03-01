@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 
-from db.base_class import Base
+from models import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -20,8 +20,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         """
         CRUD对象的默认方法去 增 查 改 删 (CRUD).
-
-        参数 :
 
         * `model`: ORM模型类
         * `schema`: 数据验证模型类
@@ -37,8 +35,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :return: 查询到的orm模型对象
         """
         # table_name = self.model.__tablename__
-        # table_id = table_name + '_id'
-        # print(table_id) # 表名_字段名
+        # table_id = table_name + '_id' # 表名_字段名
         # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
 
         return db.query(self.model).filter(self.model.id == id).first()
@@ -80,11 +77,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         :param db: Session
         :param db_obj: orm模型对象
-        :param obj_in: 更新模型 或者 字典数据
+        :param obj_in: 更新模型
         :return: orm模型对象
         """
         obj_data = jsonable_encoder(db_obj)
-        if isinstance(obj_in, dict):
+        if isinstance(obj_in, dict):  # 判断对象是否为字典类型
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
@@ -108,6 +105,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.delete(obj)
         db.commit()
         return obj
+
+    def remove_multi(self, db: Session, *, id_list: list):
+        """
+        同时删除多个对象
+
+        :param db: Session
+        :param id_list: id 列表
+        """
+        db.query(self.model).filter(self.model.id.in_(id_list)).delete()
+        db.commit()
 
     def get_multi_relation(self, db: Session):
         """

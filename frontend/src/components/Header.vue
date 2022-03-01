@@ -1,31 +1,68 @@
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useStore } from "@/stores";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { Fold, Expand, Bell, CaretBottom } from "@element-plus/icons-vue";
+import { getLocal, removeLocal } from "@/request/auth";
+import { logout } from "@/api";
+
+const store = useStore(); // 状态管理
+const router = useRouter(); // 全局路由
+
+const username = getLocal("username"); // 本地存储
+const message: number = 2; // 未读消息
+
+onMounted(() => {
+  // 当屏幕宽度小于1500,折叠侧边栏
+  if (document.body.clientWidth < 1500) {
+    collapseChage();
+  }
+});
+
+// 侧边栏折叠
+const collapseChage = () => {
+  store.$patch({ collapse: !store.collapse });
+};
+
+/**
+ * 用户名下拉菜单选择事件
+ * @param command  loginout
+ */
+const handleCommand = async (command: "loginout") => {
+  if (command == "loginout") {
+    await logout();
+    ElMessage.success("退出登录！");
+    removeLocal("username");
+    removeLocal("Authorization");
+    router.push("/login");
+  }
+};
+</script>
+
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
     <div class="collapse-btn" @click="collapseChage">
-      <el-icon v-if="!collapse" :size='20'>
-        <fold />
-      </el-icon>
-      <el-icon v-else :size='20'>
-        <expand />
-      </el-icon>
+      <el-icon v-if="!store.collapse"><fold /></el-icon>
+      <el-icon v-else><expand /></el-icon>
     </div>
 
     <!-- logo名 -->
     <div class="logo">学生选课系统</div>
 
-    <!-- 头部右侧 -->
+    <!-- 右侧 -->
     <div class="header-right">
       <div class="header-user-con">
         <!-- 消息中心 -->
         <div class="btn-bell">
-          <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-            <router-link to="/tabs">
-              <el-icon :size='20' color="#409EFC">
-                <bell />
-              </el-icon>
-            </router-link>
-          </el-tooltip>
-          <span class="btn-bell-badge" v-if="message"></span>
+          <el-badge :is-dot="message ? true : false">
+            <el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
+              <router-link to="/tabs">
+                <el-icon :size="22" color="#409EFC"><bell /></el-icon>
+              </router-link>
+            </el-tooltip>
+          </el-badge>
         </div>
 
         <!-- 用户头像 -->
@@ -34,19 +71,17 @@
         </div>
 
         <!-- 用户名下拉菜单 -->
-        <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+        <el-dropdown trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            {{username}}
-            <el-icon :size='20'>
-              <caret-bottom />
-            </el-icon>
+            <span>{{ username }}</span>
+            <el-icon :size="20"><caret-bottom /></el-icon>
           </span>
+
           <template #dropdown>
             <el-dropdown-menu>
               <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
-              <el-dropdown-item command="user">个人中心</el-dropdown-item>
               <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -55,49 +90,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { computed, onMounted } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { Expand, Fold, Bell, CaretBottom } from '@element-plus/icons'; // 图标
-
-const username = localStorage.getItem('ms_username');
-const message = 2;
-
-const store = useStore();
-const collapse = computed(() => store.state.collapse); // 设置侧边栏是否折叠
-
-// 侧边栏折叠
-const collapseChage = () => {
-  store.commit('handleCollapse', !collapse.value);
-};
-
-// 当屏幕宽度小于1490,折叠侧边栏
-onMounted(() => {
-  if (document.body.clientWidth < 1490) {
-    collapseChage();
-  }
-});
-
-// 用户名下拉菜单选择事件
-const router = useRouter();
-const handleCommand = (command) => {
-  if (command == 'loginout') {
-    localStorage.removeItem('ms_username');
-    router.push('/login');
-  } else if (command == 'user') {
-    router.push('/user');
-  }
-};
-
-// defineExpose 可以省略
-defineExpose({
-  username,
-  message,
-  handleCommand,
-});
-</script>
 
 <style scoped>
 .header {
@@ -156,16 +148,13 @@ defineExpose({
 .btn-bell .el-icon-bell {
   color: #fff;
 }
-.user-name {
-  margin-left: 10px;
-}
 .user-avator {
-  margin: 0px 20px;
+  margin: 15px;
 }
 .user-avator img {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 .el-dropdown-link {

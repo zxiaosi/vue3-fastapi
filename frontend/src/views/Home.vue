@@ -1,37 +1,29 @@
+<script setup lang="ts">
+import { useStore } from "@/stores";
+import vHeader from "@/components/Header.vue";
+import vSidebar from "@/components/Sidebar.vue";
+import vTags from "@/components/Tags.vue";
+
+const store = useStore(); // 状态管理
+
+const tagsList = store.tagsList.map((item) => {
+  return item.name;
+});
+</script>
+
 <template>
   <div class="about">
     <v-header />
     <v-sidebar />
-    <div class="content-box" :class="{ 'content-collapse': collapse }">
+    <div class="content-box" :class="{ 'content-collapse': store.collapse }">
       <v-tags />
       <div class="content">
         <router-view v-slot="{ Component }">
-          <transition name="move" mode="out-in">
-            <keep-alive :include="tagsList">
-              <component :is="Component" />
-            </keep-alive>
-          </transition>
+          <keep-alive :include="tagsList">
+            <component :is="Component" />
+          </keep-alive>
         </router-view>
-        <!-- <el-backtop target=".content"></el-backtop> -->
       </div>
     </div>
   </div>
 </template>
-
-<script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
-import vHeader from '../components/Header.vue';
-import vSidebar from '../components/Sidebar.vue';
-import vTags from '../components/Tags.vue';
-
-const store = useStore();
-const tagsList = computed(() => store.state.tagsList.map((item) => item.name));
-const collapse = computed(() => store.state.collapse);
-
-// defineExpose 可以省略
-defineExpose({
-  tagsList,
-  collapse,
-});
-</script>

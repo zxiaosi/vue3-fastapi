@@ -22,5 +22,3 @@ COPY . /code/
 
 # main.py启动命令
 CMD ["python", "main.py"]
-
-# docker run -d -p 8000:8000 --link mysql:mysql --link redis:redis --name fastapi backend

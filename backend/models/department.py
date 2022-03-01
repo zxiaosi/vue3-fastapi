@@ -3,17 +3,21 @@
 # @Time : 2021/9/19 22:23
 # @Author : zxiaosi
 # @desc : 院系表
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, TIMESTAMP, func
 
-from db.base_class import Base
+from models import Base
 
 
 class Department(Base):
     """ 院系表 """
-    id = Column(String(4), primary_key=True, index=True, doc='院系编号')
+    id = Column(String(4), primary_key=True, index=True, comment='编号')
 
-    name = Column(String(20), unique=True, nullable=False, doc='院系名字')
+    name = Column(String(20), unique=True, nullable=False, comment='名字')
 
-    chairman = Column(String(10), nullable=False, doc='主任姓名')
+    chairman = Column(String(10), nullable=False, comment='主任姓名')
 
-    phone = Column(String(11), doc='主任手机号')
+    phone = Column(String(11), comment='主任手机号')
+
+    gmt_create = Column(TIMESTAMP(True), server_default=func.now(), comment='创建时间')
+
+    gmt_modify = Column(TIMESTAMP(True), server_default=func.now(), onupdate=func.now(), comment='更新时间')

@@ -2,27 +2,49 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/19 19:49
 # @Author : zxiaosi
-# @desc : 安全配置 TODO
-from typing import Any, Union
+# @desc : 安全配置
+from typing import Any, Union, Optional
 from datetime import datetime, timedelta
-from jose import jwt, ExpiredSignatureError, JWTError
+from fastapi import Header
+from jose import jwt
 from passlib.context import CryptContext
 
-from core.config import settings
+from core import settings
+from utils import AccessTokenFail
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+ALGORITHM = "HS256"  # 加密算法
 
-ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # 加密密码
 
 
-# 生成token
+def get_password_hash(password: str) -> str:
+    """
+    加密明文密码
+
+    :param password: 明文密码
+    :return: 加密后的密码
+    """
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    验证明文密码 与 加密后的密码 是否一致
+
+    :param plain_password: 明文密码
+    :param hashed_password: hash密码
+    :return: 是否一致
+    """
+    return pwd_context.verify(plain_password, hashed_password)
+
+
 def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
     """
     生成token
 
-    :param subject: 字典
+    :param subject: 对象
     :param expires_delta: 有效时间
-    :return: 字符串
+    :return: 加密后的token
     """
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -33,39 +55,25 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
     return encoded_jwt
 
 
-# 验证明文密码 vs hash密码
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    验证明文密码 vs hash密码
-
-    :param plain_password: 明文密码
-    :param hashed_password: hash密码
-    :return:
-    """
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-# 加密明文
-def get_password_hash(password: str) -> str:
-    """
-    加密明文
-
-    :param password: 明文密码
-    :return:
-    """
-    return pwd_context.hash(password)
-
-
 # https://www.cnblogs.com/CharmCode/p/14191112.html?ivk_sa=1024320u
-# 解密token
-def check_jwt_token(token, secret_key=pwd_context, algorithms=ALGORITHM) -> dict:
-    global payload
+def check_jwt_token(token: Optional[str] = Header(...)) -> Union[str, Any]:
+    """
+    解密token
+
+    :param token: token
+    :return: 解密后的内容
+    """
     try:
-        payload = jwt.decode(token=token, key=secret_key, algorithms=algorithms)
-        print(payload)
-    # 当然两个异常捕获也可以写在一起，不区分
-    except ExpiredSignatureError as e:
-        print("token过期")
-    except JWTError as e:
-        print("token验证失败")
-    return payload
+        payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except (jwt.JWTError, jwt.ExpiredSignatureError, AttributeError):  # 抛出自定义异常， 然后捕获统一响应
+        return AccessTokenFail('访问令牌失败！')
+
+
+if __name__ == '__main__':
+    # 对 '123456' 加密后得到的值不相同
+    print(get_password_hash('123456'))
+
+    # 但 加密前 和 加密后 验证是一致的
+    print(verify_password('123456', '$2b$12$I5lfn4eO8M0oH4yYQWjSQ.t4VJz9cGKXA.ht6syIG6tAXmbnQywqa'))  # True
+    print(verify_password('123456', '$2b$12$h58wHhABGgNSRfQCqYFod.0mycfuLZIWQmtvKgP9s0VyYs78In6b.'))  # True

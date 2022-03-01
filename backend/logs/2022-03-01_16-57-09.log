@@ -1,0 +1,6 @@
+2022-03-01 16:57:11.918 | INFO     | main:create_app:28 - 日志初始化成功！！！
+2022-03-01 16:57:17.858 | INFO     | register.middleware:intercept:19 - 访问记录:IP:127.0.0.1-method:OPTIONS-url:http://127.0.0.1:9000/api/login
+2022-03-01 16:57:19.909 | INFO     | register.middleware:intercept:19 - 访问记录:IP:127.0.0.1-method:POST-url:http://127.0.0.1:9000/api/login
+2022-03-01 16:57:20.242 | WARNING  | register.exception:error_user_handler:65 - 错误的用户名或密码!
+URL:POST-http://127.0.0.1:9000/api/login
+Headers:Headers({'host': '127.0.0.1:9000', 'connection': 'keep-alive', 'content-length': '40', 'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98", "Microsoft Edge";v="98"', 'accept': 'application/json, text/plain, */*', 'content-type': 'application/json;charset=UTF-8', 'sec-ch-ua-mobile': '?0', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.62', 'sec-ch-ua-platform': '"Windows"', 'origin': 'http://localhost:4000', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:4000/', 'accept-encoding': 'gzip, deflate, br', 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'})

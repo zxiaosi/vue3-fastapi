@@ -1,0 +1,4 @@
+2022-03-01 17:04:25.503 | INFO     | main:create_app:28 - 日志初始化成功！！！
+2022-03-01 17:04:30.310 | INFO     | register.middleware:intercept:19 - 访问记录:IP:127.0.0.1-method:GET-url:http://127.0.0.1:9000/api/dashboard
+2022-03-01 17:04:32.356 | INFO     | utils.resp_code:resp_200:17 - 查询首页数据
+2022-03-01 17:04:47.313 | INFO     | register.middleware:intercept:19 - 访问记录:IP:127.0.0.1-method:GET-url:http://127.0.0.1:9000/api/dashboard

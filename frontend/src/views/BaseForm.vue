@@ -1,11 +1,86 @@
+<script setup lang="ts">
+import { reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
+
+const options = [
+  {
+    value: "guangdong",
+    label: "广东省",
+    children: [
+      {
+        value: "guangzhou",
+        label: "广州市",
+        children: [
+          { value: "tianhe", label: "天河区" },
+          { value: "haizhu", label: "海珠区" },
+        ],
+      },
+      {
+        value: "dongguan",
+        label: "东莞市",
+        children: [
+          { value: "changan", label: "长安镇" },
+          { value: "humen", label: "虎门镇" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "hunan",
+    label: "湖南省",
+    children: [
+      {
+        value: "changsha",
+        label: "长沙市",
+        children: [{ value: "yuelu", label: "岳麓区" }],
+      },
+    ],
+  },
+];
+
+const rules = {
+  name: [{ required: true, message: "请输入表单名称", trigger: "blur" }],
+};
+
+const formRef = ref();
+
+const form = reactive({
+  name: "",
+  region: "",
+  date1: "",
+  date2: "",
+  delivery: true,
+  type: ["步步高"],
+  resource: "小天才",
+  desc: "",
+  options: [],
+});
+
+// 提交
+const onSubmit = () => {
+  // 表单校验
+  formRef.value.validate((valid: any) => {
+    if (valid) {
+      console.log(form);
+      ElMessage.success("提交成功！");
+    } else {
+      return false;
+    }
+  });
+};
+
+// 重置
+const onReset = () => {
+  formRef.value.resetFields();
+};
+</script>
+
 <template>
   <div>
     <!-- 头部 -->
     <div class="crumbs">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="el-icon-ali-calendar" /> 表单
-        </el-breadcrumb-item>
+        <el-breadcrumb-item> <i class="el-icon-ali-calendar" /> 表单 </el-breadcrumb-item>
         <el-breadcrumb-item>基本表单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -27,15 +102,18 @@
           <el-form-item label="日期时间">
             <el-col :span="11">
               <el-form-item prop="date1">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1"
-                  style="width: 100%;"></el-date-picker>
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="form.date1"
+                  style="width: 100%"
+                ></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col class="line" :span="2">-</el-col>
             <el-col :span="11">
               <el-form-item prop="date2">
-                <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;">
-                </el-time-picker>
+                <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%"> </el-time-picker>
               </el-form-item>
             </el-col>
           </el-form-item>
@@ -71,88 +149,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
-export default {
-  name: 'baseform',
-  setup() {
-    const options = [
-      {
-        value: 'guangdong',
-        label: '广东省',
-        children: [
-          {
-            value: 'guangzhou',
-            label: '广州市',
-            children: [
-              { value: 'tianhe', label: '天河区' },
-              { value: 'haizhu', label: '海珠区' },
-            ],
-          },
-          {
-            value: 'dongguan',
-            label: '东莞市',
-            children: [
-              { value: 'changan', label: '长安镇' },
-              { value: 'humen', label: '虎门镇' },
-            ],
-          },
-        ],
-      },
-      {
-        value: 'hunan',
-        label: '湖南省',
-        children: [
-          {
-            value: 'changsha',
-            label: '长沙市',
-            children: [{ value: 'yuelu', label: '岳麓区' }],
-          },
-        ],
-      },
-    ];
-    const rules = {
-      name: [{ required: true, message: '请输入表单名称', trigger: 'blur' }],
-    };
-    const formRef = ref(null);
-    const form = reactive({
-      name: '',
-      region: '',
-      date1: '',
-      date2: '',
-      delivery: true,
-      type: ['步步高'],
-      resource: '小天才',
-      desc: '',
-      options: [],
-    });
-    // 提交
-    const onSubmit = () => {
-      // 表单校验
-      formRef.value.validate((valid) => {
-        if (valid) {
-          console.log(form);
-          ElMessage.success('提交成功！');
-        } else {
-          return false;
-        }
-      });
-    };
-    // 重置
-    const onReset = () => {
-      formRef.value.resetFields();
-    };
-
-    return {
-      options,
-      rules,
-      formRef,
-      form,
-      onSubmit,
-      onReset,
-    };
-  },
-};
-</script>

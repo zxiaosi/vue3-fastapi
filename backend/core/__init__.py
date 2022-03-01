@@ -4,4 +4,4 @@
 # @Author : zxiaosi
 # @desc : 核心文件
 from .config import settings
-from .security import ALGORITHM, create_access_token, verify_password, get_password_hash, check_jwt_token
+from .security import create_access_token, verify_password, get_password_hash, check_jwt_token

@@ -1,12 +1,143 @@
+<script setup lang="ts">
+import { ref, reactive, onMounted, inject, onBeforeUnmount, onRenderTriggered, onActivated } from "vue";
+import { UserFilled, Message, Promotion } from "@element-plus/icons-vue";
+import { get_dashboard, add_todo, update_todo } from "@/api/index";
+import { getLocal } from "@/request/auth";
+
+// echarts图
+let echarts: any = inject("echarts");
+
+const name = getLocal("username");
+const role = name === "admin" ? "超级管理员" : "普通用户";
+
+interface stateType {
+  currentTime: string;
+  requestNumber: number;
+  languageDetails: {
+    title: string;
+    percentage: number;
+    color: string;
+  }[];
+  todoList: {
+    title: string;
+    status: boolean;
+  }[];
+  todoNumber: number;
+  todoText: string;
+}
+
+const state: stateType = reactive({
+  currentTime: "", // 当前时间
+  requestNumber: 0, // 请求次数
+  languageDetails: [], // 语言使用详情
+  todoList: [], // 待办列表
+  todoNumber: 0, // 待办条数
+  todoText: "", // 待办文本
+});
+
+onMounted(() => {
+  // 当前登录时间
+  var aData = new Date();
+  state.currentTime = aData.getFullYear() + "年" + (aData.getMonth() + 1) + "月" + aData.getDate() + "日";
+
+  getData(() => {
+    echartPie();
+    eachartBar();
+  });
+});
+
+/**
+ * 获取数据
+ */
+const getData = async (f) => {
+  let { data } = await get_dashboard();
+  state.requestNumber = data.request_num;
+  state.todoList = data.todo.list;
+  state.todoNumber = data.todo.num;
+  state.languageDetails = data.language_details;
+  if (typeof f === "function") f();
+};
+
+// 待办添加弹框
+const showDialog = ref(false);
+
+// 添加待办
+const addTodo = async () => {
+  let { data } = await add_todo({ title: state.todoText });
+  state.todoList = data.todo_list;
+  state.todoNumber = data.todo_num;
+  showDialog.value = false;
+  state.todoText = "";
+};
+
+// 勾选待办
+const updateTodo = async (res: number) => {
+  await update_todo({ id: res });
+};
+
+// 取消
+const cancel = () => {
+  showDialog.value = false;
+  state.todoText = "";
+};
+
+// echarts-pie
+const echartPie = () => {
+  let pieChart = echarts.init(document.getElementById("pie"));
+  // 绘制图表
+  pieChart.setOption({
+    title: { text: "信息", left: "center", top: "center" },
+    legend: {
+      orient: "vertical",
+      left: "left",
+      data: ["用户访问量", "待办事项", "请求次数"],
+    },
+    tooltip: { trigger: "item", formatter: "{b} : {c} ({d}%)" },
+    series: [
+      {
+        type: "pie",
+        radius: ["40%", "70%"],
+        data: [
+          { value: 335, name: "用户访问量" },
+          { value: state.todoNumber, name: "待办事项" },
+          { value: state.requestNumber, name: "请求次数" },
+        ],
+      },
+    ],
+  });
+  // 自适应大小
+  window.onresize = function () {
+    pieChart.resize();
+  };
+};
+
+// echarts-bar
+const eachartBar = () => {
+  let barChart = echarts.init(document.getElementById("bar"));
+  barChart.setOption({
+    title: { text: "周进度", left: "center" },
+    legend: { show: true },
+    tooltip: { trigger: "item", formatter: "{b} : {c}" },
+    xAxis: { data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"] },
+    yAxis: {},
+    series: [{ type: "bar", data: [23, 24, 18, 25, 27, 28, 25] }],
+  });
+  // 自适应
+  window.onresize = function () {
+    barChart.resize();
+  };
+};
+</script>
+
 <template>
   <div class="body">
     <!-- 用户信息、访问量、语言详情、待办事项 -->
     <el-row :gutter="20">
       <el-col :span="8">
         <!-- 用户信息 -->
-        <el-card class="mgb20" style="height:252px;">
+        <el-card class="mgb20" style="height: 252px">
           <div class="user-info">
-            <img src="../assets/img/img.jpg" class="user-avator" alt />
+            <img src="../assets/img/img.jpg" class="user-avator" />
             <div class="user-info-cont">
               <div class="user-info-name">{{ name }}</div>
               <div>{{ role }}</div>
@@ -15,14 +146,12 @@
           <div class="user-info-list">
             当前登录时间：<span>{{ state.currentTime }}</span>
           </div>
-          <div class="user-info-list">
-            当前登录地点：<span>测试地点</span>
-          </div>
+          <div class="user-info-list">当前登录地点：<span>测试地点</span></div>
         </el-card>
 
         <!-- 语言详情 -->
         <!-- <el-card style="height:288px;"> -->
-        <el-card style="height:250px;">
+        <el-card style="height: 250px">
           <template #header>
             <div class="clearfix">
               <span>语言使用详情</span>
@@ -34,7 +163,7 @@
             <el-table-column width="100">
               <template #default="scope">{{ scope.row.title }}</template>
             </el-table-column>
-            <el-table-column style="width: calc(100% - 140px);">
+            <el-table-column style="width: calc(100% - 140px)">
               <template #default="scope">
                 <el-progress :percentage="scope.row.percentage" :color="scope.row.color" />
               </template>
@@ -50,9 +179,7 @@
           <el-col :span="8">
             <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-1">
-                <el-icon class="grid-con-icon">
-                  <user-filled />
-                </el-icon>
+                <el-icon class="grid-con-icon"><user-filled /></el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">1234</div>
                   <div>用户访问量</div>
@@ -63,9 +190,7 @@
           <el-col :span="8">
             <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-2">
-                <el-icon class="grid-con-icon">
-                  <message />
-                </el-icon>
+                <el-icon class="grid-con-icon"><message /></el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">{{ state.todoNumber }}</div>
                   <div>待办事项</div>
@@ -76,9 +201,7 @@
           <el-col :span="8">
             <el-card :body-style="{ padding: '0px' }">
               <div class="grid-content grid-con-3">
-                <el-icon class="grid-con-icon">
-                  <promotion />
-                </el-icon>
+                <el-icon class="grid-con-icon"><promotion /></el-icon>
                 <div class="grid-cont-right">
                   <div class="grid-num">{{ state.requestNumber }}</div>
                   <div>请求次数</div>
@@ -89,7 +212,7 @@
         </el-row>
 
         <!-- 待办 -->
-        <el-card style="height:402px;">
+        <el-card style="height: 402px">
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
@@ -97,18 +220,20 @@
             </div>
           </template>
 
-          <el-table :show-header="false" :data="state.todoList" style="width:100%;">
+          <el-table :show-header="false" :data="state.todoList" style="width: 100%">
             <!-- 选择框 -->
             <el-table-column width="40">
               <template #default="scope">
-                <el-checkbox v-model="scope.row.status" @change="update(scope.$index)" />
+                <el-checkbox v-model="scope.row.status" @change="updateTodo(scope.$index)" />
               </template>
             </el-table-column>
 
             <!-- 待办内容 -->
             <el-table-column>
               <template #default="scope">
-                <div class="todo-item" :class="{ 'todo-item-del': scope.row.status }">{{ scope.row.title }}</div>
+                <div class="todo-item" :class="{ 'todo-item-del': scope.row.status }">
+                  {{ scope.row.title }}
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -117,32 +242,18 @@
     </el-row>
 
     <!-- GitHub卡片、echarts图 -->
-    <el-row :gutter="20" style="margin-bottom:-10px">
+    <el-row :gutter="20" style="margin-bottom: -10px">
       <el-col :span="8">
         <el-card>
-          <div id="pie" style="height:220px" />
+          <div id="pie" style="height: 220px" />
         </el-card>
       </el-col>
 
       <el-col :span="16">
         <el-card>
-          <div id="bar" style="height:220px" />
+          <div id="bar" style="height: 220px" />
         </el-card>
       </el-col>
-
-      <!-- <el-card>
-        <a href="https://github.com/zxiaosi/Vue3-FastAPI">
-          <img align="center" style="margin-top:20px"
-            src="https://github-readme-stats.vercel.app/api/pin/?username=zxiaosi&repo=Vue3-FastAPI&theme=dracula" />
-        </a>
-      </el-card> -->
-
-      <!-- <el-card>
-        <a href="https://github.com/zxiaosi">
-          <img align="center"
-            src="https://github-readme-stats.vercel.app/api?username=zxiaosi&hide=prs&show_icons=true&theme=tokyonight" />
-        </a>
-      </el-card> -->
     </el-row>
 
     <!-- 待办事项弹窗 -->
@@ -155,142 +266,17 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="cancel">取 消</el-button>
-          <el-button type="primary" @click="add">添 加</el-button>
+          <el-button type="primary" @click="addTodo">添 加</el-button>
         </span>
       </template>
     </el-dialog>
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, onMounted, inject } from 'vue';
-import {
-  UserFilled,
-  Message,
-  Goods,
-  Edit,
-  Delete,
-  Promotion,
-} from '@element-plus/icons'; // 图标
-import { get_dashboard, add_todo, update_todo } from '@api/dashboard';
-
-let echarts = inject('echart');
-
-const name = localStorage.getItem('ms_username');
-const role = name === 'admin' ? '超级管理员' : '普通用户';
-
-const state = reactive({
-  currentTime: 0, // 当前时间
-  requestNumber: 0, // 请求次数
-  languageDetails: [], // 语言使用详情
-  todoList: [], // 待办列表
-  todoNumber: 0, // 待办条数
-  todoText: '', // 待办文本
-});
-
-// 当前登录时间
-onMounted(() => {
-  var aData = new Date();
-  state.currentTime =
-    aData.getFullYear() +
-    '年' +
-    (aData.getMonth() + 1) +
-    '月' +
-    aData.getDate() +
-    '日';
-
-  getData();
-});
-
-/**
- * 获取数据
- */
-async function getData() {
-  let { data } = await get_dashboard();
-  state.requestNumber = data.request_num;
-  state.todoList = data.todo.list;
-  state.todoNumber = data.todo.num;
-  state.languageDetails = data.language_details;
-
-  // eacharts图
-    echartPie();
-    eachartBar();
-}
-
-// 待办添加弹框
-const showDialog = ref(false);
-
-// 添加待办
-async function add() {
-  let { data } = await add_todo(state.todoText);
-  state.todoList = data.todo_list;
-  state.todoNumber = data.todo_num;
-  showDialog.value = false;
-  state.todoText = '';
-}
-
-// 勾选待办
-async function update(res) {
-  await update_todo(res);
-}
-
-// 取消
-const cancel = () => {
-  showDialog.value = false;
-  state.todoText = '';
-};
-
-// echarts-pie
-function echartPie() {
-  let pieChart = echarts.init(document.getElementById('pie'));
-  // 绘制图表
-  pieChart.setOption({
-    title: { text: '信息', left: 'center', top: 'center' },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      data: ['用户访问量', '待办事项', '请求次数'],
-    },
-    tooltip: { trigger: 'item', formatter: '{b} : {c} ({d}%)' },
-    series: [
-      {
-        type: 'pie',
-        radius: ['40%', '70%'],
-        data: [
-          { value: 335, name: '用户访问量' },
-          { value: state.todoNumber, name: '待办事项' },
-          { value: state.requestNumber, name: '请求次数' },
-        ],
-      },
-    ],
-  });
-  // 自适应大小
-  window.onresize = function () {
-    pieChart.resize();
-  };
-}
-
-// echarts-bar
-function eachartBar() {
-  let barChart = echarts.init(document.getElementById('bar'));
-  barChart.setOption({
-    title: { text: '周进度', left: 'center' },
-    legend: { show: true },
-    tooltip: { trigger: 'item', formatter: '{b} : {c}' },
-    xAxis: { data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'] },
-    yAxis: {},
-    series: [{ type: 'bar', data: [23, 24, 18, 25, 27, 28, 25] }],
-  });
-  window.onresize = function () {
-    barChart.resize();
-  };
-}
-</script>
-
 <style scoped>
-/* 屏幕最大宽度 */
+/* 屏幕最小宽度 */
 /* .body {
-  min-width: 1490px;
+  min-width: 1500px;
 } */
 
 .el-row {
