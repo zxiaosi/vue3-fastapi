@@ -81,21 +81,21 @@ const http = new AppRequest({
 });
 
 // 超时重新发送请求 https://github.com/softonic/axios-retry
-axiosRetry(http.instance, {
-  retries: 2, // 设置自动发送请求次数
-  retryDelay: (retryCount) => {
-    return retryCount * 1000; // 重复请求延迟
-  },
-  shouldResetTimeout: true, //  重置超时时间
-  retryCondition: (error) => {
-    // true为打开自动发送请求，false为关闭自动发送请求
-    if (error.message.includes("timeout")) {
-      return true;
-    } else {
-      return false;
-    }
-  },
-});
+// axiosRetry(http.instance, {
+//   retries: 2, // 设置自动发送请求次数
+//   retryDelay: (retryCount) => {
+//     return retryCount * 1000; // 重复请求延迟
+//   },
+//   shouldResetTimeout: true, //  重置超时时间
+//   retryCondition: (error) => {
+//     // true为打开自动发送请求，false为关闭自动发送请求
+//     if (error.message.includes("timeout")) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   },
+// });
 
 // 请求拦截器
 http.instance.interceptors.request.use(
@@ -106,7 +106,7 @@ http.instance.interceptors.request.use(
     let token = getLocal("Authorization");
     if (token) {
       // @ts-ignore
-      config.headers.Authorization = token;
+      config.headers.Authorization = "Bearer " + token;
     }
     return config;
   },
@@ -123,6 +123,12 @@ http.instance.interceptors.response.use(
     http.closeLoading(); // 关闭加载动画
 
     let msg = "";
+
+    // 后端验证权限之后返回401
+    if (response.status == 401) {
+      window.location.href = "/login"; // 跳转登录
+      return false;
+    }
     if (response.status < 200 || response.status >= 300) {
       if (response.data.msg != null) {
         msg = response.data.msg; // 后端返回的msg
@@ -131,14 +137,9 @@ http.instance.interceptors.response.use(
       }
       ElMessage.error(msg);
     }
-
     return response;
   },
   (error) => {
-    // if (error.response.status == 401) {
-    //   window.location.href = "/"; // 跳转登录
-    //   return false;
-    // }
     if (axios.isCancel(error)) {
       console.log("repeated request: " + error.message);
     } else {

@@ -10,14 +10,6 @@ export interface loginType {
 }
 
 /**
- * 退出登录
- */
-
-export interface logoutType {
-  token: string;
-}
-
-/**
  * 添加待办/根据索引更新待办
  */
 export interface todoType {

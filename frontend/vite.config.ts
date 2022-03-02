@@ -20,17 +20,34 @@ export default defineConfig({
     strictPort: false, // 设为 true 时若端口已被占用则会直接退出，而不是尝试下一个可用端口
     https: false, // 是否开启https
   },
-  // 打包限制
-  build: {
-    chunkSizeWarningLimit: 1500,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            return id.toString().split("node_modules/")[1].split("/")[0].toString();
-          }
+  // css 样式
+  css: {
+    postcss: {
+      plugins: [
+        {
+          postcssPlugin: "internal:charset-removal",
+          AtRule: {
+            charset: (atRule) => {
+              if (atRule.name === "charset") {
+                atRule.remove();
+              }
+            },
+          },
         },
-      },
+      ],
     },
   },
+  // 打包限制
+  // build: {
+  //   chunkSizeWarningLimit: 1000,
+  //   rollupOptions: {
+  //     output: {
+  //       manualChunks(id) {
+  //         if (id.includes("node_modules")) {
+  //           return id.toString().split("node_modules/")[1].split("/")[0].toString();
+  //         }
+  //       },
+  //     },
+  //   },
+  // },
 });

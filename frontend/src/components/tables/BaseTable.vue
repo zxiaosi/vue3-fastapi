@@ -160,8 +160,6 @@ const handleAdd = async (event: PointerEvent) => {
   // 显示添加弹窗
   state.showDialog = state.addOrUpdate = true;
   emit("emitIsDisabled", false);
-
-  console.log(props.formData);
 };
 
 /**
@@ -210,7 +208,6 @@ const handleEdit = (row: any) => {
  */
 const saveEdit = () => {
   state.showDialog = state.addOrUpdate = false;
-  console.log("表单数据--", props.formData);
   formRef.value.validate(async (valid: any) => {
     if (valid) {
       let params = { path: props.page.enName, ...props.formData };

@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 import { useStore } from "@/stores";
-import { login } from "@/api";
+import { login } from "@/api/login";
 import { setLocal } from "@/request/auth";
 
 const router = useRouter();
@@ -13,26 +13,26 @@ const param = reactive({
   password: "123",
 });
 
+const loginRef = ref();
+
 // 用户校验
 const loginRules = {
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
-const loginRef = ref();
-
 const submitForm = () => {
   loginRef.value.validate(async (valid: any) => {
     if (valid) {
-      const { data } = await login(param);
-      if (data) {
+      const { access_token } = await login(param);
+      if (access_token) {
         ElMessage.success("登录成功");
         setLocal("username", param.username);
-        setLocal("Authorization", data.access_token);
+        setLocal("Authorization", access_token);
         router.push("/");
       }
     } else {
-      ElMessage.error("数据验证失败！");
+      ElMessage.warning("数据验证失败！");
       return false;
     }
   });

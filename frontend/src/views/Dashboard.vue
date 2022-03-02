@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, inject, onBeforeUnmount, onRenderTriggered, onActivated } from "vue";
+import { ref, reactive, onMounted, inject } from "vue";
 import { UserFilled, Message, Promotion } from "@element-plus/icons-vue";
 import { get_dashboard, add_todo, update_todo } from "@/api/index";
 import { getLocal } from "@/request/auth";
@@ -40,22 +40,21 @@ onMounted(() => {
   var aData = new Date();
   state.currentTime = aData.getFullYear() + "年" + (aData.getMonth() + 1) + "月" + aData.getDate() + "日";
 
-  getData(() => {
-    echartPie();
-    eachartBar();
-  });
+  getData();
 });
 
 /**
  * 获取数据
  */
-const getData = async (f) => {
+const getData = async () => {
   let { data } = await get_dashboard();
   state.requestNumber = data.request_num;
   state.todoList = data.todo.list;
   state.todoNumber = data.todo.num;
-  state.languageDetails = data.language_details;
-  if (typeof f === "function") f();
+  state.languageDetails = data.language;
+
+  echartPie();
+  eachartBar();
 };
 
 // 待办添加弹框

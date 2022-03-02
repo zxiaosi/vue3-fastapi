@@ -130,7 +130,7 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
         <template #default="scope">{{ byIdGetName(scope.row.teacher_id, state.teacherData) }}</template>
       </el-table-column>
 
-      <el-table-column prop="course_id" width="140" label="课程名" align="center">
+      <el-table-column prop="course_id" width="220" label="课程名" align="center">
         <template #default="scope">{{ byIdGetName(scope.row.course_id, state.courseData) }}</template>
       </el-table-column>
     </template>

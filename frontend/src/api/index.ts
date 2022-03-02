@@ -1,18 +1,5 @@
 import { get, post, put, del } from "@/request";
-import type {
-  tableDataListType,
-  tableObjectType,
-  tableDataType,
-  delDataListType,
-  todoType,
-  loginType,
-  logoutType,
-} from "./model";
-
-/**
- * 登录
- */
-export const login = (data: loginType): Promise<any> => post("/login", { ...data });
+import type { tableDataListType, tableObjectType, tableDataType, delDataListType, todoType, loginType } from "./model";
 
 /**
  * 退出登录
