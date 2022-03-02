@@ -26,7 +26,6 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = secrets.token_urlsafe(32)  # 密钥
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # token过期时间: 60 minutes * 24 hours * 7 days = 7 days
-    # ACCESS_TOKEN_EXPIRE_MINUTES: int = 10  # token过期时间: 60 minutes * 24 hours * 7 days = 7 days
 
     LOGGER_FOLDER: str = "logs"  # 日志文件夹名
     LOGGER_NAME: str = '{time:YYYY-MM-DD_HH-mm-ss}.log'  # 日志文件名 (时间格式)
@@ -34,13 +33,8 @@ class Settings(BaseSettings):
     LOGGER_ROTATION: str = "12:00"  # 日志分片: 按 时间段/文件大小 切分日志. 例如 ["500 MB" | "12:00" | "1 week"]
     LOGGER_RETENTION: str = "7 days"  # 日志保留的时间: 超出将删除最早的日志. 例如 ["1 days"]
 
-    # 过滤url
-    FILTER_URI: List[str] = ['/', '/favicon.ico', '/openapi.json', '/docs', '/api/login/access-token',
-                             '/api/login/test-token', '/api/login', '/api/health-check']
-
     class Config:
         case_sensitive = True  # 区分大小写
 
 
-# 声明对象
 settings = Settings()

@@ -69,7 +69,7 @@ def register_exception(app: FastAPI):
     async def access_token_fail_handler(request: Request, exc: AccessTokenFail):
         """ 访问令牌失败(自定义异常) """
         logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_403(msg=exc.err_desc)
+        return resp_401(msg=exc.err_desc)
 
     @app.exception_handler(ValidationError)
     async def inner_validation_exception_handler(request: Request, exc: ValidationError):

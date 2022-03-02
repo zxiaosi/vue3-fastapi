@@ -14,4 +14,4 @@ from .admin import AdminCreate, AdminUpdate, AdminOut
 from .token import Token, TokenPayload
 from .result import SchemasType, ResultModel, ResultPlusModel
 from .todo import TodoId, Todo
-from .login import Login, Logout
+from .login import Login

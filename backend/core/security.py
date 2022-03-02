@@ -10,7 +10,7 @@ from jose import jwt
 from passlib.context import CryptContext
 
 from core import settings
-from utils import AccessTokenFail
+from utils import AccessTokenFail, logger
 
 ALGORITHM = "HS256"  # 加密算法
 
@@ -66,8 +66,9 @@ def check_jwt_token(token: Optional[str] = Header(...)) -> Union[str, Any]:
     try:
         payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except (jwt.JWTError, jwt.ExpiredSignatureError, AttributeError):  # 抛出自定义异常， 然后捕获统一响应
-        return AccessTokenFail('访问令牌失败！')
+    except Exception as e:  # jwt.JWTError, jwt.ExpiredSignatureError, AttributeError
+        logger.error(f'token已过期！--{e}')
+        raise AccessTokenFail(f'token已过期!')
 
 
 if __name__ == '__main__':

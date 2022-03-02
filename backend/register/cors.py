@@ -16,5 +16,5 @@ def register_cors(app: FastAPI):
         allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=("GET", "POST", "PUT", "DELETE"),
-        allow_headers=["*", "authentication"],
+        allow_headers=("*", "authentication"),
     )

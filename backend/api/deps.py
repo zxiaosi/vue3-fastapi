@@ -15,7 +15,7 @@ from schemas import TokenPayload
 from crud import ModelType, admin
 from utils import OperateDB, UserNotExist
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/login/access-token")
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/login")
 
 
 def get_db() -> Generator:
@@ -45,6 +45,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
     return user
 
 
+# 暂时未用到
 def get_current_active_user(current_user: ModelType = Depends(get_current_user)) -> ModelType:
     """ 得到当前登录用户 """
     if not admin.is_active_def(current_user):
@@ -52,6 +53,7 @@ def get_current_active_user(current_user: ModelType = Depends(get_current_user))
     return current_user
 
 
+# 暂时未用到
 def get_current_active_superuser(current_user: ModelType = Depends(get_current_user)) -> ModelType:
     """ 得到当前超级用户 """
     if not admin.is_superuser(current_user):
