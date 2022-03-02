@@ -3,7 +3,7 @@
 ## 预览
 
 + [Vue3+Vite+ElementPlus](http://8.136.82.204:8001/)
-+ [FastAPI接口预览](http://8.136.82.204:8000/)<font color="red">暂时用不了</font>
++ [FastAPI接口预览](http://8.136.82.204:8000/)
 + 🎉🎉🎉感谢 [wendingming](https://gitee.com/wendingming) 整理的 [项目部署的准备工作](https://gitee.com/zxiaosi/fast-api/issues/I4V6WV)
 
 ## 安装
