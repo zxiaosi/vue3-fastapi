@@ -39,7 +39,7 @@
    >
    >用户名：admin
    >
-   >密码：123123
+   >密码：123
 
 ## 项目截图
 
@@ -55,15 +55,27 @@
 
 ```sh
 |-- frontend
-  |-- public					# 输出文件              
-	|-- src						# 核心文件
-	|-- index.html				# Vue配置文件
-	|-- LICENSE			    	# Vue-Manage-System开源证书
-	|-- index.html				# Vue配置文件
-	|-- package-lock.html 
-	|-- package.html    		# 安装的包
-	|-- README.md       		# 文档说明
-	|-- vite.config.js  		# vite配置
+  |-- dist					  # 输出文件              
+	|-- src					  # 核心文件
+      |-- api                   # 接口
+      |-- assets                # 静态文件
+      |-- commponents           # 组件
+      |-- request               # axios请求
+      |-- router                # 路由
+      |-- stores                # 状态管理
+      |-- types                 # 公用接口
+      |-- utils                 # 工具类
+      |-- views                 # 页面
+      |-- App.vue               # app
+      |-- main.ts               # 主文件
+	|-- index.html			   # 首页
+  |-- env.d.ts                  # 
+	|-- package-lock.json       # 包版本锁
+	|-- package.json    	   # 安装的包
+	|-- README.md       	   # 文档说明
+  |-- tsconfig.json             # ts配置
+  |-- tsconfig.vite-config.json # 兼用node与vite
+	|-- vite.config.js          # vite配置
 	
 ```
 

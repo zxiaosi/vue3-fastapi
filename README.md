@@ -1,15 +1,17 @@
 # 学生选课系统
 
+>大版本更新在 `master`分支，小版本更新在各自(`frontend`、`backend`)的分支上
+
 ## 预览
 
-+ [Vue3+Vite+ElementPlus](http://8.136.82.204:8001/)
++ [Vue3++TS+ElementPlus+Vite](http://8.136.82.204:8001/)
 + [FastAPI接口预览](http://8.136.82.204:8000/)
-+ 🎉🎉🎉感谢 [wendingming](https://gitee.com/wendingming) 整理的 [项目部署的准备工作](https://gitee.com/zxiaosi/fast-api/issues/I4V6WV)
++ 🎉🎉🎉感谢 [wendingming](https://gitee.com/wendingming) 整理的 [<font color="red">项目部署的准备工作</font>](https://gitee.com/zxiaosi/fast-api/issues/I4V6WV)
 
 ## 安装
 
-+ **后端安装**：[FastAPI](https://fastapi.tiangolo.com/zh/) --> `backend` --> README.md（参考[CharmCode](https://www.charmcode.cn/category/FastAPI?page=1)）
-+ **前端安装**：Vue3+ElementPlus+Vite --> `frontend` --> README.md (参考[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system))
++ **后端安装**：[FastAPI](https://gitee.com/zxiaosi/fast-api/tree/master/backend#安装)（代码参考[CharmCode](https://www.charmcode.cn/category/FastAPI?page=1)）
++ **前端安装**：[Vue3+Ts](https://gitee.com/zxiaosi/fast-api/tree/master/frontend#安装) (代码参考[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system))
 
 ## 版本
 
@@ -28,6 +30,8 @@
 + `2.2` 配置nginx以及SSL证书(域名未备案，ssl证书未生效)
 + `2.3` 添加Redis
 + `2.4`  加入TS
+
+TODO：加入PostgreSQL、权限管理
 
 ## 开启服务
 

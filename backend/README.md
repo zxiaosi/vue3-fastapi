@@ -65,7 +65,7 @@
 
     + 进入到 `backend` 项目下
     + 找到 `main.py` 右键运行
-    + `core/config` 配置文件(默认使用了SQLite,可以配置MySQL)
+    + `core/config` 配置文件
 
    > 接口文档：http://127.0.0.1:8000/docs
 
