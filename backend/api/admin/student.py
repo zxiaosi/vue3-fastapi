@@ -17,12 +17,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=ResultPlusModel[List[StudentOut]], summary='查询所有学生(根据页码和每页个数)')
-def read_students(
-        db: Session = Depends(get_db),
-        pageIndex: int = 1,
-        pageSize: int = 10,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def read_students(db: Session = Depends(get_db), pageIndex: int = 1, pageSize: int = 10) -> Any:
     """
     查询所有学生(根据页码和每页个数, pageIndex=-1&&pageSize=-1表示查询所有)
 
@@ -34,7 +29,7 @@ def read_students(
 
 
 @router.get("/{id}", response_model=ResultModel[StudentOut], summary='根据 id 查询学生信息')
-def read_student(*, db: Session = Depends(get_db), id: int, current_user: Admin = Depends(get_current_user)) -> Any:
+def read_student(db: Session = Depends(get_db), id: int = None) -> Any:
     get_student = student.get(db, id=id)
     if not get_student:
         raise IdNotExist(err_desc=f"系统中不存在 id 为 {id} 的学生.")
@@ -42,23 +37,13 @@ def read_student(*, db: Session = Depends(get_db), id: int, current_user: Admin 
 
 
 @router.post("/", response_model=ResultModel[StudentOut], summary='添加学生信息')
-def create_student(
-        *,
-        db: Session = Depends(get_db),
-        student_in: StudentCreate,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def create_student(*, db: Session = Depends(get_db), student_in: StudentCreate) -> Any:
     add_student = student.create(db, obj_in=student_in)
     return resp_200(data=add_student, msg=f"添加了 id 为 {student_in.id} 的学生信息.")
 
 
 @router.put("/{id}", response_model=ResultModel[StudentOut], summary='通过 id 更新学生信息')
-def update_student(
-        *,
-        db: Session = Depends(get_db),
-        id: int, student_in: StudentUpdate,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def update_student(*, db: Session = Depends(get_db), id: int, student_in: StudentUpdate) -> Any:
     get_student = student.get(db, id=id)
     if not get_student:
         raise IdNotExist(err_desc=f"系统中不存在 id 为 {id} 的学生.")
@@ -67,28 +52,18 @@ def update_student(
 
 
 @router.delete("/{student_id}", response_model=ResultModel[StudentOut], summary='通过 id 删除学生信息')
-def delete_student(
-        *,
-        db: Session = Depends(get_db),
-        student_id: int,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def delete_student(*, db: Session = Depends(get_db), student_id: int) -> Any:
     del_student = student.remove(db, id=student_id)
     return resp_200(data=del_student, msg=f"删除了 id 为 {student_id} 的学生信息.")
 
 
 @router.post("/del/", response_model=ResultModel, summary='同时删除多个学生信息')
-def delete_students(
-        *,
-        db: Session = Depends(get_db),
-        idList: list,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def delete_students(*, db: Session = Depends(get_db), idList: list) -> Any:
     student.remove_multi(db, id_list=idList)
     return resp_200(data='', msg=f'同时删除多个学生信息.')
 
 
 @router.get("/relation/", response_model=ResultModel[Relation], summary='获取到 学生表 中的关系字段')
-def get_student_relation(db: Session = Depends(get_db), current_user: Admin = Depends(get_current_user)) -> Any:
+def get_student_relation(db: Session = Depends(get_db)) -> Any:
     get_students = student.get_multi_relation(db)
     return resp_200(data=get_students, msg="获取到 学生表 中的关系字段.")

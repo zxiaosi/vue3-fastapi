@@ -3,7 +3,7 @@
 # @Time : 2021/9/19 22:24
 # @Author : zxiaosi
 # @desc : 管理员表
-from sqlalchemy import Column, Integer, String, CheckConstraint, text, TIMESTAMP, func, Boolean
+from sqlalchemy import Column, Integer, String, TIMESTAMP, func, Boolean, text
 
 from models import Base
 
@@ -14,7 +14,9 @@ class Admin(Base):
 
     name = Column(String(10), nullable=False, index=True, comment='姓名')
 
-    sex = Column(String(5), CheckConstraint("sex in ('man', 'woman')"), server_default=text("'man'"), comment='性别')
+    address = Column(String(20), server_default=text("'广东省广州市'"), comment='地址')
+
+    image = Column(String(60), server_default=text("'/static/author.jpg'"), comment='头像')
 
     hashed_password = Column(String(60), nullable=False, comment='密码')
 

@@ -34,14 +34,16 @@
 + `v4.6` 重构FastAPI
 + `v4.7` 添加redis
 + `v4.8` 重构后端 
++ `v4.9` 支持PostgreSQL,以及图片上传 
 
 ## 安装
 
-1. 配置Python3.9(及以上)的虚拟环境
+1. 配置<font color="red">Python3.9(及以上)</font>的虚拟环境
 
 2. 安装运行所需的包
 
    ```python
+   # 默认装了Mysql与ProgreSQL
    pip install requirements.txt
    
    # 或者
@@ -56,8 +58,11 @@
    pip install python-multipart
    pip install orjson
    
-   # 使用mysql, 请安装下面包
+   # 使用MySQL, 请安装下面包
    pip install mysqlclient
+   
+   # 使用ProgreSQL
+   pip install psycopg2
    ```
 
 
@@ -65,7 +70,7 @@
 
     + 进入到 `backend` 项目下
     + 找到 `main.py` 右键运行
-    + `core/config` 配置文件
+    + `core/config` 配置文件(默认数据库是sqlite)
 
    > 接口文档：http://127.0.0.1:8000/docs
 
@@ -90,7 +95,7 @@
             |-- course.py	        # 课程表接口
             |-- department.py	    # 院系表接口
             |-- major.py	        # 专业表接口
-            |-- index.py	        # 管理员首页    
+            |-- dashBoard.py	        # 管理员首页    
             |-- selectCourse.py	    # 选课表接口
             |-- student.py	        # 学生表接口
             |-- teacher.py	        # 教师表接口   
@@ -133,7 +138,7 @@
 	|-- models                  
 		|-- __init__.py			# ORM模型映射
 		|-- base.py		        # 自动生成 表名
-		|-- index.py			# 管理员表
+		|-- dashBoard.py			# 管理员表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
 		|-- major.py			# 专业表
@@ -150,7 +155,7 @@
 	    
 	|-- schemas 
 		|-- __init__.py			# 数据模型
-		|-- index.py			# 管理员表数据模型
+		|-- dashBoard.py			# 管理员表数据模型
 		|-- course.py			# 课程表数据模型
 		|-- department.py		# 院系表数据模型
 		|-- major.py			# 专业表数据模型

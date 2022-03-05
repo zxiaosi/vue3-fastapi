@@ -32,7 +32,7 @@ const submitForm = () => {
         router.push("/");
       }
     } else {
-      ElMessage.warning("数据验证失败！");
+      ElMessage.warning("数据校验失败！");
       return false;
     }
   });
@@ -49,14 +49,21 @@ store.clearTags; // 清空标签
       <div class="ms-title">学生选课系统</div>
       <el-form :model="param" :rules="loginRules" ref="loginRef" label-width="0px" class="ms-content">
         <el-form-item prop="username">
-          <el-input v-model="param.username" placeholder="username">
+          <el-input v-model="param.username" placeholder="用户名" maxlength="10">
             <template #prepend>
               <el-button :icon="User" />
             </template>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" placeholder="password" v-model="param.password" @keyup.enter="submitForm()">
+          <el-input
+            type="password"
+            placeholder="密码"
+            v-model="param.password"
+            show-password
+            maxlength="20"
+            @keyup.enter="submitForm()"
+          >
             <template #prepend>
               <el-button :icon="Lock" />
             </template>

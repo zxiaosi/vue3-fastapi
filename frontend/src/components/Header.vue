@@ -1,23 +1,56 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { inject, onMounted, reactive } from "vue";
 import { useStore } from "@/stores";
 import { useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
-import { Fold, Expand, Bell, CaretBottom } from "@element-plus/icons-vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { Fold, Expand, Bell, CaretBottom, UploadFilled } from "@element-plus/icons-vue";
 import { getLocal, removeLocal } from "@/request/auth";
-import { logout } from "@/api";
+import { get_current_user, logout } from "@/api";
+import { API_URL, BASE_URL } from "@/assets/global";
 
 const store = useStore(); // 状态管理
 const router = useRouter(); // 全局路由
 
 const username = getLocal("username"); // 本地存储
-const message: number = 2; // 未读消息
 
-onMounted(() => {
+//获取token，并将其添加至请求头中
+let token = getLocal("Authorization");
+let header = { Authorization: "Bearer " + token }; // token一定要加 Bearer
+
+const state = reactive({
+  api_url: API_URL + "/upload/file/", // 上传图片请求接口
+  message: 2, // 未读消息
+  dialogVisible: false, // 是否显示弹窗
+  image: "", // 头像
+});
+
+onMounted(async () => {
+  await getUserInfo();
+});
+
+const getUserInfo = async () => {
+  const { data } = await get_current_user();
+  state.image = BASE_URL + data.image;
+};
+
+const success = (response: any) => {
+  ElMessage.success(response.msg);
+  state.dialogVisible = false;
+  getUserInfo();
+  store.refreshView = true;
+};
+
+const error = (err: any) => {
+  ElMessage.error(err.msg);
+};
+
+onMounted(async () => {
   // 当屏幕宽度小于1500,折叠侧边栏
   if (document.body.clientWidth < 1500) {
     collapseChage();
   }
+
+  await getUserInfo();
 });
 
 // 侧边栏折叠
@@ -27,15 +60,17 @@ const collapseChage = () => {
 
 /**
  * 用户名下拉菜单选择事件
- * @param command  loginout
+ * @param command  logout | upload
  */
-const handleCommand = async (command: "loginout") => {
-  if (command == "loginout") {
+const handleCommand = async (command: "logout" | "upload") => {
+  if (command == "logout") {
     await logout();
     ElMessage.success("退出登录！");
     removeLocal("username");
     removeLocal("Authorization");
     router.push("/login");
+  } else {
+    state.dialogVisible = true;
   }
 };
 </script>
@@ -56,8 +91,12 @@ const handleCommand = async (command: "loginout") => {
       <div class="header-user-con">
         <!-- 消息中心 -->
         <div class="btn-bell">
-          <el-badge :is-dot="message ? true : false">
-            <el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
+          <el-badge :is-dot="state.message ? true : false">
+            <el-tooltip
+              effect="dark"
+              :content="state.message ? `有${state.message}条未读消息` : `消息中心`"
+              placement="bottom"
+            >
               <router-link to="/tabs">
                 <el-icon :size="22" color="#409EFC"><bell /></el-icon>
               </router-link>
@@ -67,7 +106,12 @@ const handleCommand = async (command: "loginout") => {
 
         <!-- 用户头像 -->
         <div class="user-avator">
-          <img src="../assets/img/img.jpg" />
+          <template v-if="state.image">
+            <img :src="state.image" />
+          </template>
+          <template v-else>
+            <img src="../assets/img/img.jpg" />
+          </template>
         </div>
 
         <!-- 用户名下拉菜单 -->
@@ -79,15 +123,27 @@ const handleCommand = async (command: "loginout") => {
 
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item command="upload">更换头像</el-dropdown-item>
               <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
-              <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+              <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
     </div>
+
+    <!-- 头像上传弹窗 -->
+    <el-dialog v-model="state.dialogVisible" title="Tips" width="21%">
+      <el-upload class="upload" drag :action="state.api_url" :on-success="success" :on-error="error" :headers="header">
+        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+        <template #tip>
+          <div class="el-upload__tip">jpg/png文件大小要少于500kb</div>
+        </template>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 

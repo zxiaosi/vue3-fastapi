@@ -1,10 +1,9 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
-import axiosRetry from "axios-retry";
 import { ElLoading, ElMessage } from "element-plus";
 import type { LoadingInstance } from "element-plus/lib/components/loading/src/loading";
 import type { ResponseData } from "@/types";
 import { showStatus } from "./statusCode";
-import { BASE_URL, TIME_OUT } from "@/assets/global";
+import { API_URL, TIME_OUT } from "@/assets/global";
 import { getLocal } from "./auth";
 
 // 请求
@@ -56,7 +55,7 @@ class AppRequest {
 
 // 创建对象
 const http = new AppRequest({
-  baseURL: BASE_URL, // url链接
+  baseURL: API_URL, // url链接
   timeout: TIME_OUT, // 超时时间
   headers: { "Content-Type": "application/json;charset=utf-8" }, // 请求头
   transformRequest: [
@@ -80,23 +79,6 @@ const http = new AppRequest({
   ],
 });
 
-// 超时重新发送请求 https://github.com/softonic/axios-retry
-// axiosRetry(http.instance, {
-//   retries: 2, // 设置自动发送请求次数
-//   retryDelay: (retryCount) => {
-//     return retryCount * 1000; // 重复请求延迟
-//   },
-//   shouldResetTimeout: true, //  重置超时时间
-//   retryCondition: (error) => {
-//     // true为打开自动发送请求，false为关闭自动发送请求
-//     if (error.message.includes("timeout")) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   },
-// });
-
 // 请求拦截器
 http.instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -106,12 +88,13 @@ http.instance.interceptors.request.use(
     let token = getLocal("Authorization");
     if (token) {
       // @ts-ignore
-      config.headers.Authorization = "Bearer " + token;
+      config.headers.Authorization = "Bearer " + token; // 前面一定要加 Bearer
     }
+
     return config;
   },
   (error) => {
-    error.data = {};
+    // @ts-ignore
     error.data.msg = "服务器异常，请联系管理员！";
     return Promise.reject(error);
   }
@@ -123,13 +106,13 @@ http.instance.interceptors.response.use(
     http.closeLoading(); // 关闭加载动画
 
     let msg = "";
-
-    // 后端验证权限之后返回401
-    if (response.status == 401) {
+    if (response.status == 200 && typeof response.status == "number") {
+      return response;
+    } else if (response.status == 401) {
+      // 后端验证是否有token,没有则返回401
       window.location.href = "/login"; // 跳转登录
       return false;
-    }
-    if (response.status < 200 || response.status >= 300) {
+    } else {
       if (response.data.msg != null) {
         msg = response.data.msg; // 后端返回的msg
       } else {
@@ -137,7 +120,6 @@ http.instance.interceptors.response.use(
       }
       ElMessage.error(msg);
     }
-    return response;
   },
   (error) => {
     if (axios.isCancel(error)) {

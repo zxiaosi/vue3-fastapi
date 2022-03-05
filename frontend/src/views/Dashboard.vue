@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, inject } from "vue";
+import { ref, reactive, onMounted, inject, watchEffect } from "vue";
 import { UserFilled, Message, Promotion } from "@element-plus/icons-vue";
-import { get_dashboard, add_todo, update_todo } from "@/api/index";
+import { get_current_user, get_lang_todo_list, get_visit_todo_request, add_todo, update_todo } from "@/api/index";
 import { getLocal } from "@/request/auth";
+import { dateFunction } from "@/utils/handleTime";
+import { BASE_URL } from "@/assets/global";
+import { useStore } from "@/stores";
 
 // echarts图
 let echarts: any = inject("echarts");
@@ -11,8 +14,10 @@ const name = getLocal("username");
 const role = name === "admin" ? "超级管理员" : "普通用户";
 
 interface stateType {
-  currentTime: string;
-  requestNumber: number;
+  name: string;
+  address: string;
+  modifyTime: string;
+  image: string;
   languageDetails: {
     title: string;
     percentage: number;
@@ -22,40 +27,68 @@ interface stateType {
     title: string;
     status: boolean;
   }[];
+  visitNumber: number;
   todoNumber: number;
+  requestNumber: number;
   todoText: string;
 }
 
 const state: stateType = reactive({
-  currentTime: "", // 当前时间
-  requestNumber: 0, // 请求次数
+  name: "", // 用户名
+  address: "", // 地址
+  modifyTime: "", // 修改时间
+  image: "", // 头像
   languageDetails: [], // 语言使用详情
   todoList: [], // 待办列表
-  todoNumber: 0, // 待办条数
+  visitNum: 0, // 访问量
+  visitNumber: 0, // 访问量
+  todoNumber: 0, // 待办数
+  requestNumber: 0, // 请求次数
   todoText: "", // 待办文本
 });
 
-onMounted(() => {
-  // 当前登录时间
-  var aData = new Date();
-  state.currentTime = aData.getFullYear() + "年" + (aData.getMonth() + 1) + "月" + aData.getDate() + "日";
+const store = useStore(); // 状态管理
 
-  getData();
+onMounted(async () => {
+  await getUserInfo();
+  await getData();
 });
+
+/**
+ * 获取用户信息
+ */
+const getUserInfo = async () => {
+  const { data } = await get_current_user();
+  state.name = data.name;
+  state.address = data.address;
+  state.modifyTime = data.gmt_modify;
+  state.image = BASE_URL + data.image;
+};
 
 /**
  * 获取数据
  */
 const getData = async () => {
-  let { data } = await get_dashboard();
-  state.requestNumber = data.request_num;
-  state.todoList = data.todo.list;
-  state.todoNumber = data.todo.num;
-  state.languageDetails = data.language;
+  const { data: lang_todo_list } = await get_lang_todo_list();
+  state.todoList = lang_todo_list.todo_list;
+  state.languageDetails = lang_todo_list.language_details;
+
+  const { data: visit_todo_request } = await get_visit_todo_request();
+  state.visitNumber = visit_todo_request.visit_num;
+  state.todoNumber = visit_todo_request.todo_num;
+  state.requestNumber = visit_todo_request.request_num;
 
   echartPie();
   eachartBar();
 };
+
+watchEffect(() => {
+  console.log(store.refreshView);
+  if (store.refreshView) {
+    getUserInfo();
+    store.refreshView = false;
+  }
+});
 
 // 待办添加弹框
 const showDialog = ref(false);
@@ -97,7 +130,7 @@ const echartPie = () => {
         type: "pie",
         radius: ["40%", "70%"],
         data: [
-          { value: 335, name: "用户访问量" },
+          { value: state.visitNumber, name: "用户访问量" },
           { value: state.todoNumber, name: "待办事项" },
           { value: state.requestNumber, name: "请求次数" },
         ],
@@ -136,16 +169,14 @@ const eachartBar = () => {
         <!-- 用户信息 -->
         <el-card class="mgb20" style="height: 252px">
           <div class="user-info">
-            <img src="../assets/img/img.jpg" class="user-avator" />
+            <img :src="state.image" class="user-avator" />
             <div class="user-info-cont">
-              <div class="user-info-name">{{ name }}</div>
+              <div class="user-info-name">{{ state.name }}</div>
               <div>{{ role }}</div>
             </div>
           </div>
-          <div class="user-info-list">
-            当前登录时间：<span>{{ state.currentTime }}</span>
-          </div>
-          <div class="user-info-list">当前登录地点：<span>测试地点</span></div>
+          <div class="user-info-list">更新时间：{{ dateFunction(state.modifyTime) }}</div>
+          <div class="user-info-list">登录地址：{{ state.address }}</div>
         </el-card>
 
         <!-- 语言详情 -->
@@ -180,7 +211,7 @@ const eachartBar = () => {
               <div class="grid-content grid-con-1">
                 <el-icon class="grid-con-icon"><user-filled /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">1234</div>
+                  <div class="grid-num">{{ state.visitNumber }}</div>
                   <div>用户访问量</div>
                 </div>
               </div>

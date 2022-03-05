@@ -7,9 +7,19 @@ import type { tableDataListType, tableObjectType, tableDataType, delDataListType
 export const logout = (): Promise<any> => post("/logout");
 
 /**
- * 获取首页数据
+ * 获取用户信息
  */
-export const get_dashboard = (): Promise<any> => get("/dashboard");
+export const get_current_user = (): Promise<any> => get("/dashboard/userInfo");
+
+/**
+ * 获取首页数据(语言详情 && 待办事项)
+ */
+export const get_lang_todo_list = (): Promise<any> => get("/dashboard/lang_todo_list");
+
+/**
+ * 查询首页数据(访问量 && 待办事项 && 请求数)
+ */
+export const get_visit_todo_request = (): Promise<any> => get("/dashboard/visit_todo_request");
 
 /**
  * 添加待办

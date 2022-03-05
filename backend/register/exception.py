@@ -9,11 +9,10 @@ from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm.exc import UnmappedInstanceError
-from aioredis.exceptions import ConnectionError
 from starlette.requests import Request
 
-from utils import logger, IdNotExist, SetRedis, OperateDB, UserNotExist, AccessTokenFail, ErrorUser, resp_400, resp_403, \
-    resp_500, resp_422, resp_401
+from utils import logger, IdNotExist, SetRedis, UserNotExist, AccessTokenFail, ErrorUser, resp_400, \
+    resp_500, resp_422, resp_401, IpError
 
 
 # 参考: https://www.charmcode.cn/article/2020-07-19_fastapi_exception
@@ -29,11 +28,23 @@ def register_exception(app: FastAPI):
     TypeError: 'dict' object is not callable
     """
 
-    @app.exception_handler(ConnectionError)
-    async def connection_error_handler(request: Request, exc: ConnectionError):
-        """ redis连接错误 """
-        logger.warning(f"redis连接错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\n{exc}")
-        return resp_500(msg=str(exc))
+    @app.exception_handler(IpError)
+    async def ip_error_handler(request: Request, exc: IpError):
+        """ ip错误(自定义异常) """
+        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
+        return resp_400(msg=exc.err_desc)
+
+    @app.exception_handler(ErrorUser)
+    async def error_user_handler(request: Request, exc: ErrorUser):
+        """ 错误的用户名或密码(自定义异常) """
+        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
+        return resp_400(msg=exc.err_desc)
+
+    @app.exception_handler(UserNotExist)
+    async def user_not_exist_handler(request: Request, exc: UserNotExist):
+        """ 用户不存在(自定义异常) """
+        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
+        return resp_400(msg=exc.err_desc)
 
     @app.exception_handler(IdNotExist)
     async def id_not_exist_handler(request: Request, exc: IdNotExist):
@@ -41,27 +52,9 @@ def register_exception(app: FastAPI):
         logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
         return resp_400(msg=exc.err_desc)
 
-    @app.exception_handler(UserNotExist)
-    async def user_not_exist_handler(request: Request, exc: UserNotExist):
-        """ 查询id不存在(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
-    @app.exception_handler(OperateDB)
-    async def operate_db_handler(request: Request, exc: OperateDB):
-        """ 操作数据库错误(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
     @app.exception_handler(SetRedis)
     async def set_redis_handler(request: Request, exc: SetRedis):
         """ Redis存储失败(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
-    @app.exception_handler(ErrorUser)
-    async def error_user_handler(request: Request, exc: ErrorUser):
-        """ 错误的用户名或密码(自定义异常) """
         logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
         return resp_400(msg=exc.err_desc)
 
@@ -91,16 +84,8 @@ def register_exception(app: FastAPI):
 
     @app.exception_handler(IntegrityError)
     async def integrity_error_handler(request: Request, exc: IntegrityError):
-        """ 添加的值与数据库中数据冲突(MySQL报错返回会携带错误码(1062, 1452), Sqlite报错只有报错内容) """
-        code: str = str(exc.orig)[1:5]  # 1062(唯一) || 1452(外键)
-        if code == "1062":  # 添加的值与数据库中已存在(主键、唯一索引)
-            text: str = f"添加数据的 id-{exc.params[0]} 或 name-{exc.params[1]} 已存在, 添加失败!"
-        elif code == "1452" and request.method == "POST":  # 添加的值数据库中不存在(外键)
-            text: str = f"添加数据的外键不存在, 添加失败!"
-        elif code == "1452" and request.method == "PUT":  # 更新的值数据库中不存在(外键)
-            text: str = f"更新数据的外键不存在, 添加失败!"
-        else:
-            text: str = f"添加数据的值与数据库中数据冲突, 添加失败!"
+        """ 添加/更新的数据与数据库中数据冲突 """
+        text = f"添加/更新的数据与数据库中数据冲突!"
         logger.warning(f"{text}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.orig}")
         return resp_400(msg=text)
 

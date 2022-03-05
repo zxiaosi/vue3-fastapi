@@ -174,7 +174,6 @@ selectCourseData = [
 
 adminData = [
     {'name': 'admin',
-     'sex': 'man',
      'hashed_password': '$2b$12$fSWir4aZ2fVI1jZLAjvltOmW/S0XV5s3C5VeoYlKYtkpBmDQipPJa',
      'is_active': True},
 ]

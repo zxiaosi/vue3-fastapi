@@ -35,10 +35,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :return: 查询到的orm模型对象
         """
         # table_name = self.model.__tablename__
-        # table_id = table_name + '_id' # 表名_字段名
+        # table_id = table_name + '_id'  # 表名_字段名
         # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
 
-        return db.query(self.model).filter(self.model.id == id).first()
+        return db.query(self.model).filter(self.model.id == str(id)).first()
 
     def get_multi(self, db: Session, *, pageIndex: int = 1, pageSize: int = 10) -> dict[str, List[ModelType]]:
         """
@@ -101,7 +101,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param id: ID
         :return: orm模型对象
         """
-        obj = db.query(self.model).get(id)
+        obj = db.query(self.model).get(str(id))
         db.delete(obj)
         db.commit()
         return obj

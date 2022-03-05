@@ -10,24 +10,18 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 
 from core import settings, check_jwt_token
-from db import DBSession, RedisPlus
+from db import MySuperContextManager, RedisPlus
 from schemas import TokenPayload
 from crud import ModelType, admin
-from utils import OperateDB, UserNotExist
+from utils import UserNotExist
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/login")
+get_token = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/login")
 
 
-def get_db() -> Generator:
+async def get_db() -> Generator:
     """ 数据库连接对象 """
-    with DBSession() as db:
-        try:
-            yield db
-        except Exception as e:
-            db.rollback()
-            OperateDB(f"操作数据库出错--{e}")
-        finally:
-            db.close()
+    with MySuperContextManager() as db:
+        yield db
 
 
 def get_redis(request: Request) -> RedisPlus:
@@ -35,7 +29,7 @@ def get_redis(request: Request) -> RedisPlus:
     return request.app.state.redis
 
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)) -> ModelType:
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(get_token)) -> ModelType:
     """ 得到当前用户(docs接口文档) """
     payload = check_jwt_token(token)
     token_data = TokenPayload(**payload)

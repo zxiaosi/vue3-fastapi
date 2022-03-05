@@ -6,9 +6,15 @@ import type { InjectionKey } from "vue";
 export const TITLE: string = "学生选课系统";
 
 /**
+ * 图片url前缀
+ */
+// export const BASE_URL: string = "http://127.0.0.1:8000";
+export const BASE_URL: string = "http://8.136.82.204:8000";
+
+/**
  * axios-baseUrl
  */
-export const BASE_URL: string = "http://127.0.0.1:8000/api";
+export const API_URL: string = `${BASE_URL}/api`;
 /**
  * axios-timeOut
  */

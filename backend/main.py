@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 from core import settings
 from db import init_db, sqlalchemy_core_initial, init_redis_pool
-from register import register_router, register_cors, register_middleware, register_exception
+from register import register_router, register_cors, register_middleware, register_exception, register_mount
 from utils import logger
 
 # app
@@ -17,6 +17,8 @@ app = FastAPI(description=settings.PROJECT_DESC, version=settings.PROJECT_VERSIO
 
 def create_app():
     """ 注册中心 """
+    register_mount(app)  # 挂载静态文件
+
     register_exception(app)  # 注册捕获全局异常
 
     register_cors(app)  # 注册跨域请求
@@ -31,8 +33,8 @@ def create_app():
 @app.on_event("startup")
 async def startup_event():
     create_app()  # 加载注册中心
-    # init_db()  # 初始化表
-    # sqlalchemy_core_initial()  # 初始化表数据
+    init_db()  # 初始化表
+    sqlalchemy_core_initial()  # 初始化表数据
     app.state.redis = await init_redis_pool()  # redis
 
 

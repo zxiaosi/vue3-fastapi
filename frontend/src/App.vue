@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide } from "vue";
+import { nextTick, provide, ref } from "vue";
 import * as echarts from "echarts";
 // provide/inject 声明类型: https://www.jianshu.com/p/7064c5f8f143
 

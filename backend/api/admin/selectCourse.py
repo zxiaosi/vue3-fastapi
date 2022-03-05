@@ -17,12 +17,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=ResultPlusModel[List[SelectCourseOut]], summary='查询所有选课(根据页码和每页个数)')
-def read_select_courses(
-        db: Session = Depends(get_db),
-        pageIndex: int = 1,
-        pageSize: int = 10,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def read_select_courses(db: Session = Depends(get_db), pageIndex: int = 1, pageSize: int = 10) -> Any:
     """
     查询所有选课(根据页码和每页个数, pageIndex=-1&&pageSize=-1表示查询所有)
 
@@ -34,12 +29,7 @@ def read_select_courses(
 
 
 @router.get("/{id}", response_model=ResultModel[SelectCourseOut], summary='根据 id 查询选课信息')
-def read_select_course(
-        *,
-        db: Session = Depends(get_db),
-        id: int,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def read_select_course(*, db: Session = Depends(get_db), id: int) -> Any:
     get_select_course = selectCourse.get(db, id=id)
     if not get_select_course:
         raise IdNotExist(err_desc=f"系统中不存在 id 为 {id} 的选课.")
@@ -47,24 +37,13 @@ def read_select_course(
 
 
 @router.post("/", response_model=ResultModel[SelectCourseOut], summary='添加选课信息')
-def create_select_course(
-        *,
-        db: Session = Depends(get_db),
-        select_course_in: SelectCourseCreate,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def create_select_course(*, db: Session = Depends(get_db), select_course_in: SelectCourseCreate) -> Any:
     add_select_course = selectCourse.create(db, obj_in=select_course_in)
     return resp_200(msg=f"添加了选课信息.", data=add_select_course)
 
 
 @router.put("/{id}", response_model=ResultModel[SelectCourseOut], summary='通过 id 更新选课信息')
-def update_select_course(
-        *,
-        db: Session = Depends(get_db),
-        id: int,
-        select_course_in: SelectCourseUpdate,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def update_select_course(*, db: Session = Depends(get_db), id: int, select_course_in: SelectCourseUpdate) -> Any:
     get_select_course = selectCourse.get(db, id=id)
     if not get_select_course:
         raise IdNotExist(err_desc=f"系统中不存在 id 为 {id} 的选课.")
@@ -73,22 +52,12 @@ def update_select_course(
 
 
 @router.delete("/{id}", response_model=ResultModel[SelectCourseOut], summary='通过 id 删除选课信息')
-def delete_select_course(
-        *,
-        db: Session = Depends(get_db),
-        id: int,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def delete_select_course(*, db: Session = Depends(get_db), id: int) -> Any:
     del_select_course = selectCourse.remove(db, id=id)
     return resp_200(data=del_select_course, msg=f"删除了 id 为 {id} 的选课信息.")
 
 
 @router.post("/del/", response_model=ResultModel[Relation], summary='同时删除多个选课信息')
-def select_select_courses(
-        *,
-        db: Session = Depends(get_db),
-        idList: list,
-        current_user: Admin = Depends(get_current_user)
-) -> Any:
+def select_select_courses(*, db: Session = Depends(get_db), idList: list) -> Any:
     selectCourse.remove_multi(db, id_list=idList)
     return resp_200(msg=f'同时删除多个选课信息.')

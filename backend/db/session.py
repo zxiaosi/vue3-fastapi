@@ -26,3 +26,17 @@ engine = create_engine(
 
 # 创建本地会话
 DBSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# https://fastapi.tiangolo.com/zh/tutorial/dependencies/dependencies-with-yield/?h=dependencies#using-context-managers-in-dependencies-with-yield
+class MySuperContextManager:
+    """ 操作数据库 """
+
+    def __init__(self):
+        self.db = DBSession()
+
+    def __enter__(self):
+        return self.db
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.db.close()

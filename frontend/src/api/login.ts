@@ -1,5 +1,5 @@
 import http from "@/request/http";
-import { BASE_URL } from "@/assets/global";
+import { API_URL } from "@/assets/global";
 import type { loginType } from "./model";
 
 /**
@@ -8,11 +8,11 @@ import type { loginType } from "./model";
 export const login = (data: loginType): Promise<any> =>
   http.request({
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    url: `${BASE_URL}/login`,
+    url: `${API_URL}/login`,
     method: "POST",
     data: data,
     transformRequest: [
-      // 将{username:111,password:111} 转成 username=111&password=111
+      // 请求时, 将{username:111,password:111} 转成 username=111&password=111
       function (data) {
         var ret = "";
         for (var it in data) {

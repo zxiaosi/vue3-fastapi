@@ -12,6 +12,7 @@ interface stateType {
   pageTotal: number;
   isDisabled: boolean;
   isShowSearched: boolean;
+  addOrUpdate: boolean;
 }
 
 // 状态管理
@@ -31,6 +32,7 @@ const state: stateType = reactive({
   pageTotal: 0, // 数据的总个数
   isDisabled: false, // 是否禁用编辑框id(可选)
   isShowSearched: false, // 是否显示被搜索的(可选)
+  addOrUpdate: false, // 添加数据或更新数据
 });
 
 // 搜索和页码
@@ -141,6 +143,11 @@ const emitIsDisabled = (res: boolean) => (state.isDisabled = res);
 const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
 
 /**
+ * 添加数据或更新数据
+ */
+const emitAddOrUpdate = (res: boolean) => (state.addOrUpdate = res);
+
+/**
  * 获取下拉框的值
  */
 const getChange = (res: string | number | undefined) => {
@@ -159,6 +166,7 @@ const getChange = (res: string | number | undefined) => {
     :get-data="getData"
     @emit-is-disabled="emitIsDisabled"
     @emit-is-show-searched="emitIsShowSearched"
+    @emit-add-or-update="emitAddOrUpdate"
   >
     <!-- 暂无 -->
     <template #filter />
@@ -247,7 +255,12 @@ const getChange = (res: string | number | undefined) => {
       </el-form-item>
 
       <el-form-item label="教师密码" prop="password">
-        <el-input v-model="formData.password" placeholder="默认密码123456" maxlength="20" show-word-limit />
+        <el-input
+          v-model="formData.password"
+          :placeholder="state.addOrUpdate == true ? `默认密码为123456` : `设置新密码`"
+          maxlength="20"
+          show-password
+        />
       </el-form-item>
 
       <el-form-item label="教师学历" prop="education">

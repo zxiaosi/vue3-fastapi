@@ -3,7 +3,6 @@
 # @Time : 2021/11/17 11:05
 # @Author : zxiaosi
 # @desc : 操作学生表
-from datetime import datetime
 from typing import Union, Dict, Any, Optional
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -27,10 +26,9 @@ class CRUDAdmin(CRUDBase[Admin, AdminCreate, AdminUpdate]):
         db_obj = self.model(
             id=obj_in_data['id'],
             name=obj_in_data['name'],
-            sex=obj_in_data['sex'],
-            birthday=datetime.strptime(obj_in_data['birthday'], "%Y-%m-%d").date(),
+            address=obj_in_data['address'],
+            image=obj_in_data['image'],
             hashed_password=get_password_hash(obj_in_data['password']),
-            major_id=obj_in_data['major_id']
         )
         db.add(db_obj)
         db.commit()
@@ -47,14 +45,14 @@ class CRUDAdmin(CRUDBase[Admin, AdminCreate, AdminUpdate]):
         :return: 管理员orm模型对象
         """
         if isinstance(obj_in, dict):  # 判断对象是否为字典类型
-            student_data = obj_in
+            admin_data = obj_in
         else:
-            student_data = obj_in.dict(exclude_unset=True)
-        if student_data["password"]:  # 判断是否有密码输入,输入新密码则加密
-            hashed_password = get_password_hash(student_data["password"])
-            del student_data["password"]
-            student_data["hashed_password"] = hashed_password
-        return super().update(db, db_obj=db_obj, obj_in=student_data)
+            admin_data = obj_in.dict(exclude_unset=True)
+        if admin_data["password"]:  # 判断是否有密码输入,输入新密码则加密
+            hashed_password = get_password_hash(admin_data["password"])
+            del admin_data["password"]
+            admin_data["hashed_password"] = hashed_password
+        return super().update(db, db_obj=db_obj, obj_in=admin_data)
 
     def get_by_name(self, db: Session, *, name: str) -> Optional[Admin]:
         """ 通过名字得到用户 """
@@ -69,8 +67,8 @@ class CRUDAdmin(CRUDBase[Admin, AdminCreate, AdminUpdate]):
             return None
         return admin
 
-    # 验证用户是否登录
     def is_active_def(self, admin: Admin) -> bool:
+        """ 验证用户是否登录 """
         return admin.is_active
 
 

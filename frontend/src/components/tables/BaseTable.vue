@@ -46,6 +46,7 @@ const props = defineProps<propsType>();
 const emit = defineEmits<{
   (e: "emitIsDisabled", isDisabled: boolean): void;
   (e: "emitIsShowSearched", isShowSearched: boolean): void;
+  (e: "emitAddOrUpdate", addOrUpdate: boolean): void;
 }>();
 
 // 路由
@@ -64,6 +65,7 @@ watch(
 watchEffect(() => {
   // 是否显示被选择的值
   emit("emitIsShowSearched", state.isShowSearched);
+  emit("emitAddOrUpdate", state.addOrUpdate);
 });
 
 /**
@@ -80,7 +82,7 @@ const cascadeDelete = () => {
 /**
  * 搜索数据
  */
-const handleSearch = async (event: PointerEvent) => {
+const handleSearch = async (event: MouseEvent) => {
   clickRecover(event);
 
   let params = { path: props.page.enName, id: props.query.id };
@@ -94,7 +96,7 @@ const handleSearch = async (event: PointerEvent) => {
 /**
  * 移除搜索
  */
-const handleRemove = (event: PointerEvent) => {
+const handleRemove = (event: MouseEvent) => {
   clickRecover(event);
   removeSearch();
 };
@@ -114,7 +116,7 @@ const handleSelectionChange = (val: string[]) => {
 /**
  * 删除被勾选的数据
  */
-const handleSelectedDelete = (event: PointerEvent) => {
+const handleSelectedDelete = (event: MouseEvent) => {
   clickRecover(event);
   let text = cascadeDelete();
 
@@ -145,7 +147,7 @@ const getRelationData = async () => {
 /**
  * 添加数据按钮
  */
-const handleAdd = async (event: PointerEvent) => {
+const handleAdd = async (event: MouseEvent) => {
   clickRecover(event);
 
   // 重置表单

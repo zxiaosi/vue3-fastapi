@@ -7,27 +7,13 @@ import os
 from loguru import logger
 
 from core import settings
-
-
-# 创建日志文件夹
-def logger_dir() -> str:
-    """ 创建日志文件夹 """
-
-    current_path = os.path.dirname(__file__)  # 获取当前文件夹
-
-    base_path = os.path.abspath(os.path.join(current_path, ".."))  # 获取当前文件夹的上一层文件
-
-    log_path = base_path + os.sep + settings.LOGGER_FOLDER + os.sep  # 拼接日志文件夹的路径
-
-    os.makedirs(log_path, exist_ok=True)  # 如果文件夹不存在就创建
-
-    return log_path
+from utils.create_dir import create_dir
 
 
 # 创建日志文件名
 def logger_file() -> str:
     """ 创建日志文件名 """
-    log_path = logger_dir()
+    log_path = create_dir(settings.LOGGER_DIR)
 
     """ 保留日志文件夹下最大个数(本地调试用) 
     本地调式需要多次重启, 日志轮转片不会生效 """

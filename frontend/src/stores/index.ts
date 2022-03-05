@@ -9,6 +9,7 @@ interface tagType {
 interface stateType {
   tagsList: tagType[];
   collapse: boolean;
+  refreshView: boolean;
 }
 
 export const useStore = defineStore({
@@ -16,6 +17,7 @@ export const useStore = defineStore({
   state: (): stateType => ({
     tagsList: [], // 标签列表
     collapse: false, // 侧边栏是否折叠
+    refreshView: false, // 是否刷新首页
   }),
   getters: {},
   actions: {
