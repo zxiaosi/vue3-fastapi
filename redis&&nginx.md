@@ -1,3 +1,36 @@
+## redis
+
+```sh
+set "visit_num" 1
+```
+
+```sh
+set "request_num" 1
+```
+
+```sh
+rpush "language_details" {"title": "Python", "percentage": 45.4, "color": "#f1e05a"}
+
+rpush "language_details" {"title":"Vue","percentage":44.3,"color":"#42b983"}
+
+rpush "language_details" {"title": "JavaScript", "percentage": 8.7, "color": "#409EFF"}
+
+rpush "language_details" {"title": "\u5176\u4ed6", "percentage": 1.6, "color": "#f56c6c"}
+```
+
+```sh
+rpush "todo_list" {"title": "\u54e5\u65af\u62c9", "status": true}
+
+rpush "todo_list" {"title": "\u725b\u7684", "status": true}
+
+rpush "todo_list" {"title": "555", "status": true}
+
+rpush "todo_list" {"title": "111", "status": true}
+```
+
+## nginx
+
+```sh
 server {
     listen       8001;
     server_name  localhost;
@@ -49,3 +82,5 @@ server {
         }
     }
 }
+```
+
