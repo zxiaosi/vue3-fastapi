@@ -8,7 +8,7 @@ from typing import Union, Dict, Any
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from core import get_password_hash
+from core import get_password_hash, settings
 from crud.base import CRUDBase
 from models import Student
 from schemas import StudentCreate, StudentUpdate
@@ -29,8 +29,8 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
             name=obj_in_data['name'],
             sex=obj_in_data['sex'],
             birthday=datetime.strptime(obj_in_data['birthday'], "%Y-%m-%d").date(),
-            address=obj_in_data['address'],
-            image=obj_in_data['image'],
+            address=obj_in_data['address'] if obj_in_data['address'] else '广东省广州市',
+            image=obj_in_data['image'] if obj_in_data['image'] else f'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg',
             hashed_password=get_password_hash(obj_in_data['password']),
             major_id=obj_in_data['major_id']
         )
