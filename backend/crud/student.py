@@ -29,6 +29,8 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
             name=obj_in_data['name'],
             sex=obj_in_data['sex'],
             birthday=datetime.strptime(obj_in_data['birthday'], "%Y-%m-%d").date(),
+            address=obj_in_data['address'],
+            image=obj_in_data['image'],
             hashed_password=get_password_hash(obj_in_data['password']),
             major_id=obj_in_data['major_id']
         )
@@ -50,10 +52,13 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
             student_data = obj_in
         else:
             student_data = obj_in.dict(exclude_unset=True)
-        if student_data["password"]:  # 判断是否有密码输入,输入新密码则加密
-            hashed_password = get_password_hash(student_data["password"])
-            del student_data["password"]
-            student_data["hashed_password"] = hashed_password
+        if 'password' in student_data.keys():  # 判断输入字典中是否有 password
+            if student_data["password"]:  # 判断是否有密码输入,输入新密码则加密(密码不为空)
+                hashed_password = get_password_hash(student_data["password"])
+                del student_data["password"]
+                student_data["hashed_password"] = hashed_password
+        else:
+            student_data.update({'password': ''})  # '' 为原密码
         return super().update(db, db_obj=db_obj, obj_in=student_data)
 
 

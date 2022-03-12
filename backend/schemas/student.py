@@ -7,14 +7,17 @@ from datetime import date
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
+from core import settings
 from schemas import GMT
 
 
 class StudentIn(BaseModel):
     """ 共享模型字段 """
     name: str = Field(min_length=1, max_length=10, example='姓名')
-    sex: Literal['man', 'woman'] = Field(default='man', example='性别：man->男, woman->女')
+    sex: Literal['0', '1'] = Field(default='0', example='性别：0 -> 男, 1 -> 女')
     birthday: date = Field(default=date(2012, 1, 1), example='生日: 1998-7-2')
+    image: str = Field(default=f'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg', example='头像')
+    address: str = Field(default='广东省广州市', example='地址')
     major_id: str = Field(regex=r'^10\d{4}$', min_length=6, max_length=6, example='专业编号')
 
 

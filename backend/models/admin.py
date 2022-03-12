@@ -3,8 +3,9 @@
 # @Time : 2021/9/19 22:24
 # @Author : zxiaosi
 # @desc : 管理员表
-from sqlalchemy import Column, Integer, String, TIMESTAMP, func, Boolean, text
+from sqlalchemy import Column, Integer, String, TIMESTAMP, func, Boolean, text, ForeignKey
 
+from core import settings
 from models import Base
 
 
@@ -16,7 +17,8 @@ class Admin(Base):
 
     address = Column(String(20), server_default=text("'广东省广州市'"), comment='地址')
 
-    image = Column(String(60), server_default=text("'/static/author.jpg'"), comment='头像')
+    image = Column(String(60), server_default=text(f"'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg'"),
+                   comment='头像')
 
     hashed_password = Column(String(60), nullable=False, comment='密码')
 

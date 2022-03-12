@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2021/10/19 19:49
 # @Author : zxiaosi
-# @desc : 安全配置
+# @desc : 安全配置 https://fastapi.tiangolo.com/zh/advanced/security/oauth2-scopes/#global-view
 from typing import Any, Union, Optional
 from datetime import datetime, timedelta
 from fastapi import Header
@@ -38,19 +38,20 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
     生成token
 
-    :param subject: 对象
+    :param data: 存储数据
     :param expires_delta: 有效时间
     :return: 加密后的token
     """
+    to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"exp": expire, "sub": str(subject)}
+    to_encode.update({"exp": expire})  # eg: {'sub': '1', scopes: ['items'] 'exp': '123'}
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

@@ -1,5 +1,10 @@
 import { get, post, put, del } from "@/request";
-import type { tableDataListType, tableObjectType, tableDataType, delDataListType, todoType, loginType } from "./model";
+import type { tableDataListType, tableObjectType, tableDataType, delDataListType, todoType } from "./model";
+
+/**
+ * 测试权限接口
+ */
+export const check_redis = (): Promise<any> => get("/health-check");
 
 /**
  * 退出登录
@@ -24,12 +29,12 @@ export const get_visit_todo_request = (): Promise<any> => get("/dashboard/visit_
 /**
  * 添加待办
  */
-export const add_todo = (data: todoType): Promise<any> => post(`/add/todo`, { ...data });
+export const add_todo = (data: todoType): Promise<any> => post(`/todo/add`, { ...data });
 
 /**
  * 根据索引更新待办
  */
-export const update_todo = (data: todoType): Promise<any> => post(`/update/todo`, { ...data });
+export const update_todo = (data: todoType): Promise<any> => post(`/todo/update`, { ...data });
 
 /**
  * 获取表的数据

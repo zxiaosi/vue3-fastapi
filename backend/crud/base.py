@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 
+from core import verify_password
 from models import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -39,6 +40,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
 
         return db.query(self.model).filter(self.model.id == str(id)).first()
+
+    def get_by_name(self, db: Session, *, name: str) -> Optional[ModelType]:
+        """ 通过名字得到用户 """
+        return db.query(self.model).filter(self.model.name == name).first()
 
     def get_multi(self, db: Session, *, pageIndex: int = 1, pageSize: int = 10) -> dict[str, List[ModelType]]:
         """
@@ -84,7 +89,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if isinstance(obj_in, dict):  # 判断对象是否为字典类型
             update_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.dict(exclude_unset=True)  # 排除未设置的元素
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
@@ -124,3 +129,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :return: 查询到的关系字段
         """
         return db.query(self.model.id, self.model.name).distinct().all()
+
+    def authenticate(self, db: Session, *, username: str, password: str) -> Optional[ModelType]:
+        """ 验证用户 """
+        user = self.get_by_name(db, name=username)
+        if not user:
+            return None
+        if not verify_password(password, user.hashed_password):
+            return None
+        return user

@@ -35,6 +35,7 @@
 + `v4.7` 添加redis
 + `v4.8` 重构后端 
 + `v4.9` 支持PostgreSQL,以及图片上传 
++ `v5.0` 后台实现权限管理模块
 
 ## 安装
 
@@ -103,9 +104,10 @@
             |-- __init__.py       	# 共用接口 
             |-- login.py	        # 登录接口
             |-- redis_check.py	    # 检查redis是否连接成功
+            |-- upload.py	        # 图片上传
         |-- __init__.py	         
         |-- deps.py	                # 依赖项
-        |-- api_router.py	       	# 接口汇总    
+        |-- api_router.py	       	# admin接口汇总    
                          
 	|-- core					
 		|-- __init__.py			# 核心内容   
@@ -155,18 +157,26 @@
 	    
 	|-- schemas 
 		|-- __init__.py			# 数据模型
-		|-- dashBoard.py			# 管理员表数据模型
-		|-- course.py			# 课程表数据模型
-		|-- department.py		# 院系表数据模型
-		|-- major.py			# 专业表数据模型
-		|-- selectCourse.py		# 选课表数据模型
-		|-- student.py			# 学生表数据模型
-		|-- teacher.py			# 教师表数据模型
+		|-- admin.py			# 管理员表模型
+		|-- common.py			# 公用表模型
+		|-- course.py			# 课程表模型
+		|-- department.py		# 院系表模型
+		|-- login.py		    # 登录模型
+		|-- major.py			# 专业表模型
+		|-- result.py			# 返回数据模型
+		|-- selectCourse.py		# 选课表模型
+		|-- student.py			# 学生表模型
+		|-- teacher.py			# 教师表模型
+		|-- todo.py			    # 待办模型
+		|-- token.py			# token模型
 		
 	|-- utils                   # 工具
 	    |-- __init__.py		    # 抛出工具类
+	    |-- create_dir.py		# 创建文件夹类(位置勿动)
 	    |-- custon_exc.py		# 自定义异常
+	    |-- ip_address.py		# 根据ip获取位置
 	    |-- logger.py		    # 日志模块
+	    |-- permission_assign.py # 权限管理
 	    |-- resp_code.py	    # 状态码
 	
 	|-- __init__.py

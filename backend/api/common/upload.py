@@ -34,6 +34,6 @@ async def upload_image(
             tmp_file_name = Path(tmp.name).name
     finally:
         file.file.close()
-    crud.admin.update(db, db_obj=current_user, obj_in={'image': f"/{settings.STATIC_DIR}/{tmp_file_name}",
-                                                       'password': ''})
-    return resp_200(data='', msg='上传成功！')
+    user = crud.admin.update(db, db_obj=current_user,
+                             obj_in={'image': f"{settings.BASE_URL}/{settings.STATIC_DIR}/{tmp_file_name}"})
+    return resp_200(data=user, msg='上传成功！')

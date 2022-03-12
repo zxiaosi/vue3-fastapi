@@ -12,6 +12,5 @@
       "@/*": ["./src/*"]
     }
   },
-
   "references": [{ "path": "./tsconfig.vite-config.json" }]
 }

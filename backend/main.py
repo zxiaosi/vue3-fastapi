@@ -33,8 +33,8 @@ def create_app():
 @app.on_event("startup")
 async def startup_event():
     create_app()  # 加载注册中心
-    init_db()  # 初始化表
-    sqlalchemy_core_initial()  # 初始化表数据
+    # init_db()  # 初始化表
+    # sqlalchemy_core_initial()  # 初始化表数据
     app.state.redis = await init_redis_pool()  # redis
 
 

@@ -1,3 +1,5 @@
+import { getLocal } from "@/request/auth";
+import type { userInfoType } from "@/types";
 import { defineStore } from "pinia";
 
 interface tagType {
@@ -9,7 +11,7 @@ interface tagType {
 interface stateType {
   tagsList: tagType[];
   collapse: boolean;
-  refreshView: boolean;
+  userInfo: userInfoType;
 }
 
 export const useStore = defineStore({
@@ -17,9 +19,20 @@ export const useStore = defineStore({
   state: (): stateType => ({
     tagsList: [], // 标签列表
     collapse: false, // 侧边栏是否折叠
-    refreshView: false, // 是否刷新首页
+    userInfo: {
+      name: "", // 用户名
+      avatar: "", // 头像
+      address: "", // 地址
+      modifyTime: "", // 最后修改时间
+    },
   }),
-  getters: {},
+  getters: {
+    tagNameList(state) {
+      return state.tagsList.map((item) => {
+        return item.name;
+      });
+    },
+  },
   actions: {
     /**
      * 根据索引删除标签

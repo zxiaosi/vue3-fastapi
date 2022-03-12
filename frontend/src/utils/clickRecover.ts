@@ -1,5 +1,4 @@
 /**
- * clickRecover
  * 点击后鼠标移开恢复按钮默认样式
  */
 export const clickRecover = (event: MouseEvent) => {

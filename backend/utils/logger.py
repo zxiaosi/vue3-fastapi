@@ -18,7 +18,7 @@ def logger_file() -> str:
     """ 保留日志文件夹下最大个数(本地调试用) 
     本地调式需要多次重启, 日志轮转片不会生效 """
     file_list = os.listdir(log_path)
-    if len(file_list) > 4:
+    if len(file_list) > 3:
         os.remove(os.path.join(log_path, file_list[0]))
 
     # 日志输出路径

@@ -34,7 +34,7 @@ async def get_lang_todo(redis: RedisPlus = Depends(get_redis)) -> Any:
     return resp_200(data={'todo_list': todo_list, 'language_details': language_details}, msg='查询了语言详情 && 待办事项')
 
 
-@router.get("/dashboard/visit_todo_request", response_class=ORJSONResponse, summary='访问量 && 待办事项 && 请求数')
+@router.get("/dashboard/visit_todo_request", response_class=ORJSONResponse, summary='访问量 && 待办数 && 请求数')
 async def get_visit_todo_request(redis: RedisPlus = Depends(get_redis)) -> Any:
     """ 查询首页数据(访问量 && 待办事项 && 请求数) """
     visit_num = await redis.get('visit_num')
@@ -50,8 +50,7 @@ async def add_todo(todo_in: Todo, redis: RedisPlus = Depends(get_redis)) -> Any:
     text = {'title': todo_in.title, 'status': todo_in.status}
     await redis.cus_lpush('todo_list', text)
     todo_list = await redis.list_loads('todo_list', 6)
-    todo_num = await redis.llen('todo_list')
-    return resp_200(data={'todo_list': todo_list, 'todo_num': todo_num}, msg='添加待办成功！')
+    return resp_200(data=todo_list, msg='添加待办成功！')
 
 
 @router.post("/todo/update", response_class=ORJSONResponse, summary='根据索引更新待办')

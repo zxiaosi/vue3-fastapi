@@ -1,12 +1,13 @@
-import type { pathType, formDataType } from "@/types/table";
+import type { PermissEnum } from "@/types";
+import type { formDataType, pathEnum } from "@/types/table";
 
 /**
  * 登录
  */
-
 export interface loginType {
   username: string;
   password: string;
+  scope: PermissEnum[];
 }
 
 /**
@@ -21,7 +22,8 @@ export interface todoType {
 /**
  * 获取所有数据
  */
-export interface tableDataListType extends pathType {
+export interface tableDataListType {
+  path: pathEnum;
   pageIndex?: number; // 页码
   pageSize?: number; // 每页个数
 }
@@ -29,18 +31,22 @@ export interface tableDataListType extends pathType {
 /**
  * 根据id查询/删除(多条)信息
  */
-export interface tableDataType extends pathType {
+export interface tableDataType {
+  path: pathEnum;
   id: number | string; // id
 }
 
 /**
  * 添加/更新信息
  */
-export interface tableObjectType extends pathType, formDataType {}
+export interface tableObjectType extends formDataType {
+  path: pathEnum;
+}
 
 /**
  * 同时删除多个信息
  */
-export interface delDataListType extends pathType {
+export interface delDataListType {
+  path: pathEnum;
   idList: number[] | string[]; // id列表
 }

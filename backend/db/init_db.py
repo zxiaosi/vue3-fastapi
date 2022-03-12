@@ -4,7 +4,7 @@
 # @Author : zxiaosi
 # @desc : 创建与删除所有表
 from db import engine
-from models.base import Base
+from models import Base
 from utils import logger
 
 

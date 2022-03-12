@@ -7,22 +7,19 @@ from datetime import date
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
+from core import settings
 from schemas import GMT
 
 
 class TeacherIn(BaseModel):
     """ 共享模型字段 """
     name: str = Field(min_length=1, max_length=10, example='姓名')
-    sex: Literal['man', 'woman'] = Field(default='man', example='性别: man->男, woman->女')
+    sex: Literal['0', '1'] = Field(default='0', example='性别: 0 -> 男, 1- > 女')
     birthday: date = Field(default=date(2012, 1, 1), example='生日: 1998-7-2')
-    education: Literal['Bachelor', 'Master', 'Doctor'] = Field(
-        default='Bachelor',
-        example='学历：Bachelor->学士, Master->硕士, Doctor->博士'
-    )
-    title: Literal['Assistant', 'Lecturer', 'Associate', 'Professor'] = Field(
-        default='Assistant',
-        example='职称：Assistant->助教, Lecturer->讲师, Associate->副教授, Professor->教授'
-    )
+    education: Literal['1', '2', '3'] = Field(default='1', example='学历：1 -> 学士, 2 -> 硕士, 3 -> 博士')
+    title: Literal['1', '2', '3', '4'] = Field(default='1', example='职称：1 -> 助教, 2 -> 讲师, 3 -> 副教授, 4 -> 教授')
+    image: str = Field(default=f'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg', example='头像')
+    address: str = Field(default='广东省广州市', example='地址')
     department_id: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='院系编号')
 
 

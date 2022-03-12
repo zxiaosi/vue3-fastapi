@@ -22,7 +22,7 @@ def by_ip_get_address(ip) -> str:
     """ 根据ip获取地址 """
     verify_ip(ip)
 
-    req = request.Request(f"http://ip.ws.126.net/ipquery?ip=${ip}")
+    req = request.Request(f"http://ip.ws.126.net/ipquery?ip={ip}")
     response = request.urlopen(req).read().decode('gbk')  # 获取响应
 
     handle_address = re.findall(r'"([^"]*)"', response)

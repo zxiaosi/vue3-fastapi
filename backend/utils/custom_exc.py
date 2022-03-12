@@ -43,3 +43,10 @@ class ErrorUser(Exception):
 
     def __init__(self, err_desc: str = "错误的用户名或密码"):
         self.err_desc = err_desc
+
+
+class PermissionNotEnough(Exception):
+    """ 权限不足,拒绝访问 """
+
+    def __init__(self, err_desc: str = "权限不足,拒绝访问"):
+        self.err_desc = err_desc

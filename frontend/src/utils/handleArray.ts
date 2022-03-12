@@ -16,7 +16,7 @@ export const valueList = (data: any[], keyName: string): string[] => {
  * 通过id得到name
  * @param {*} id 外键
  * @param {*} data 外键对应的表数据
- * @returns
+ * @returns 对应的name
  */
 export const byIdGetName = (id: string, data: formDataType[]) => {
   if (!id) {

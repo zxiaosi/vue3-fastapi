@@ -3,7 +3,7 @@
 # @Time : 2021/12/24 14:48
 # @Author : zxiaosi
 # @desc : token
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -14,7 +14,6 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenPayload(BaseModel):
-    """ 有效token """
-    exp: Optional[str]  # 时间
-    sub: Optional[int] = None
+class TokenData(BaseModel):
+    sub: Optional[str] = None
+    scopes: List[str] = []

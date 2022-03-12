@@ -29,9 +29,11 @@ class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):
             name=obj_in_data['name'],
             sex=obj_in_data['sex'],
             birthday=datetime.strptime(obj_in_data['birthday'], "%Y-%m-%d").date(),
-            hashed_password=get_password_hash(obj_in_data['password']),
             education=obj_in_data['education'],
             title=obj_in_data['title'],
+            address=obj_in_data['address'],
+            image=obj_in_data['image'],
+            hashed_password=get_password_hash(obj_in_data['password']),
             department_id=obj_in_data['department_id']
         )
         db.add(db_obj)
@@ -39,9 +41,7 @@ class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):
         db.refresh(db_obj)
         return db_obj
 
-    def update(
-            self, db: Session, *, db_obj: Teacher, obj_in: Union[TeacherUpdate, Dict[str, Any]]
-    ) -> Teacher:
+    def update(self, db: Session, *, db_obj: Teacher, obj_in: Union[TeacherUpdate, Dict[str, Any]]) -> Teacher:
         """
         更新教师信息
 
@@ -54,10 +54,13 @@ class CRUDTeacher(CRUDBase[Teacher, TeacherCreate, TeacherUpdate]):
             teacher_data = obj_in
         else:
             teacher_data = obj_in.dict(exclude_unset=True)
-        if teacher_data["password"]:  # 判断是否有密码输入,输入新密码则加密
-            hashed_password = get_password_hash(teacher_data["password"])
-            del teacher_data["password"]
-            teacher_data["hashed_password"] = hashed_password
+        if 'password' in teacher_data.keys():  # 判断输入字典中是否有 password
+            if teacher_data["password"]:  # 判断是否有密码输入,输入新密码则加密(密码不为空)
+                hashed_password = get_password_hash(teacher_data["password"])
+                del teacher_data["password"]
+                teacher_data["hashed_password"] = hashed_password
+        else:
+            teacher_data.update({'password': ''})  # '' 为原密码
         return super().update(db, db_obj=db_obj, obj_in=teacher_data)
 
 

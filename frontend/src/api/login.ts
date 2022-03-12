@@ -16,7 +16,13 @@ export const login = (data: loginType): Promise<any> =>
       function (data) {
         var ret = "";
         for (var it in data) {
-          ret += encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&"; // 如果要发送中文 编码
+          // 判断是否是数组
+          if (Array.isArray(data[it])) {
+            let tmp = data[it].join(" "); // 将 ['admin','teacher','student'] 中 , 转为 ' '
+            ret += encodeURIComponent(it) + "=" + encodeURIComponent(tmp) + "&";
+          } else {
+            ret += encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";
+          }
         }
         return ret.substring(0, ret.length - 1);
       },

@@ -3,11 +3,11 @@
 # @Time : 2021/11/17 11:05
 # @Author : zxiaosi
 # @desc : 操作学生表
-from typing import Union, Dict, Any, Optional
+from typing import Union, Dict, Any
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from core import get_password_hash, verify_password
+from core import get_password_hash
 from crud import CRUDBase
 from models import Admin
 from schemas import AdminCreate, AdminUpdate
@@ -48,24 +48,14 @@ class CRUDAdmin(CRUDBase[Admin, AdminCreate, AdminUpdate]):
             admin_data = obj_in
         else:
             admin_data = obj_in.dict(exclude_unset=True)
-        if admin_data["password"]:  # 判断是否有密码输入,输入新密码则加密
-            hashed_password = get_password_hash(admin_data["password"])
-            del admin_data["password"]
-            admin_data["hashed_password"] = hashed_password
+        if 'password' in admin_data.keys():  # 判断输入字典中是否有 password
+            if admin_data["password"]:  # 判断是否有密码输入,输入新密码则加密(密码不为空)
+                hashed_password = get_password_hash(admin_data["password"])
+                del admin_data["password"]
+                admin_data["hashed_password"] = hashed_password
+        else:
+            admin_data.update({'password': ''})  # '' 为原密码
         return super().update(db, db_obj=db_obj, obj_in=admin_data)
-
-    def get_by_name(self, db: Session, *, name: str) -> Optional[Admin]:
-        """ 通过名字得到用户 """
-        return db.query(self.model).filter(self.model.name == name).first()
-
-    def authenticate(self, db: Session, *, username: str, password: str) -> Optional[Admin]:
-        """ 验证用户 """
-        admin = self.get_by_name(db, name=username)
-        if not admin:
-            return None
-        if not verify_password(password, admin.hashed_password):
-            return None
-        return admin
 
     def is_active_def(self, admin: Admin) -> bool:
         """ 验证用户是否登录 """

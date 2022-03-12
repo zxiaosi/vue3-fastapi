@@ -36,7 +36,7 @@ class AppRequest {
 
     this.loading = ElLoading.service({
       // target: ".el-table, .table-flex, .region", // 设置加载动画区域
-      target: ".el-table, .ms-content", // 设置加载动画区域
+      target: ".el-table, .ms-content", // 设置加载动画区域(样式class名)
       lock: true, // 锁定屏幕的滚动
       text: "正在请求数据...", // 文案
     });

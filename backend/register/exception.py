@@ -11,8 +11,10 @@ from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from starlette.requests import Request
 
-from utils import logger, IdNotExist, SetRedis, UserNotExist, AccessTokenFail, ErrorUser, resp_400, \
-    resp_500, resp_422, resp_401, IpError
+from utils import logger
+from utils.custom_exc import IpError, ErrorUser, UserNotExist, SetRedis, AccessTokenFail, IdNotExist, \
+    PermissionNotEnough
+from utils.resp_code import resp_400, resp_401, resp_403, resp_422, resp_500
 
 
 # 参考: https://www.charmcode.cn/article/2020-07-19_fastapi_exception
@@ -64,23 +66,11 @@ def register_exception(app: FastAPI):
         logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
         return resp_401(msg=exc.err_desc)
 
-    @app.exception_handler(ValidationError)
-    async def inner_validation_exception_handler(request: Request, exc: ValidationError):
-        """ 内部参数验证异常 """
-        logger.error(f"内部参数验证错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
-        return resp_500(msg=exc.errors())
-
-    @app.exception_handler(RequestValidationError)
-    async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-        """ 请求参数验证异常 """
-        logger.error(f"请求参数格式错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
-        return resp_422(msg=exc.errors())
-
-    @app.exception_handler(ProgrammingError)
-    async def programming_error_handle(request: Request, exc: ProgrammingError):
-        """ 请求参数丢失 """
-        logger.error(f"请求参数丢失\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc}")
-        return resp_400(msg='请求参数丢失!(实际请求参数错误)')
+    @app.exception_handler(PermissionNotEnough)
+    async def permission_not_enough_handler(request: Request, exc: AccessTokenFail):
+        """ 权限不足,拒绝访问(自定义异常) """
+        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
+        return resp_403(msg=exc.err_desc)
 
     @app.exception_handler(IntegrityError)
     async def integrity_error_handler(request: Request, exc: IntegrityError):
@@ -88,6 +78,24 @@ def register_exception(app: FastAPI):
         text = f"添加/更新的数据与数据库中数据冲突!"
         logger.warning(f"{text}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.orig}")
         return resp_400(msg=text)
+
+    @app.exception_handler(ProgrammingError)
+    async def programming_error_handle(request: Request, exc: ProgrammingError):
+        """ 请求参数丢失 """
+        logger.error(f"请求参数丢失\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc}")
+        return resp_400(msg='请求参数丢失!(实际请求参数错误)')
+
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
+        """ 请求参数验证异常 """
+        logger.error(f"请求参数格式错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
+        return resp_422(msg=exc.errors())
+
+    @app.exception_handler(ValidationError)
+    async def inner_validation_exception_handler(request: Request, exc: ValidationError):
+        """ 内部参数验证异常 """
+        logger.error(f"内部参数验证错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
+        return resp_500(msg=exc.errors())
 
     @app.exception_handler(UnmappedInstanceError)
     async def un_mapped_instance_error_handler(request: Request, exc: UnmappedInstanceError):

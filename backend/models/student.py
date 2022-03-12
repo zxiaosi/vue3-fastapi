@@ -6,6 +6,7 @@
 from datetime import date
 from sqlalchemy import Column, String, ForeignKey, CheckConstraint, Date, Boolean, text, TIMESTAMP, func
 
+from core import settings
 from models import Base
 
 
@@ -15,9 +16,15 @@ class Student(Base):
 
     name = Column(String(10), unique=False, nullable=False, comment='姓名')
 
-    sex = Column(String(5), CheckConstraint("sex in ('man', 'woman')"), server_default=text("'man'"), comment='性别')
+    sex = Column(String(1), CheckConstraint("sex in ('0', '1')"), server_default=text("'0'"),
+                 comment='性别: 0 -> 男, 1 -> 女')
 
     birthday = Column(Date, default=date(2012, 1, 1), nullable=False, comment='生日')
+
+    address = Column(String(20), server_default=text("'广东省广州市'"), comment='地址')
+
+    image = Column(String(60), server_default=text(f"'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg'"),
+                   comment='头像')
 
     hashed_password = Column(String(60), nullable=False, comment='密码')
 

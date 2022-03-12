@@ -7,6 +7,7 @@ from db import DBSession
 from db.data import *
 from models import *
 from utils import logger
+from utils.permission_assign import generate_permission_data
 
 
 def db_conn(func):
@@ -31,6 +32,7 @@ def sqlalchemy_orm_initial(db):
     """ 初始化表数据方式一 : 速度欠佳 性能正常 """
 
     data = [
+        *[Permission(**permission) for permission in generate_permission_data()],
         *[Department(**department) for department in departmentData],
         *[Major(**major) for major in majorData],
         *[Student(**student) for student in studentData],
@@ -50,6 +52,7 @@ def sqlalchemy_core_initial(db):
     """ 初始化表数据方式二 : 速度与性能并行 """
 
     # 插入数据
+    db.execute(Permission.__table__.insert(), [permission for permission in generate_permission_data()]),
     db.execute(Department.__table__.insert(), [department for department in departmentData]),
     db.execute(Major.__table__.insert(), [major for major in majorData]),
     db.execute(Student.__table__.insert(), [student for student in studentData]),

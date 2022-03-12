@@ -5,20 +5,19 @@
 # @desc : 登录
 import json
 from datetime import timedelta
-from ipaddress import ip_address
 
 from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Security
 from fastapi.security import OAuth2PasswordRequestForm
 
-import crud
 from core import settings, create_access_token
 from db import RedisPlus
-from models import Admin
-from schemas import ResultModel, Token, AdminOut
-from api.deps import get_redis, get_db, get_current_user
+from models import Admin, Teacher, Student
+from schemas import ResultModel, Token, AdminOut, StudentOut, TeacherOut
+from api.deps import get_redis, get_db, get_current_user, get_current_active_user
 from utils import resp_200, SetRedis, ErrorUser, by_ip_get_address
+from utils.permission_assign import by_scopes_get_crud
 
 router = APIRouter()
 
@@ -36,33 +35,45 @@ async def login_access_token(
     - username: admin
     - password: 123
     """
-    user = crud.admin.authenticate(db, username=form_data.username, password=form_data.password)
+    crud_obj = by_scopes_get_crud(form_data.scopes)  # 权限分配
+    user = crud_obj.authenticate(db, username=form_data.username, password=form_data.password)
     if not user:
-        raise ErrorUser('错误的用户名或密码!')
+        raise ErrorUser()
 
     address = by_ip_get_address(request.client.host)  # 根据ip获取地址
-    crud.admin.update(db, db_obj=user, obj_in={'address': address, 'password': ''})
+    updated_user = crud_obj.update(db, db_obj=user, obj_in={'address': address})
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(user.id, expires_delta=access_token_expires)
+    token = create_access_token({"sub": str(updated_user.id), "scopes": form_data.scopes}, access_token_expires)
 
     if not request.headers.get('referer').endswith('docs'):  # True: 前端接口 | False: 文档登录
         try:
             await request.app.state.redis.incr('visit_num')  # 用户访问量 自增1
-            await request.app.state.redis.set(token, json.dumps(jsonable_encoder(user)), access_token_expires)
+            await request.app.state.redis.set(token, json.dumps(jsonable_encoder(updated_user)), access_token_expires)
         except Exception as e:
             raise SetRedis(f'Redis存储 token 失败！-- {e}')
 
     return {"access_token": token, "token_type": "bearer"}  # 这里返回的格式一定这么写,否则get_current_user依赖拿不到token
 
 
-@router.post("/login/current_user", response_model=ResultModel[AdminOut], summary="获取当前用户")
-def get_current_user(current_user: Admin = Depends(get_current_user)):
-    return resp_200(data=jsonable_encoder(current_user), msg='获取到了当前用户信息！')
+@router.get("/login/current_admin", response_model=ResultModel[AdminOut], summary="获取当前管理员")
+def get_current_admin(current_user: Admin = Security(get_current_user, scopes=["admin"])):
+    return resp_200(data=jsonable_encoder(current_user), msg='获取当前管理员信息！')
+
+
+@router.get("/login/current_teacher", response_model=ResultModel[TeacherOut], summary="获取当前教师")
+def get_current_teacher(current_user: Teacher = Security(get_current_user, scopes=["teacher"])):
+    return resp_200(data=jsonable_encoder(current_user), msg='获取当前教师信息！')
+
+
+@router.get("/login/current_student", response_model=ResultModel[StudentOut], summary="获取当前学生")
+def get_current_student(current_user: Student = Security(get_current_user, scopes=["student"])):
+    return resp_200(data=jsonable_encoder(current_user), msg='获取当前学生信息！')
 
 
 @router.post("/logout", response_model=ResultModel, summary="退出登录(已隐藏)", include_in_schema=False)
 async def logout_token(request: Request, redis: RedisPlus = Depends(get_redis)):
-    token = request.headers.get('authorization')[7:]  # 去除token前面的 Bearer
-    await redis.delete(token)
+    if 'authorization' in request.headers.keys():
+        token = request.headers.get('authorization')[7:]  # 去除token前面的 Bearer
+        await redis.delete(token)
     return resp_200(data='', msg='退出登录')

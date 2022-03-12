@@ -7,8 +7,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from api.deps import get_db, get_current_user
-from models import Admin
+from api.deps import get_db
 from schemas import CourseCreate, CourseUpdate, CourseOut, Relation, ResultModel, ResultPlusModel
 from crud import course
 from utils import resp_200, IdNotExist
@@ -28,7 +27,7 @@ def read_courses(db: Session = Depends(get_db), pageIndex: int = 1, pageSize: in
     return resp_200(data=get_courses, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个课程信息.")
 
 
-@router.get("/{id}", response_model=ResultPlusModel[CourseOut], summary='根据 id 查询课程信息')
+@router.get("/{id}", response_model=ResultModel[CourseOut], summary='根据 id 查询课程信息')
 def read_course(db: Session = Depends(get_db), id: int = None) -> Any:
     get_course = course.get(db, id=id)
     if not get_course:

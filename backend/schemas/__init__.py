@@ -11,7 +11,7 @@ from .student import StudentCreate, StudentUpdate, StudentOut
 from .course import CourseCreate, CourseUpdate, CourseOut
 from .selectCourse import SelectCourseCreate, SelectCourseUpdate, SelectCourseOut
 from .admin import AdminCreate, AdminUpdate, AdminOut
-from .token import Token, TokenPayload
+from .token import Token, TokenData
 from .result import SchemasType, ResultModel, ResultPlusModel
 from .todo import TodoId, Todo
 from .login import Login

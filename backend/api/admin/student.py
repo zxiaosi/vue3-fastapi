@@ -7,8 +7,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from api.deps import get_db, get_current_user
-from models import Admin
+from api.deps import get_db
 from schemas import StudentCreate, StudentUpdate, StudentOut, Relation, ResultModel, ResultPlusModel
 from crud import student
 from utils import resp_200, IdNotExist
