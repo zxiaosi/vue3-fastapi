@@ -61,6 +61,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         count: int = db.query(func.count(distinct(self.model.id))).scalar()
         return {'count': count, 'dataList': data}
 
+    def get_multi_relation(self, db: Session):
+        """
+        只获取关系字段
+
+        :param db: Session
+        :return: 查询到的关系字段
+        """
+        data = db.query(self.model.id, self.model.name).distinct().all()
+        count = db.query(func.count(distinct(self.model.id))).scalar()
+        return {'dataList': data, 'count': count}
+
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         """
         添加对象
@@ -120,15 +131,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         db.query(self.model).filter(self.model.id.in_(id_list)).delete()
         db.commit()
-
-    def get_multi_relation(self, db: Session):
-        """
-        只获取关系字段
-
-        :param db: Session
-        :return: 查询到的关系字段
-        """
-        return db.query(self.model.id, self.model.name).distinct().all()
 
     def authenticate(self, db: Session, *, username: str, password: str) -> Optional[ModelType]:
         """ 验证用户 """

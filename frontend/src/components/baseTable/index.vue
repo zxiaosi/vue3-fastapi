@@ -129,8 +129,8 @@ const handleSelectedDelete = (event: MouseEvent) => {
  */
 const getRelationData = async () => {
   const { data } = await read_datas_relation(state.pathParam);
-  state.relationData = data;
-  dataStore.handleData(state.pathParam, data);
+  state.relationData = data.dataList;
+  dataStore.handleData(state.pathParam, data.dataList);
 };
 
 /**

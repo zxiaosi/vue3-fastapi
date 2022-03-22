@@ -92,7 +92,7 @@ const getData = async (currentPage: number = query.currentPage) => {
   state.pageTotal = studentData.count;
 
   const { data: majorData } = await read_datas_relation("major");
-  state.majorData = majorData;
+  state.majorData = majorData.dataList;
 };
 
 // 页面加载后调用函数

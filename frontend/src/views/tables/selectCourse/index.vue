@@ -55,15 +55,15 @@ const getData = async (currentPage: number = query.currentPage) => {
 
   // 获取学生信息
   const { data: studentData } = await read_datas_relation("student");
-  state.studentData = studentData;
+  state.studentData = studentData.dataList;
 
   // 获取教师信息
   const { data: teacherData } = await read_datas_relation("teacher");
-  state.teacherData = teacherData;
+  state.teacherData = teacherData.dataList;
 
   // 获取课程信息
   const { data: courseData } = await read_datas_relation("course");
-  state.courseData = courseData;
+  state.courseData = courseData.dataList;
 };
 
 // 页面加载后调用函数

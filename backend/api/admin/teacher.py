@@ -62,7 +62,7 @@ def delete_teachers(*, db: Session = Depends(get_db), idList: list) -> Any:
     return resp_200(data='', msg=f'成功删除多个院系信息.')
 
 
-@router.get("/relation/", response_model=ResultModel[Relation], summary='获取到 教师表 中的关系字段')
+@router.get("/relation/", response_model=ResultPlusModel[List[Relation]], summary='获取到 教师表 中的关系字段')
 def get_teacher_relation(db: Session = Depends(get_db)) -> Any:
     get_teachers = teacher.get_multi_relation(db)
     return resp_200(data=get_teachers, msg="获取到 教师表 中的关系字段.")

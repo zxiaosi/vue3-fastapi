@@ -1,7 +1,5 @@
 # 学生选课系统
 
->大版本更新在 `master`分支，小版本更新在各自(`frontend`、`backend`)的分支上
-
 ## 预览
 
 + [Vue3++TS+ElementPlus+Vite](http://8.136.82.204:8001/)
@@ -33,7 +31,7 @@
 + `2.5` 支持PostgreSQL，实现图片上传
 + `2.6` 前端文件分离(vue与ts)，后端实现权限管理
 
-TODO：前端展示，优化代码
+TODO：学习 `SQLAlchemy1.4`, [`Fastapi异步操作数据库`](https://fastapi.tiangolo.com/zh/advanced/async-sql-databases/)
 
 ## 开启服务
 

@@ -63,7 +63,7 @@ def delete_departments(*, db: Session = Depends(get_db), idList: list) -> Any:
     return resp_200(data='', msg=f'成功删除多个院系信息.')
 
 
-@router.get("/relation/", response_model=ResultModel[Relation], summary='获取到 院系表 中的关系字段')
+@router.get("/relation/", response_model=ResultPlusModel[List[Relation]], summary='获取到 院系表 中的关系字段')
 def get_department_relation(db: Session = Depends(get_db)) -> Any:
     get_departments = department.get_multi_relation(db)
     return resp_200(data=get_departments, msg="获取到了 院系表 中的关系字段.")

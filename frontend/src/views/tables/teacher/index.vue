@@ -113,7 +113,7 @@ const getData = async (currentPage: number = query.currentPage) => {
 
   // 获取院系信息
   const { data: deptData } = await read_datas_relation("department");
-  state.deptData = deptData;
+  state.deptData = deptData.dataList;
 };
 
 // 页面加载后调用函数

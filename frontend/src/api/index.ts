@@ -67,13 +67,13 @@ export const update_data = (data: tableObjectType): Promise<any> => {
 
 /**
  * 根据 id 删除表格信息
- * @param {*} id id
+ * @param {*} data id
  */
 export const delete_data = (data: tableDataType): Promise<any> => del(`${data.path}/${data.id}`);
 
 /**
  * 同时删除多个表格信息
- * @param {*} idList id列表
+ * @param {*} data id列表
  */
 export const delete_datas = (data: delDataListType): Promise<any> => post(`${data.path}/del/`, data.idList);
 

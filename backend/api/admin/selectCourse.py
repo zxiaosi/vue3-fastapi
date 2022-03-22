@@ -56,7 +56,7 @@ def delete_select_course(*, db: Session = Depends(get_db), id: int) -> Any:
     return resp_200(data=del_select_course, msg=f"删除了 id 为 {id} 的选课信息.")
 
 
-@router.post("/del/", response_model=ResultModel[Relation], summary='同时删除多个选课信息')
+@router.post("/del/", response_model=ResultModel, summary='同时删除多个选课信息')
 def select_select_courses(*, db: Session = Depends(get_db), idList: list) -> Any:
     selectCourse.remove_multi(db, id_list=idList)
-    return resp_200(msg=f'同时删除多个选课信息.')
+    return resp_200(data='', msg=f'同时删除多个选课信息.')
