@@ -38,8 +38,7 @@ const formRules = reactive({
   id: [
     { required: "true", trigger: "change", message: "请输入课程编号" },
     { pattern: /^[1-9]/, message: "课程编号不能以0开头" },
-    { min: 4, max: 4, message: "课程编号的长度应为4" },
-    { pattern: /^[1-9][0-9]{3}$/, message: "课程编号必须是正整数" },
+    { pattern: /^[1-9][0-9]{3}$/, message: "课程编号必须是正整数且长度应为4" },
     {
       validator: (rule: any, value: string, callback: any) => {
         let idList = valueList(dataStore.courseData, "id");
@@ -87,7 +86,7 @@ const formRules = reactive({
 const getData = async (currentPage: number = query.currentPage) => {
   let params = { path: pathEnum.course, pageIndex: currentPage, pageSize: query.pageSize };
   const { data } = await read_datas(params);
-  state.courseData = data.dataList;
+  state.courseData = data.list;
   state.pageTotal = data.count;
 };
 
@@ -121,14 +120,7 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column
-        prop="id"
-        label="课程编号"
-        width="140"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="id" label="课程编号" width="140" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="课程名字" width="220" align="center" />
       <el-table-column prop="credit" label="学分" width="140" align="center" />
       <el-table-column prop="period" label="课时" min-width="140" align="center" />
@@ -137,13 +129,7 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="课程编号" prop="id">
-        <el-input
-          v-model="formData.id"
-          placeholder="请输入编号"
-          maxlength="4"
-          show-word-limit
-          :disabled="state.isDisabled"
-        />
+        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="4" show-word-limit :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="课程名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />

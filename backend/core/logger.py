@@ -4,10 +4,11 @@
 # @Author : zxiaosi
 # @desc : 日志
 import os
+
 from loguru import logger
 
 from core import settings
-from utils.create_dir import create_dir
+from utils import create_dir
 
 
 # 创建日志文件名
@@ -34,6 +35,3 @@ logger.add(
     retention=settings.LOGGER_RETENTION,
     enqueue=True
 )
-
-# 导出
-# __all__ = ["logger"]

@@ -2,12 +2,13 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2022/1/6 14:29
 # @Author : zxiaosi
-# @desc : 中间件 https://fastapi.tiangolo.com/tutorial/middleware/
+# @desc : 中间件
 from fastapi import FastAPI, Request
 from sqlalchemy.exc import OperationalError
 from aioredis.exceptions import ConnectionError
 
-from utils import logger, resp_500
+from core.logger import logger
+from utils import resp_500
 
 
 # 权限验证 https://www.cnblogs.com/mazhiyong/p/13433214.html
@@ -15,7 +16,7 @@ from utils import logger, resp_500
 # nginx 解决跨域请求 https://segmentfault.com/a/1190000019227927
 
 def register_middleware(app: FastAPI):
-    """ 请求拦截与响应拦截 TODO 此处捕获异常失败 """
+    """ 请求拦截与响应拦截 -- https://fastapi.tiangolo.com/tutorial/middleware/ """
 
     @app.middleware("http")
     async def intercept(request: Request, call_next):

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { ElForm, ElMessage } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 import { login } from "@/api/login";
 import { setLocal } from "@/request/auth";
-import { PermissEnum } from "@/types";
 import type { userInfoType } from ".";
-import { get_current_user } from "@/api";
 
 // 状态管理
 const store = useStore();
@@ -17,10 +15,29 @@ store.clearTags; // 清空标签
 // 全局路由
 const router = useRouter();
 
+const radio = ref("admin");
+
 // 用户账号与密码
 const userInfo: userInfoType = reactive({
   username: "admin",
-  password: "123",
+  password: "123456",
+});
+
+watch(radio, (newVal: string, oldVal: string) => {
+  switch (newVal) {
+    case "admin":
+      userInfo.username = "admin";
+      userInfo.password = "123456";
+      break;
+    case "teacher":
+      userInfo.username = "陈江川";
+      userInfo.password = "123456";
+      break;
+    case "student":
+      userInfo.username = "王芳";
+      userInfo.password = "123456";
+      break;
+  }
 });
 
 // 实例化表单
@@ -40,11 +57,12 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid: any) => {
     if (valid) {
-      let params = { username: userInfo.username, password: userInfo.password, scope: [PermissEnum.admin] };
+      let params = { username: userInfo.username, password: userInfo.password, scope: [radio.value] };
       const { access_token } = await login(params);
       ElMessage.success("登录成功");
       setLocal("userInfo", JSON.stringify({ name: userInfo.username }));
       setLocal("Authorization", access_token);
+      setLocal("role", radio.value);
       router.push("/");
     } else {
       ElMessage.warning("数据校验失败！");
@@ -68,25 +86,20 @@ const submitForm = (formEl: FormInstance | undefined) => {
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input
-            type="password"
-            placeholder="密码"
-            v-model="userInfo.password"
-            show-password
-            maxlength="20"
-            @keyup.enter="submitForm(loginRef)"
-          >
-            <template #prepend>
-              <el-button :icon="Lock" />
-            </template>
-          </el-input>
+          <el-input type="password" placeholder="密码" v-model="userInfo.password" show-password maxlength="20" @keyup.enter="submitForm(loginRef)"> </el-input>
         </el-form-item>
 
         <div class="login-btn">
           <el-button type="primary" @click="submitForm(loginRef)">登录</el-button>
         </div>
 
-        <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
+        <p class="login-tips">
+          <el-radio-group v-model="radio">
+            <el-radio label="admin">管理员</el-radio>
+            <el-radio label="teacher">教师</el-radio>
+            <el-radio label="student">学生</el-radio>
+          </el-radio-group>
+        </p>
       </el-form>
     </div>
   </div>
@@ -134,5 +147,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
   font-size: 12px;
   line-height: 30px;
   color: #fff;
+  text-align: center;
 }
 </style>

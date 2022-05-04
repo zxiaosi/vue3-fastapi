@@ -10,7 +10,7 @@ from aioredis import Redis
 from core import settings
 
 
-class RedisPlus(Redis):
+class MyRedis(Redis):
     """ 继承Redis,并添加自己的方法 """
 
     # 写 __init__ 的话就取消下面注释
@@ -52,7 +52,7 @@ class RedisPlus(Redis):
 
 
 # 参考: https://github.com/grillazz/fastapi-redis/tree/main/app
-async def init_redis_pool() -> RedisPlus:
+async def init_redis_pool() -> MyRedis:
     """ 连接redis """
-    redis = await RedisPlus.from_url(url=settings.REDIS_URI, encoding=settings.GLOBAL_ENCODING, decode_responses=True)
+    redis = await MyRedis.from_url(url=settings.REDIS_URI, encoding=settings.GLOBAL_ENCODING, decode_responses=True)
     return redis

@@ -7,7 +7,7 @@ import re
 from urllib import request
 from ipaddress import ip_address
 
-from utils import IpError
+from utils.custom_exc import IpError
 
 
 def verify_ip(ip):

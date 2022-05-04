@@ -3,63 +3,59 @@
 # @Time : 2021/11/17 11:05
 # @Author : zxiaosi
 # @desc : 操作学生表
-from datetime import datetime
 from typing import Union, Dict, Any
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 
-from core import get_password_hash, settings
-from crud.base import CRUDBase
-from models import Student
+from sqlalchemy import update, insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core import get_password_hash
+from crud import CRUDBase
+from models import Student, Major
 from schemas import StudentCreate, StudentUpdate
+from utils import obj_as_dict
 
 
 class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
-    def create(self, db: Session, *, obj_in: StudentCreate) -> Student:
-        """
-        添加学生信息
+    async def create(self, db: AsyncSession, obj_in: StudentCreate) -> int:
+        """ 添加教师信息 """
+        setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
+        obj_in_data = {}
+        for k, v in obj_in.dict().items():  # 排除空值
+            if v:
+                if k == 'password':
+                    obj_in_data['hashed_password'] = get_password_hash(obj_in.password)
+                else:
+                    obj_in_data[k] = v
+        sql = insert(self.model).values(obj_in_data)
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
 
-        :param db: Session
-        :param obj_in: 学生添加模型
-        :return: 学生orm模型对象
-        """
-        obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(
-            id=obj_in_data['id'],
-            name=obj_in_data['name'],
-            sex=obj_in_data['sex'],
-            birthday=datetime.strptime(obj_in_data['birthday'], "%Y-%m-%d").date(),
-            address=obj_in_data['address'] if obj_in_data['address'] else '广东省广州市',
-            image=obj_in_data['image'] if obj_in_data['image'] else f'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg',
-            hashed_password=get_password_hash(obj_in_data['password']),
-            major_id=obj_in_data['major_id']
-        )
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
-
-    def update(self, db: Session, *, db_obj: Student, obj_in: Union[StudentUpdate, Dict[str, Any]]) -> Student:
-        """
-        更新学生信息
-
-        :param db: Session
-        :param db_obj: 学生orm模型对象
-        :param obj_in: 学生更新模型
-        :return: 学生orm模型对象
-        """
-        if isinstance(obj_in, dict):  # 判断对象是否为字典类型
-            student_data = obj_in
+    async def update(self, db: AsyncSession, id: int, obj_in: Union[StudentUpdate, Dict[str, Any]]) -> int:
+        """ 更新教师信息 """
+        if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
+            teacher_data = obj_in
         else:
-            student_data = obj_in.dict(exclude_unset=True)
-        if 'password' in student_data.keys():  # 判断输入字典中是否有 password
-            if student_data["password"]:  # 判断是否有密码输入,输入新密码则加密(密码不为空)
-                hashed_password = get_password_hash(student_data["password"])
-                del student_data["password"]
-                student_data["hashed_password"] = hashed_password
-        else:
-            student_data.update({'password': ''})  # '' 为原密码
-        return super().update(db, db_obj=db_obj, obj_in=student_data)
+            teacher_data = obj_in.dict(exclude_unset=True)
+        obj_data = {}
+        for k, v in teacher_data.items():  # 排除空值
+            if v:
+                if k == 'password':
+                    obj_data['hashed_password'] = get_password_hash(obj_in.password)
+                else:
+                    obj_data[k] = v
+        sql = update(self.model).where(self.model.id == id).values(obj_data)
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
+
+    # async def get_detail(self, db: AsyncSession, id: int):
+    #     sql = select(self.model, Major.name.label("major_name")) \
+    #         .join(Major, self.model.major_id == Major.id) \
+    #         .where(self.model.id == id)
+    #     result = await db.execute(sql)
+    #     await db.close()  # 释放会话
+    #     return result.fetchone()
 
 
 student = CRUDStudent(Student)

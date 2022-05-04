@@ -2,7 +2,7 @@
 import { reactive, onMounted } from "vue";
 import { useDataStore } from "@/stores/data";
 import BaseTable from "@/components/baseTable/index.vue";
-import { read_datas, read_datas_relation } from "@/api";
+import { read_datas } from "@/api";
 import { valueList, byIdGetName } from "@/utils/handleArray";
 import { pathEnum, type queryType, type stuFormType } from "@/types/table";
 import type { enumType, stateType } from ".";
@@ -50,8 +50,7 @@ const formRules = reactive({
   id: [
     { required: "true", trigger: "change", message: "请输入学号" },
     { pattern: /^[1-9]/, message: "学号不能以0开头" },
-    { min: 10, max: 10, message: "学号的长度应为10" },
-    { pattern: /^[1-9][0-9]{9}$/, message: "学号必须是正整数" },
+    { pattern: /^[1-9][0-9]{9}$/, message: "学号必须是正整数且长度应为10" },
     {
       validator: (rule: any, value: string, callback: any) => {
         let idList = valueList(dataStore.studentData, "id");
@@ -86,13 +85,14 @@ const formRules = reactive({
  * 获取表格数据
  */
 const getData = async (currentPage: number = query.currentPage) => {
-  let params = { path: pathEnum.student, pageIndex: currentPage, pageSize: query.pageSize };
-  const { data: studentData } = await read_datas(params);
-  state.studentData = studentData.dataList;
-  state.pageTotal = studentData.count;
+  let major = read_datas({ path: pathEnum.major, pageIndex: -1, pageSize: -1 }); // 获取专业数据
+  let student = read_datas({ path: pathEnum.student, pageIndex: currentPage, pageSize: query.pageSize }); // 获取学生数据
 
-  const { data: majorData } = await read_datas_relation("major");
-  state.majorData = majorData.dataList;
+  const [{ data: majorData }, { data: studentData }] = await Promise.all([major, student]);
+
+  state.studentData = studentData.list;
+  state.pageTotal = studentData.count;
+  state.majorData = majorData.list;
 };
 
 // 页面加载后调用函数
@@ -138,14 +138,7 @@ const getChange = (res: string | number | undefined) => {
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column
-        prop="id"
-        label="学号"
-        width="140"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="id" label="学号" width="140" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="名字" width="120" align="center" />
       <el-table-column prop="sex" label="性别" width="80" align="center">
         <template #default="scope">
@@ -154,14 +147,7 @@ const getChange = (res: string | number | undefined) => {
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="birthday"
-        label="生日"
-        width="120"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="birthday" label="生日" width="120" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
 
       <el-table-column label="头像" width="100" align="center">
         <template #default="scope">
@@ -179,13 +165,7 @@ const getChange = (res: string | number | undefined) => {
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="学号" prop="id">
-        <el-input
-          v-model="formData.id"
-          placeholder="请输入学号"
-          maxlength="10"
-          show-word-limit
-          :disabled="state.isDisabled"
-        />
+        <el-input v-model="formData.id" placeholder="请输入学号" maxlength="10" show-word-limit :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="学生名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="10" show-word-limit />
@@ -199,24 +179,11 @@ const getChange = (res: string | number | undefined) => {
       </el-form-item>
 
       <el-form-item label="学生生日" prop="birthday">
-        <el-date-picker
-          type="date"
-          placeholder="请选择日期"
-          v-model="formData.birthday"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          style="width: 100%"
-        >
-        </el-date-picker>
+        <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%"> </el-date-picker>
       </el-form-item>
 
       <el-form-item label="学生密码" prop="password">
-        <el-input
-          v-model="formData.password"
-          :placeholder="state.addOrUpdate == true ? `默认密码为123456` : `设置新密码`"
-          maxlength="20"
-          show-password
-        />
+        <el-input v-model="formData.password" :placeholder="state.addOrUpdate == true ? `默认密码为123456` : `设置新密码`" maxlength="20" show-password />
       </el-form-item>
 
       <el-form-item label="专业名字" prop="major_id">

@@ -3,21 +3,23 @@
 # @Time : 2021/9/19 22:23
 # @Author : zxiaosi
 # @desc : 院系表
-from sqlalchemy import Column, String, TIMESTAMP, func
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from models import Base
 
 
 class Department(Base):
     """ 院系表 """
-    id = Column(String(4), primary_key=True, index=True, comment='编号')
 
-    name = Column(String(20), unique=True, nullable=False, comment='名字')
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True, comment='编号')
+
+    name = Column(String(20), unique=True, nullable=False, index=True, comment='名字')
 
     chairman = Column(String(10), nullable=False, comment='主任姓名')
 
     phone = Column(String(11), comment='主任手机号')
 
-    gmt_create = Column(TIMESTAMP(True), server_default=func.now(), comment='创建时间')
+    majors = relationship('Major')  # 不是字段, 可以通过 department ORM对象引用 major 表的类集合
 
-    gmt_modify = Column(TIMESTAMP(True), server_default=func.now(), onupdate=func.now(), comment='更新时间')
+    teachers = relationship('Teacher')  # 不是字段, 可以通过 department ORM对象引用 teacher 表的类集合

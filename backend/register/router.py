@@ -5,18 +5,21 @@
 # @desc : 注册路由
 from fastapi import FastAPI, Security
 
-from api.deps import get_current_user
 from core import settings
-from api import admin_router
-from api.common import redis_check, login
+from apis import app_router
+from apis.deps import get_current_user
+from apis.common import redis_check, login, dashBoard
 
 
 def register_router(app: FastAPI):
     """ 注册路由 """
-    # Redis
-    app.include_router(redis_check.router, prefix=settings.API_PREFIX, tags=["Redis"])
-    # Login
-    app.include_router(login.router, prefix=settings.API_PREFIX, tags=["Login"])
-    # Admin
-    app.include_router(admin_router, prefix=settings.API_PREFIX,
-                       dependencies=[Security(get_current_user, scopes=["admin"])])
+
+    app.include_router(redis_check.router, prefix=settings.API_PREFIX, tags=["Redis"])  # Redis(不需要权限)
+
+    app.include_router(login.router, prefix=settings.API_PREFIX, tags=["Login"])  # Login(权限在每个接口上)
+
+    app.include_router(dashBoard.router, prefix=settings.API_PREFIX, tags=["Dashboard"],
+                       dependencies=[Security(get_current_user, scopes=[])])  # Dashboard(不需要权限,但需要登录)
+
+    # 权限(权限在每个接口上)
+    app.include_router(app_router, prefix=settings.API_PREFIX)

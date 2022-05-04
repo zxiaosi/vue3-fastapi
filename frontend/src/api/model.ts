@@ -1,4 +1,3 @@
-import type { PermissEnum } from "@/types";
 import type { formDataType, pathEnum } from "@/types/table";
 
 /**
@@ -7,7 +6,11 @@ import type { formDataType, pathEnum } from "@/types/table";
 export interface loginType {
   username: string;
   password: string;
-  scope: PermissEnum[];
+  scope: any;
+}
+
+export interface GetCurrentUser {
+  roles: 'admin' | 'student' | 'teacher';
 }
 
 /**

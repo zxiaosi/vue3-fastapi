@@ -32,10 +32,10 @@ onMounted(async () => {
   if (document.body.clientWidth < 1500) {
     collapseChage();
   }
-
   const user = JSON.parse(getLocal("userInfo"));
   if (!user.avatar) {
-    await getUserInfo(); // 请求接口
+    let role = getLocal("role");
+    await getUserInfo(role); // 请求接口
   } else {
     Object.assign(userInfo, user); // 浅拷贝用户信息
   }
@@ -44,8 +44,8 @@ onMounted(async () => {
 /**
  * 获取用户信息
  */
-const getUserInfo = async () => {
-  const { data } = await get_current_user();
+const getUserInfo = async (role: any) => {
+  const { data } = await get_current_user({ roles: role });
   userInfo.name = data.name;
   userInfo.avatar = data.image;
   userInfo.address = data.address;
@@ -89,6 +89,8 @@ const handleCommand = async (command: "logout" | "upload") => {
     ElMessage.success("退出登录！");
     removeLocal("userInfo");
     removeLocal("Authorization");
+    removeLocal("role");
+    store.clearTags();
     router.push("/login");
   } else if (command == "upload") {
     state.dialogVisible = true;
@@ -113,11 +115,7 @@ const handleCommand = async (command: "logout" | "upload") => {
         <!-- 消息中心 -->
         <div class="btn-bell">
           <el-badge :is-dot="state.message ? true : false">
-            <el-tooltip
-              effect="dark"
-              :content="state.message ? `有${state.message}条未读消息` : `消息中心`"
-              placement="bottom"
-            >
+            <el-tooltip effect="dark" :content="state.message ? `有${state.message}条未读消息` : `消息中心`" placement="bottom">
               <router-link to="/tabs">
                 <el-icon :size="22" color="#409EFC"><bell /></el-icon>
               </router-link>
@@ -139,7 +137,7 @@ const handleCommand = async (command: "logout" | "upload") => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="upload">更换头像</el-dropdown-item>
+              <!-- <el-dropdown-item command="upload">更换头像</el-dropdown-item> -->
               <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
@@ -152,14 +150,7 @@ const handleCommand = async (command: "logout" | "upload") => {
 
     <!-- 头像上传弹窗 -->
     <el-dialog v-model="state.dialogVisible" title="头像上传" width="21%">
-      <el-upload
-        class="upload"
-        drag
-        :action="state.uploadApiUrl"
-        :on-success="success"
-        :on-error="error"
-        :headers="state.header"
-      >
+      <el-upload class="upload" drag :action="state.uploadApiUrl" :on-success="success" :on-error="error" :headers="state.header">
         <el-icon class="el-icon--upload"><upload-filled /></el-icon>
         <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
         <template #tip>

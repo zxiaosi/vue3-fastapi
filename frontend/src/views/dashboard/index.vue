@@ -40,8 +40,7 @@ onMounted(async () => {
   pieChart = echarts.init(document.getElementById("pie"));
   barChart = echarts.init(document.getElementById("bar"));
 
-  await getVisitTodoRequest();
-  await getLangTodoList();
+  await getData();
 
   echartPie();
   eachartBar();
@@ -54,22 +53,15 @@ onUnmounted(() => {
 });
 
 /**
- * 获取 语言详情 && 待办事项
+ * 获取 语言详情 && 待办事项 || 获取 访问量 && 待办数 && 请求数
  */
-const getLangTodoList = async () => {
-  const { data } = await get_lang_todo_list();
-  state.todoList = data.todo_list;
-  state.languageDetails = data.language_details;
-};
-
-/**
- * 获取 访问量 && 待办数 && 请求数
- */
-const getVisitTodoRequest = async () => {
-  const { data } = await get_visit_todo_request();
-  state.visitNumber = data.visit_num;
-  state.todoNumber = data.todo_num;
-  state.requestNumber = data.request_num;
+const getData = async () => {
+  const [{ data: langTodoList }, { data: visitTodoRequest }] = await Promise.all([get_lang_todo_list(), get_visit_todo_request()]);
+  state.todoList = langTodoList.todo_list;
+  state.languageDetails = langTodoList.language_details;
+  state.visitNumber = visitTodoRequest.visit_num;
+  state.todoNumber = visitTodoRequest.todo_num;
+  state.requestNumber = visitTodoRequest.request_num;
 };
 
 // 添加待办
@@ -77,7 +69,7 @@ const addTodo = async () => {
   const { data } = await add_todo({ title: state.todoText });
   state.todoList = data;
   state.showDialog = false;
-  await getVisitTodoRequest();
+  await getData();
   state.todoText = "";
 };
 
@@ -220,9 +212,7 @@ const eachartBar = () => {
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text" @click="state.showDialog = true"
-                >添加</el-button
-              >
+              <el-button style="float: right; padding: 3px 0" type="text" @click="state.showDialog = true">添加</el-button>
             </div>
           </template>
 

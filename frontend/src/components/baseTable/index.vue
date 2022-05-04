@@ -6,7 +6,7 @@ import { ElForm, ElMessage, ElMessageBox } from "element-plus";
 import { Search, Remove, Delete, Plus, Edit } from "@element-plus/icons-vue";
 import Breadcrumb from "../breadcrumb/index.vue";
 import Pagination from "../pagination/index.vue";
-import { read_data, delete_data, create_data, update_data, delete_datas, read_datas_relation } from "@/api";
+import { read_data, delete_data, create_data, update_data, delete_datas, read_datas } from "@/api";
 import type { stateType } from ".";
 import type { queryType, formDataType } from "@/types/table";
 import { clickRecover } from "@/utils/clickRecover";
@@ -128,9 +128,10 @@ const handleSelectedDelete = (event: MouseEvent) => {
  * 获取依赖数据并存放到状态管理
  */
 const getRelationData = async () => {
-  const { data } = await read_datas_relation(state.pathParam);
-  state.relationData = data.dataList;
-  dataStore.handleData(state.pathParam, data.dataList);
+  const { data } = await read_datas({ path: state.pathParam, pageIndex: -1, pageSize: -1 });
+  console.log('data', data);
+  state.relationData = data.list;
+  dataStore.handleData(state.pathParam, data.list);
 };
 
 /**
@@ -262,26 +263,16 @@ const removeSearch = async (isNeedData: boolean = false) => {
         <el-row>
           <el-col :span="16">
             <!-- 搜索框 -->
-            <el-input
-              v-model="query.id"
-              maxlength="11"
-              placeholder="编号"
-              class="grid-content handle-input mr10"
-              @keyup.enter.native="handleSearch"
-            />
+            <el-input v-model="query.id" maxlength="11" placeholder="编号" class="grid-content handle-input mr10" @keyup.enter.native="handleSearch" />
 
             <!-- 其他条件 -->
             <slot name="filter" />
 
             <!-- 搜索按钮 -->
-            <el-button type="primary" :icon="Search" :disabled="!/(^[1-9]\d*$)/.test(query.id)" @click="handleSearch"
-              >搜索</el-button
-            >
+            <el-button type="primary" :icon="Search" :disabled="!/(^[1-9]\d*$)/.test(query.id)" @click="handleSearch">搜索</el-button>
 
             <!-- 清除按钮 -->
-            <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0" @click="handleRemove"
-              >清除</el-button
-            >
+            <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0" @click="handleRemove">清除</el-button>
           </el-col>
 
           <el-col :span="8">
@@ -289,14 +280,7 @@ const removeSearch = async (isNeedData: boolean = false) => {
             <el-button type="primary" :icon="Plus" class="grid-content float-right" @click="handleAdd">添 加</el-button>
 
             <!-- 删除按钮 -->
-            <el-button
-              type="danger"
-              :icon="Delete"
-              class="grid-content float-right mr10"
-              :disabled="state.selectedList.length == 0"
-              @click="handleSelectedDelete"
-              >删 除</el-button
-            >
+            <el-button type="danger" :icon="Delete" class="grid-content float-right mr10" :disabled="state.selectedList.length == 0" @click="handleSelectedDelete">删 除</el-button>
           </el-col>
         </el-row>
       </div>
@@ -314,7 +298,7 @@ const removeSearch = async (isNeedData: boolean = false) => {
         <el-table-column type="selection" width="80" align="center" />
 
         <!-- 序号 -->
-        <el-table-column
+        <!-- <el-table-column
           label="序号"
           type="index"
           width="80"
@@ -325,14 +309,14 @@ const removeSearch = async (isNeedData: boolean = false) => {
               return index + 1 + (query.currentPage - 1) * query.pageSize;
             }
           "
-        />
+        /> -->
 
         <!-- 列表数据 -->
         <slot name="tableColumn" />
 
         <!-- 创建时间和更新时间 -->
-        <el-table-column prop="gmt_create" label="创建时间" width="180" align="center" />
-        <el-table-column prop="gmt_modify" label="更新时间" width="180" align="center" />
+        <el-table-column prop="create_time" label="创建时间" width="180" align="center" />
+        <el-table-column prop="update_time" label="更新时间" width="180" align="center" />
 
         <!-- 操作 -->
         <el-table-column label="操作" min-width="180" align="center" fixed="right">
@@ -344,22 +328,11 @@ const removeSearch = async (isNeedData: boolean = false) => {
       </el-table>
 
       <!-- 分页 -->
-      <pagination
-        :current-page="query.currentPage"
-        :page-size="query.pageSize"
-        :page-total="pageTotal"
-        :disabled="!state.isShowSearched"
-        @page-index="pageIndex"
-      />
+      <pagination :current-page="query.currentPage" :page-size="query.pageSize" :page-total="pageTotal" :disabled="!state.isShowSearched" @page-index="pageIndex" />
     </div>
 
     <!-- 弹出框 -->
-    <el-dialog
-      :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`"
-      v-model="state.showDialog"
-      width="22%"
-      draggable
-    >
+    <el-dialog :title="`${state.addOrUpdate ? '添加信息' : '编辑信息'}`" v-model="state.showDialog" width="22%" draggable>
       <el-form label-width="100px" ref="formRef" :model="props.formData" :rules="props.formRules">
         <slot name="showDialog" />
       </el-form>

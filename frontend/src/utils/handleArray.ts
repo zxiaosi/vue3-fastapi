@@ -8,7 +8,7 @@ import type { formDataType } from "@/types/table";
  */
 export const valueList = (data: any[], keyName: string): string[] => {
   return data.map((item: any) => {
-    return item[keyName];
+    return item[keyName].toString();
   });
 };
 

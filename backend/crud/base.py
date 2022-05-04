@@ -4,137 +4,106 @@
 # @Author : zxiaosi
 # @desc : 封装数据库增删改查方法
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import func, distinct
-from sqlalchemy.orm import Session
+from sqlalchemy import func, distinct, select, insert, update, desc, delete
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import verify_password
 from models import Base
+from utils import obj_as_dict, list_obj_as_dict
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
+# db.scalar(sql) 返回的是标量(原始数据) <models.department.Department object at 0x000002F2C2D22110>
+# db.execute(sql) 返回的是元组 (<models.department.Department object at 0x000002F2C2D22110>)
+# db.scalars(sql).all()  [<models...>, <models...>, <models...>]
+# db.execute(sql).fetchall()  [(<models...>,), (<models...>,), (<models...>,)]
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: Type[ModelType]):
-        """
-        CRUD对象的默认方法去 增 查 改 删 (CRUD).
+    """ CRUD 增 查 改 删 """
 
-        * `model`: ORM模型类
-        * `schema`: 数据验证模型类
-        """
+    def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    def get(self, db: Session, *, id: Any) -> Optional[ModelType]:
-        """
-        通过 ID 获取对象
+    async def get(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
+        """ 通过 id 获取对象 """
+        sql = select(self.model).where(self.model.id == id)
+        result = await db.scalar(sql)
+        # print(obj_as_dict(await db.scalar(sql)))
+        await db.close()  # 释放会话
+        return result
 
-        :param db: Session
-        :param id: ID
-        :return: 查询到的orm模型对象
-        """
-        # table_name = self.model.__tablename__
-        # table_id = table_name + '_id'  # 表名_字段名
-        # return db.execute(f'select * from {table_name} where {table_id} = {id}').first()
-
-        return db.query(self.model).filter(self.model.id == str(id)).first()
-
-    def get_by_name(self, db: Session, *, name: str) -> Optional[ModelType]:
-        """ 通过名字得到用户 """
-        return db.query(self.model).filter(self.model.name == name).first()
-
-    def get_multi(self, db: Session, *, pageIndex: int = 1, pageSize: int = 10) -> dict[str, List[ModelType]]:
-        """
-        获取 skip-limit 的对象集
-
-        :param db: Session
-        :param pageIndex: 页码 (默认值1)
-        :param pageSize: 页码 (默认10)
-        :return: 查询到的orm模型对象集
-        """
+    async def get_multi(self, db: AsyncSession, pageIndex: int = 1, pageSize: int = 10) -> List[ModelType]:
+        """ 获取第 pageIndex 页的 pageSize 数据 """
         if pageIndex == -1 and pageSize == -1:
-            data = db.query(self.model).all()
+            sql = select(self.model).order_by(desc(self.model.id))
         else:
-            data = db.query(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).all()
-        count: int = db.query(func.count(distinct(self.model.id))).scalar()
-        return {'count': count, 'dataList': data}
+            sql = select(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).order_by(desc(self.model.id))
+        result = await db.scalars(sql)
+        # print(list_obj_as_dict(await db.scalars(sql)))
+        await db.close()  # 释放会话
+        return result.all()
 
-    def get_multi_relation(self, db: Session):
-        """
-        只获取关系字段
+    async def get_number(self, db: AsyncSession) -> int:
+        """ 获取表的总条数 """
+        sql = select(func.count(distinct(self.model.id)))
+        result = await db.scalar(sql)
+        await db.close()  # 释放会话
+        return result
 
-        :param db: Session
-        :return: 查询到的关系字段
-        """
-        data = db.query(self.model.id, self.model.name).distinct().all()
-        count = db.query(func.count(distinct(self.model.id))).scalar()
-        return {'dataList': data, 'count': count}
+    async def create(self, db: AsyncSession, obj_in: CreateSchemaType) -> int:
+        """ 添加对象 """
+        setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
+        sql = insert(self.model).values(obj_in.dict())
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
-        """
-        添加对象
-
-        :param db: Session
-        :param obj_in: 创建模型
-        :return: orm模型对象
-        """
-        obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)  # type: ignore
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
-
-    def update(self, db: Session, *, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        """
-        更新对象
-
-        :param db: Session
-        :param db_obj: orm模型对象
-        :param obj_in: 更新模型
-        :return: orm模型对象
-        """
-        obj_data = jsonable_encoder(db_obj)
-        if isinstance(obj_in, dict):  # 判断对象是否为字典类型
-            update_data = obj_in
+    async def update(self, db: AsyncSession, id: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> int:
+        """ 通过 id 更新对象 """
+        if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
+            obj_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)  # 排除未设置的元素
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+            obj_data = obj_in.dict()
+        sql = update(self.model).where(self.model.id == id).values(obj_data)
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
 
-    def remove(self, db: Session, *, id: int) -> ModelType:
-        """
-        通过 ID 删除对象
+    async def remove(self, db: AsyncSession, id: int) -> int:
+        """ 通过 id 删除对象 """
+        sql = delete(self.model).where(self.model.id == id)
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
 
-        :param db: Session
-        :param id: ID
-        :return: orm模型对象
-        """
-        obj = db.query(self.model).get(str(id))
-        db.delete(obj)
-        db.commit()
-        return obj
+    async def remove_multi(self, db: AsyncSession, id_list: list):
+        """ 同时删除多个对象 """
+        id_list = [int(i) for i in id_list]  # postgresql 字段类型限制
+        sql = delete(self.model).where(self.model.id.in_(id_list))
+        result = await db.execute(sql)
+        await db.commit()
+        return result.rowcount
 
-    def remove_multi(self, db: Session, *, id_list: list):
-        """
-        同时删除多个对象
+    async def get_multi_relation(self, db: AsyncSession):
+        """ 获取关系字段 """
+        sql = select(self.model.id, self.model.name).order_by(desc(self.model.id)).distinct()
+        result = await db.execute(sql)
+        await db.close()
+        return result.fetchall()
 
-        :param db: Session
-        :param id_list: id 列表
-        """
-        db.query(self.model).filter(self.model.id.in_(id_list)).delete()
-        db.commit()
+    async def get_by_name(self, db: AsyncSession, name: str) -> Optional[ModelType]:
+        """ 通过名字得到用户 """
+        sql = select(self.model).where(self.model.name == name)
+        result = await db.scalar(sql)
+        await db.close()  # 释放会话
+        return result
 
-    def authenticate(self, db: Session, *, username: str, password: str) -> Optional[ModelType]:
+    async def authenticate(self, db: AsyncSession, username: str, password: str) -> Optional[ModelType]:
         """ 验证用户 """
-        user = self.get_by_name(db, name=username)
+        user = await self.get_by_name(db, name=username)
         if not user:
             return None
         if not verify_password(password, user.hashed_password):

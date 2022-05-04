@@ -26,6 +26,7 @@ class CourseUpdate(CourseIn):
 
 class CourseOut(CourseCreate, GMT):
     """ 查询数据的字段验证 """
+    id: int = Field(..., example='编号')
 
     class Config:
-        orm_mode = True  # 是否使用orm模型(个人理解: 放行,不验证)
+        orm_mode = True  # 是否使用orm模型(结果为字典类型)

@@ -11,9 +11,10 @@ from sqlalchemy.orm import Session
 
 import crud
 from core import settings
-from api.deps import get_db, get_current_user
+from core.logger import logger
+from apis.deps import get_db, get_current_user
 from models import Admin
-from utils import logger, resp_200
+from utils import resp_200
 from utils.create_dir import create_dir
 
 router = APIRouter()

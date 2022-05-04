@@ -10,15 +10,9 @@ from pydantic import BaseModel, validator
 
 class GMT(BaseModel):
     """ 时间字段处理 """
-    gmt_create: datetime
-    gmt_modify: datetime
+    create_time: datetime
+    update_time: datetime
 
-    @validator("gmt_create", "gmt_modify")
-    def parse_gmt(cls, value: datetime) -> str:
+    @validator("create_time", "update_time")
+    def format_time(cls, value: datetime) -> str:
         return value.strftime('%Y-%m-%d %H:%M:%S')  # 格式化时间
-
-
-class Relation(BaseModel):
-    """ 关系字段 """
-    id: str
-    name: str

@@ -33,9 +33,10 @@
 + `v4.5` 调试token成功(admin, 123)
 + `v4.6` 重构FastAPI
 + `v4.7` 添加redis
-+ `v4.8` 重构后端 
-+ `v4.9` 支持PostgreSQL,以及图片上传 
++ `v4.8` 重构后端
++ `v4.9` 支持PostgreSQL,以及图片上传
 + `v5.0` 后台实现权限管理模块
++ `v5.1` 整理接口,简单实现权限管理模块
 
 ## 安装
 
@@ -59,11 +60,14 @@
    pip install python-multipart
    pip install orjson
    
-   # 使用MySQL, 请安装下面包
-   pip install mysqlclient
+   # 使用Sqlite(异步), 请安装下面包
+   pip install aiosqlite
    
-   # 使用ProgreSQL
-   pip install psycopg2
+   # 使用MySQL(异步), 请安装下面包
+   pip install asyncmy
+   
+   # 使用ProgreSQL(异步), 请安装下面包
+   pip install asyncpg
    ```
 
 
@@ -85,7 +89,7 @@
 
   ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/backend-%E6%8E%A5%E5%8F%A3.png)
 
-## 项目目录
+## 项目目录(待整理)
 
 ```sh
 |-- backend
@@ -96,7 +100,7 @@
             |-- course.py	        # 课程表接口
             |-- department.py	    # 院系表接口
             |-- major.py	        # 专业表接口
-            |-- dashBoard.py	        # 管理员首页    
+            |-- index.py	        # 管理员首页    
             |-- selectCourse.py	    # 选课表接口
             |-- student.py	        # 学生表接口
             |-- teacher.py	        # 教师表接口   
@@ -140,7 +144,7 @@
 	|-- models                  
 		|-- __init__.py			# ORM模型映射
 		|-- base.py		        # 自动生成 表名
-		|-- dashBoard.py			# 管理员表
+		|-- index.py			# 管理员表
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
 		|-- major.py			# 专业表

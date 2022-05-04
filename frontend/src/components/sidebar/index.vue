@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { useStore } from "@/stores";
 import { useRoute, useRouter, type RouteRecordRaw, type _RouteRecordBase } from "vue-router";
+import { getLocal } from "@/request/auth";
 
 const store = useStore(); // 状态管理
 const route = useRoute(); // 操作路由
@@ -14,6 +15,7 @@ const onRoutes = computed(() => {
 
 const state = reactive({
   routers: [] as any,
+  roles: getLocal("role"), // 得到权限标志
 });
 
 onMounted(() => {
@@ -41,7 +43,7 @@ onMounted(() => {
     >
       <template v-for="item in state.routers">
         <!-- 二级标题 -->
-        <template v-if="item.children">
+        <template v-if="item.children && item.meta.roles.indexOf(state.roles) > -1">
           <el-sub-menu :index="item.path">
             <template #title>
               <el-icon :class="item.meta.icon" />
@@ -55,7 +57,7 @@ onMounted(() => {
         </template>
 
         <!-- 一级标题 -->
-        <template v-else>
+        <template v-else-if="item.meta.roles.indexOf(state.roles) > -1">
           <el-menu-item :index="item.path">
             <el-icon :class="item.meta.icon" />
             <template #title>{{ item.meta.title }}</template>

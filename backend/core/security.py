@@ -18,24 +18,13 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # 加密密�
 
 
 def get_password_hash(password: str) -> str:
-    """
-    加密明文密码
-
-    :param password: 明文密码
-    :return: 加密后的密码
-    """
+    """ 加密明文密码 """
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    验证明文密码 与 加密后的密码 是否一致
-
-    :param plain_password: 明文密码
-    :param hashed_password: hash密码
-    :return: 是否一致
-    """
-    return pwd_context.verify(plain_password, hashed_password)
+def verify_password(password: str, hashed_password: str) -> bool:
+    """ 验证明文密码 与 加密后的密码 是否一致 """
+    return pwd_context.verify(password, hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -58,12 +47,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 # https://www.cnblogs.com/CharmCode/p/14191112.html?ivk_sa=1024320u
 def check_jwt_token(token: Optional[str] = Header(...)) -> Union[str, Any]:
-    """
-    解密token
-
-    :param token: token
-    :return: 解密后的内容
-    """
+    """ 解密token """
     try:
         payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])
         return payload

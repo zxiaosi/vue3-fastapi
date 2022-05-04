@@ -2,7 +2,7 @@
 import { reactive, onMounted } from "vue";
 import { useDataStore } from "@/stores/data";
 import BaseTable from "@/components/baseTable/index.vue";
-import { read_datas, read_datas_relation } from "@/api";
+import { read_datas } from "@/api";
 import { pathEnum, type queryType, type teachFormType } from "@/types/table";
 import type { stateType, enumType } from ".";
 import { valueList, byIdGetName } from "@/utils/handleArray";
@@ -67,8 +67,7 @@ const formRules = reactive({
   id: [
     { required: "true", trigger: "change", message: "请输入职工号" },
     { pattern: /^[1-9]/, message: "职工号不能以0开头" },
-    { min: 6, max: 6, message: "职工号的长度应为6" },
-    { pattern: /^[1-9][0-9]{5}$/, message: "职工号必须是正整数" },
+    { pattern: /^[1-9][0-9]{5}$/, message: "职工号必须是正整数且长度应为6" },
     {
       validator: (rule: any, value: string, callback: any) => {
         let idList = valueList(dataStore.teacherData, "id");
@@ -105,15 +104,14 @@ const formRules = reactive({
  * 获取表格数据
  */
 const getData = async (currentPage: number = query.currentPage) => {
-  // 获取教师表数据
-  let params = { path: pathEnum.teacher, pageIndex: currentPage, pageSize: query.pageSize };
-  const { data: teacherData } = await read_datas(params);
-  state.teacherData = teacherData.dataList;
-  state.pageTotal = teacherData.count;
+  let dept = read_datas({ path: pathEnum.dept, pageIndex: -1, pageSize: -1 }); // 获取院系信息
+  let teacjer = read_datas({ path: pathEnum.teacher, pageIndex: currentPage, pageSize: query.pageSize }); // 获取教师表数据
 
-  // 获取院系信息
-  const { data: deptData } = await read_datas_relation("department");
-  state.deptData = deptData.dataList;
+  const [{ data: deptData }, { data: teacherData }] = await Promise.all([dept, teacjer]);
+
+  state.teacherData = teacherData.list;
+  state.pageTotal = teacherData.count;
+  state.deptData = deptData.list;
 };
 
 // 页面加载后调用函数
@@ -159,14 +157,7 @@ const getChange = (res: string | number | undefined) => {
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column
-        prop="id"
-        label="职工号"
-        width="120"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="id" label="职工号" width="120" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="名字" width="120" align="center" />
 
       <el-table-column prop="sex" label="性别" width="80" align="center">
@@ -177,14 +168,7 @@ const getChange = (res: string | number | undefined) => {
         </template>
       </el-table-column>
 
-      <el-table-column
-        prop="birthday"
-        label="生日"
-        width="120"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="birthday" label="生日" width="120" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
 
       <el-table-column prop="education" label="学历" width="80" align="center">
         <template #default="scope">
@@ -218,13 +202,7 @@ const getChange = (res: string | number | undefined) => {
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="职工号" prop="id">
-        <el-input
-          v-model="formData.id"
-          placeholder="请输入职工号"
-          maxlength="6"
-          show-word-limit
-          :disabled="state.isDisabled"
-        />
+        <el-input v-model="formData.id" placeholder="请输入职工号" maxlength="6" show-word-limit :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="教师名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="10" show-word-limit />
@@ -238,23 +216,11 @@ const getChange = (res: string | number | undefined) => {
       </el-form-item>
 
       <el-form-item label="教师生日" prop="birthday">
-        <el-date-picker
-          type="date"
-          placeholder="请选择日期"
-          v-model="formData.birthday"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          style="width: 100%"
-        />
+        <el-date-picker type="date" placeholder="请选择日期" v-model="formData.birthday" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%" />
       </el-form-item>
 
       <el-form-item label="教师密码" prop="password">
-        <el-input
-          v-model="formData.password"
-          :placeholder="state.addOrUpdate == true ? `默认密码为123456` : `设置新密码`"
-          maxlength="20"
-          show-password
-        />
+        <el-input v-model="formData.password" :placeholder="state.addOrUpdate == true ? `默认密码为123456` : `设置新密码`" maxlength="20" show-password />
       </el-form-item>
 
       <el-form-item label="教师学历" prop="education">
@@ -275,11 +241,7 @@ const getChange = (res: string | number | undefined) => {
       </el-form-item>
 
       <el-form-item label="院系名字" prop="department_id">
-        <el-select
-          v-model="formData.department_id"
-          placeholder="请选择院系"
-          @change="getChange(formData.department_id)"
-        >
+        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
           <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name" :value="dept.id" />
         </el-select>
       </el-form-item>

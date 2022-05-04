@@ -5,14 +5,14 @@
 # @desc : 检查redis
 from fastapi import APIRouter, Depends
 
-from db import RedisPlus
-from api.deps import get_redis
+from db import MyRedis
+from apis.deps import get_redis
 
 router = APIRouter()
 
 
 @router.get("/health-check")
-async def health_check(redis: RedisPlus = Depends(get_redis)):
+async def health_check(redis: MyRedis = Depends(get_redis)):
     try:
         # key:test:keys => key/test/keys
         value = await redis.get('request_num')

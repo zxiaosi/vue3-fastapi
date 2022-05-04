@@ -18,7 +18,7 @@ class DepartmentIn(BaseModel):
 
 class DepartmentCreate(DepartmentIn):
     """ 添加数据时的字段验证 """
-    id: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='编号')
+    id: str = Field(regex=r'^[1-9][0-9]{3}$', example='编号')
 
 
 class DepartmentUpdate(DepartmentIn):
@@ -26,8 +26,9 @@ class DepartmentUpdate(DepartmentIn):
     pass
 
 
-class DepartmentOut(DepartmentCreate, GMT):
+class DepartmentOut(DepartmentIn, GMT):
     """ 查询数据的字段验证 """
+    id: int = Field(..., example='编号')
 
     class Config:
-        orm_mode = True  # 是否使用orm模型(个人理解: 放行,不验证)
+        orm_mode = True  # 是否使用orm模型(结果为字典类型)

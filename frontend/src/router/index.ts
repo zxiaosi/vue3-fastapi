@@ -16,13 +16,13 @@ const routes: RouteRecordRaw[] = [
       {
         path: "/dashboard",
         name: "dashboard",
-        meta: { title: "系统首页", icon: "el-icon-ali-home" },
+        meta: { title: "系统首页", icon: "el-icon-ali-home", roles: ['admin', 'teacher', 'student'] },
         component: () => import("@/views/dashboard/index.vue"),
       },
       {
         path: "/table",
         name: "table",
-        meta: { title: "表格相关", icon: "el-icon-ali-cascades" },
+        meta: { title: "表格相关", icon: "el-icon-ali-cascades", roles: ['admin'] },
         component: Tables,
         children: [
           {
@@ -66,13 +66,13 @@ const routes: RouteRecordRaw[] = [
       {
         path: "/tabs",
         name: "tabs",
-        meta: { title: "tab标签", icon: "el-icon-ali-copy" },
+        meta: { title: "tab标签", icon: "el-icon-ali-copy", roles: ['admin'] },
         component: () => import("@/views/tabs/index.vue"),
       },
       {
         path: "/form",
         name: "form",
-        meta: { title: "表单相关", icon: "el-icon-ali-calendar" },
+        meta: { title: "表单相关", icon: "el-icon-ali-calendar", roles: ['admin'] },
         component: Form,
         children: [
           {
@@ -86,13 +86,13 @@ const routes: RouteRecordRaw[] = [
       {
         path: "/permission",
         name: "permission",
-        meta: { title: "权限管理", permission: true, icon: "el-icon-ali-warn" },
+        meta: { title: "权限管理", icon: "el-icon-ali-warn", roles: ['admin'] },
         component: () => import("@/views/permission/index.vue"),
       },
       {
         path: "/error",
         name: "error",
-        meta: { title: "错误处理", icon: "el-icon-ali-warn" },
+        meta: { title: "错误处理", icon: "el-icon-ali-warn", roles: ['admin'] },
         component: error,
         children: [
           {
@@ -108,6 +108,12 @@ const routes: RouteRecordRaw[] = [
             component: () => import("@/views/40x/403/index.vue"),
           },
         ],
+      },
+      {
+        path: '/user',
+        name: 'user',
+        meta: { title: '个人中心', icon: "el-icon-ali-cascades", roles: ['admin', 'teacher', 'student'] },
+        component: () => import("@/views/user/index.vue"),
       },
     ],
   },
@@ -128,11 +134,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   document.title = `${to.meta.title} | ${TITLE}`; // 页面名
   const userInfo = JSON.parse(getLocal("userInfo"));
+  const role = getLocal("role");
   if (!userInfo && to.path !== "/login") {
     next("/login");
-  } else if (to.meta.permission) {
+  } else if (to.meta.roles) {
+    let roles: any = to.meta.roles;
     // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-    userInfo.name === "admin" ? next() : next("/403");
+    roles.indexOf(role) > -1 ? next() : next("/403");
   } else {
     next();
   }

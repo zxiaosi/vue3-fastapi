@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, onMounted } from "vue";
 import BaseTable from "@/components/baseTable/index.vue";
-import { read_datas, read_datas_relation } from "@/api";
+import { read_datas } from "@/api";
 import { byIdGetName } from "@/utils/handleArray";
 import { pathEnum, type queryType, type selectCourseFormType } from "@/types/table";
 import type { stateType } from ".";
@@ -48,22 +48,18 @@ const formRules = reactive({
  * 获取表格数据
  */
 const getData = async (currentPage: number = query.currentPage) => {
-  let params = { path: pathEnum.elective, pageIndex: currentPage, pageSize: query.pageSize };
-  const { data: scData } = await read_datas(params);
-  state.selectCourseData = scData.dataList;
+  let sc = read_datas({ path: pathEnum.elective, pageIndex: currentPage, pageSize: query.pageSize }); // 获取选课表数据
+  let teacher = read_datas({ path: pathEnum.teacher, pageIndex: -1, pageSize: -1 }); // 获取教师表数据
+  let student = read_datas({ path: pathEnum.student, pageIndex: -1, pageSize: -1 }); // 获取学生表数据
+  let course = read_datas({ path: pathEnum.course, pageIndex: -1, pageSize: -1 }); // 获取选课表数据
+
+  const [{ data: scData }, { data: teacherData }, { data: studentData }, { data: courseData }] = await Promise.all([sc, teacher, student, course]);
+
+  state.selectCourseData = scData.list;
   state.pageTotal = scData.count;
-
-  // 获取学生信息
-  const { data: studentData } = await read_datas_relation("student");
-  state.studentData = studentData.dataList;
-
-  // 获取教师信息
-  const { data: teacherData } = await read_datas_relation("teacher");
-  state.teacherData = teacherData.dataList;
-
-  // 获取课程信息
-  const { data: courseData } = await read_datas_relation("course");
-  state.courseData = courseData.dataList;
+  state.studentData = studentData.list;
+  state.teacherData = teacherData.list;
+  state.courseData = courseData.list;
 };
 
 // 页面加载后调用函数
@@ -96,14 +92,7 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column
-        prop="id"
-        label="编号"
-        width="140"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="id" label="编号" width="140" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="grade" label="成绩" width="140" align="center" />
       <el-table-column prop="student_id" width="140" label="学生姓名" align="center">
         <template #default="scope">{{ byIdGetName(scope.row.student_id, state.studentData) }}</template>
@@ -121,13 +110,7 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="编号" prop="id">
-        <el-input
-          v-model="formData.id"
-          placeholder="请输入编号(自增)"
-          maxlength="10"
-          show-word-limit
-          :disabled="state.isDisabled"
-        />
+        <el-input v-model="formData.id" placeholder="请输入编号(自增)" maxlength="10" show-word-limit :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="成绩" prop="grade">
         <el-input v-model="formData.grade" placeholder="请输入成绩" maxlength="3" show-word-limit />
@@ -135,23 +118,13 @@ const emitIsShowSearched = (res: boolean) => (state.isShowSearched = res);
 
       <el-form-item label="学生" prop="student_id">
         <el-select v-model="formData.student_id" placeholder="学生名">
-          <el-option
-            v-for="(student, index) in state.studentData"
-            :key="index"
-            :label="student.name"
-            :value="student.id"
-          />
+          <el-option v-for="(student, index) in state.studentData" :key="index" :label="student.name" :value="student.id" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="教师" prop="teacher_id">
         <el-select v-model="formData.teacher_id" placeholder="教师名">
-          <el-option
-            v-for="(teacher, index) in state.teacherData"
-            :key="index"
-            :label="teacher.name"
-            :value="teacher.id"
-          />
+          <el-option v-for="(teacher, index) in state.teacherData" :key="index" :label="teacher.name" :value="teacher.id" />
         </el-select>
       </el-form-item>
 

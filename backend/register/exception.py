@@ -11,24 +11,14 @@ from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from starlette.requests import Request
 
-from utils import logger
+from core.logger import logger
 from utils.custom_exc import IpError, ErrorUser, UserNotExist, SetRedis, AccessTokenFail, IdNotExist, \
     PermissionNotEnough
 from utils.resp_code import resp_400, resp_401, resp_403, resp_422, resp_500
 
 
-# 参考: https://www.charmcode.cn/article/2020-07-19_fastapi_exception
 def register_exception(app: FastAPI):
-    """
-    全局异常捕获
-    注意 别手误多敲一个s
-    exception_handler
-    exception_handlers
-    两者有区别
-        如果只捕获一个异常 启动会报错
-        @exception_handlers(UserNotFound)
-    TypeError: 'dict' object is not callable
-    """
+    """ 全局异常捕获 -- https://www.charmcode.cn/article/2020-07-19_fastapi_exception """
 
     @app.exception_handler(IpError)
     async def ip_error_handler(request: Request, exc: IpError):

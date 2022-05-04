@@ -1,5 +1,6 @@
 import { get, post, put, del } from "@/request";
-import type { tableDataListType, tableObjectType, tableDataType, delDataListType, todoType } from "./model";
+import { getLocal } from "@/request/auth";
+import type { tableDataListType, tableObjectType, tableDataType, delDataListType, todoType, GetCurrentUser } from "./model";
 
 /**
  * 测试权限接口
@@ -14,7 +15,7 @@ export const logout = (): Promise<any> => post("/logout");
 /**
  * 获取用户信息
  */
-export const get_current_user = (): Promise<any> => get("/dashboard/userInfo");
+export const get_current_user = (data: GetCurrentUser): Promise<any> => get(`${data.roles}/index`);
 
 /**
  * 获取首页数据(语言详情 && 待办事项)
@@ -76,8 +77,3 @@ export const delete_data = (data: tableDataType): Promise<any> => del(`${data.pa
  * @param {*} data id列表
  */
 export const delete_datas = (data: delDataListType): Promise<any> => post(`${data.path}/del/`, data.idList);
-
-/**
- * 只获取关系字段
- */
-export const read_datas_relation = (path: string): Promise<any> => get(`${path}/relation/`);

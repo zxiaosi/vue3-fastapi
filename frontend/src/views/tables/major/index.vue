@@ -2,7 +2,7 @@
 import { reactive, onMounted } from "vue";
 import { useDataStore } from "@/stores/data";
 import BaseTable from "@/components/baseTable/index.vue";
-import { read_datas, read_datas_relation } from "@/api";
+import { read_datas } from "@/api";
 import type { stateType } from ".";
 import { pathEnum, type queryType, type majorFormType } from "@/types/table";
 import { valueList, byIdGetName } from "@/utils/handleArray";
@@ -40,8 +40,7 @@ const formRules = reactive({
   id: [
     { required: "true", trigger: "change", message: "请输入专业编号" },
     { pattern: /^10/, message: "专业编号要以10开头" },
-    { min: 6, max: 6, message: "专业编号的长度应为6" },
-    { pattern: /^10[0-9]{4}$/, message: "专业编号必须为正整数)" },
+    { pattern: /^10[0-9]{4}$/, message: "专业编号必须为正整数且长度为6" },
     {
       validator: (rule: any, value: string, callback: any) => {
         let idList = valueList(dataStore.majorData, "id");
@@ -91,15 +90,14 @@ const formRules = reactive({
  * 获取表格数据
  */
 const getData = async (currentPage: number = query.currentPage) => {
-  // 获取专业数据
-  let params = { path: pathEnum.major, pageIndex: currentPage, pageSize: query.pageSize };
-  const { data: majorData } = await read_datas(params);
-  state.majorData = majorData.dataList;
-  state.pageTotal = majorData.count;
+  let dept = read_datas({ path: pathEnum.dept, pageIndex: -1, pageSize: -1 }); // 获取院系数据
+  let major = read_datas({ path: pathEnum.major, pageIndex: currentPage, pageSize: query.pageSize }); // 获取专业数据
 
-  // 获取院系数据
-  const { data: deptData } = await read_datas_relation("department");
-  state.deptData = deptData.dataList;
+  const [{ data: deptData }, { data: majorData }] = await Promise.all([dept, major]);
+
+  state.majorData = majorData.list;
+  state.pageTotal = majorData.count;
+  state.deptData = deptData.list;
 };
 
 // 页面加载后调用函数
@@ -139,14 +137,7 @@ const getChange = (res: string | number | undefined) => {
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column
-        prop="id"
-        label="专业编号"
-        width="120"
-        align="center"
-        :sortable="!state.isShowSearched"
-        :sort-orders="['ascending', 'descending']"
-      />
+      <el-table-column prop="id" label="专业编号" width="120" align="center" :sortable="!state.isShowSearched" :sort-orders="['ascending', 'descending']" />
       <el-table-column prop="name" label="专业名字" width="200" align="center" />
       <el-table-column prop="assistant" label="辅导员姓名" width="120" align="center" />
       <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
@@ -158,13 +149,7 @@ const getChange = (res: string | number | undefined) => {
     <!-- 弹出框内容 -->
     <template #showDialog>
       <el-form-item label="专业编号" prop="id">
-        <el-input
-          v-model="formData.id"
-          placeholder="请输入编号"
-          maxlength="6"
-          show-word-limit
-          :disabled="state.isDisabled"
-        />
+        <el-input v-model="formData.id" placeholder="请输入编号" maxlength="6" show-word-limit :disabled="state.isDisabled" />
       </el-form-item>
       <el-form-item label="专业名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" maxlength="20" show-word-limit />
@@ -176,11 +161,7 @@ const getChange = (res: string | number | undefined) => {
         <el-input v-model="formData.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
       </el-form-item>
       <el-form-item label="院系名字" prop="department_id">
-        <el-select
-          v-model="formData.department_id"
-          placeholder="请选择院系"
-          @change="getChange(formData.department_id)"
-        >
+        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
           <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name" :value="dept.id" />
         </el-select>
       </el-form-item>
