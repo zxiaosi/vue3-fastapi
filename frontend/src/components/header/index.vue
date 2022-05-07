@@ -4,21 +4,15 @@ import { useStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { Fold, Expand, Bell, CaretBottom, UploadFilled } from "@element-plus/icons-vue";
-import { getLocal, removeLocal, setLocal } from "@/request/auth";
+import { getLocal, setLocal } from "@/request/auth";
 import { get_current_user, logout } from "@/api";
 import { API_URL } from "@/assets/global";
 import type { stateType } from ".";
-import type { userInfoType } from "@/types/index";
 
 const store = useStore(); // 状态管理
 const router = useRouter(); // 全局路由
 
-const userInfo: userInfoType = reactive({
-  name: "", // 用户名
-  avatar: "", // 头像
-  address: "", // 地址
-  modifyTime: "", // 最后修改时间
-});
+const userInfo: any = reactive({});
 
 const state: stateType = reactive({
   uploadApiUrl: API_URL + "/upload/file/", // 上传图片请求接口
@@ -33,7 +27,7 @@ onMounted(async () => {
     collapseChage();
   }
   const user = JSON.parse(getLocal("userInfo"));
-  if (!user.avatar) {
+  if (!user.image) {
     let role = getLocal("role");
     await getUserInfo(role); // 请求接口
   } else {
@@ -46,21 +40,19 @@ onMounted(async () => {
  */
 const getUserInfo = async (role: any) => {
   const { data } = await get_current_user({ roles: role });
-  userInfo.name = data.name;
-  userInfo.avatar = data.image;
-  userInfo.address = data.address;
-  userInfo.modifyTime = data.gmt_modify;
+  const { id, ...rent } = data;
+  Object.assign(userInfo, rent);
   setLocal("userInfo", JSON.stringify(userInfo));
   store.userInfo = userInfo; // 将用户信息放到store内
 };
 
 /**
- * 头像上传成功回调
+ * 头像上传成功回调(暂未使用)
  */
 const success = (response: any) => {
   const data = response.data;
   ElMessage.success(response.msg);
-  userInfo.avatar = data.image;
+  userInfo.image = data.image;
   userInfo.modifyTime = data.gmt_modify;
   setLocal("userInfo", JSON.stringify(userInfo));
   store.userInfo = userInfo;
@@ -68,7 +60,7 @@ const success = (response: any) => {
 };
 
 /**
- * 头像上传失败回调
+ * 头像上传失败回调(暂未使用)
  */
 const error = (err: any) => {
   ElMessage.error(err.msg);
@@ -87,10 +79,8 @@ const handleCommand = async (command: "logout" | "upload") => {
   if (command == "logout") {
     await logout();
     ElMessage.success("退出登录！");
-    removeLocal("userInfo");
-    removeLocal("Authorization");
-    removeLocal("role");
-    store.clearTags();
+    localStorage.clear(); // 清除缓存
+    store.clearTags(); // 清除标签
     router.push("/login");
   } else if (command == "upload") {
     state.dialogVisible = true;
@@ -125,7 +115,7 @@ const handleCommand = async (command: "logout" | "upload") => {
 
         <!-- 用户头像 -->
         <div class="user-avator">
-          <img :src="userInfo.avatar" />
+          <img :src="userInfo.image" />
         </div>
 
         <!-- 用户名下拉菜单 -->

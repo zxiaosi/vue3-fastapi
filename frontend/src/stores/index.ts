@@ -1,5 +1,3 @@
-import { getLocal } from "@/request/auth";
-import type { userInfoType } from "@/types";
 import { defineStore } from "pinia";
 
 interface tagType {
@@ -11,7 +9,7 @@ interface tagType {
 interface stateType {
   tagsList: tagType[];
   collapse: boolean;
-  userInfo: userInfoType;
+  userInfo: any;
 }
 
 export const useStore = defineStore({
@@ -19,12 +17,7 @@ export const useStore = defineStore({
   state: (): stateType => ({
     tagsList: [], // 标签列表
     collapse: false, // 侧边栏是否折叠
-    userInfo: {
-      name: "", // 用户名
-      avatar: "", // 头像
-      address: "", // 地址
-      modifyTime: "", // 最后修改时间
-    },
+    userInfo: {} as any, // 用户信息
   }),
   getters: {
     tagNameList(state) {

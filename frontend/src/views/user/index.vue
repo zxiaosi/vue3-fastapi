@@ -5,6 +5,7 @@ import { getLocal, setLocal } from "@/request/auth";
 import { Clock } from "@element-plus/icons-vue";
 import { dateFunction } from "../../utils/handleTime";
 import { pathEnum } from "@/types/table";
+import type { UserInfo, Details } from ".";
 
 // 性别枚举
 const sexEnum = {

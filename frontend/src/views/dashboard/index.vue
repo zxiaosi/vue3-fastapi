@@ -13,8 +13,9 @@ let echarts: any = inject("echarts");
 // 状态管理
 const store = useStore();
 
+const userInfo: any = reactive(JSON.parse(getLocal("userInfo"))); // 缓存的用户信息
+
 const state: stateType = reactive({
-  userInfo: JSON.parse(getLocal("userInfo")), // 缓存的用户信息
   languageDetails: [], // 语言使用详情
   todoList: [], // 待办列表
   visitNumber: 0, // 访问量
@@ -26,11 +27,12 @@ const state: stateType = reactive({
 
 watchEffect(() => {
   let user = JSON.parse(getLocal("userInfo"));
-  if (store.userInfo.avatar) {
-    state.userInfo = store.userInfo;
+  if (store.userInfo.image) {
+    Object.assign(userInfo, store.userInfo);
   } else {
-    state.userInfo = user;
+    Object.assign(userInfo, user);
   }
+  console.log("用户信息", userInfo);
 });
 
 let pieChart: any;
@@ -133,14 +135,14 @@ const eachartBar = () => {
         <!-- 用户信息 -->
         <el-card class="mgb20" style="height: 252px">
           <div class="user-info">
-            <img :src="state.userInfo.avatar" class="user-avator" />
+            <img :src="userInfo.image" class="user-avator" />
             <div class="user-info-cont">
-              <div class="user-info-name">{{ state.userInfo.name }}</div>
-              <div>{{ state.userInfo.name === "admin" ? "超级管理员" : "普通用户" }}</div>
+              <div class="user-info-name">{{ userInfo.name }}</div>
+              <div>{{ userInfo.name === "admin" ? "超级管理员" : "普通用户" }}</div>
             </div>
           </div>
-          <div class="user-info-list">最后更新时间：{{ dateFunction(state.userInfo.modifyTime) }}</div>
-          <div class="user-info-list">当前登录地址：{{ state.userInfo.address }}</div>
+          <div class="user-info-list">最后更新时间：{{ dateFunction(userInfo.update_time) }}</div>
+          <div class="user-info-list">当前登录地址：{{ userInfo.address }}</div>
         </el-card>
 
         <!-- 语言详情 -->
