@@ -17,7 +17,7 @@ from utils import obj_as_dict
 
 class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
     async def create(self, db: AsyncSession, obj_in: StudentCreate) -> int:
-        """ 添加教师信息 """
+        """ 添加学生信息 """
         setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
         obj_in_data = {}
         for k, v in obj_in.dict().items():  # 排除空值
@@ -32,7 +32,7 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
         return result.rowcount
 
     async def update(self, db: AsyncSession, id: int, obj_in: Union[StudentUpdate, Dict[str, Any]]) -> int:
-        """ 更新教师信息 """
+        """ 更新学生信息 """
         if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
             teacher_data = obj_in
         else:

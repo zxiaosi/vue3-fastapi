@@ -1,128 +1,101 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
-import Home from "@/views/home/index.vue";
-import Tables from "@/views/tables/index.vue";
-import Form from "@/views/form/index.vue";
-import error from "@/views/40x/index.vue";
-import { TITLE } from "@/assets/global";
+import Layout from "@/layout/Home/index.vue";
 import { getLocal } from "@/request/auth";
+import { TITLE } from "@/assets/js/global";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", redirect: "/dashboard" }, // 重定向
   {
+    path: "/login",
+    name: "Login",
+    meta: { title: "登录" },
+    component: () => import("@/views/login/index.vue"),
+  },
+  {
     path: "/",
-    name: "home",
-    component: Home,
+    name: "Layout",
+    component: Layout,
     children: [
       {
         path: "/dashboard",
-        name: "dashboard",
-        meta: { title: "系统首页", icon: "el-icon-ali-home", roles: ['admin', 'teacher', 'student'] },
-        component: () => import("../views/dashboard/index.vue"),
+        name: "Dashboard",
+        meta: { title: "系统首页", icon: "dashboard", roles: ["admin", "teacher", "student"] },
+        component: () => import("@/views/dashboard/index.vue"),
       },
       {
-        path: "/table",
-        name: "table",
-        meta: { title: "表格相关", icon: "el-icon-ali-cascades", roles: ['admin'] },
-        component: Tables,
+        path: "/settings",
+        name: "Settings",
+        meta: { title: "系统管理", icon: "setting", roles: ["admin", "teacher", "student"] },
+        component: () => import("@/views/settings/index.vue"),
         children: [
           {
             path: "/department",
-            name: "department", // 请求接口路径参数
-            meta: { title: "院系表" },
-            component: () => import("../views/tables/department/index.vue"),
+            name: "Department",
+            meta: { title: "院系管理", roles: ["admin"], icon: "dept" },
+            component: () => import("@/views/settings/department/index.vue"),
           },
           {
             path: "/major",
-            name: "major",
-            meta: { title: "专业表" },
-            component: () => import("../views/tables/major/index.vue"),
+            name: "Major",
+            meta: { title: "专业管理", roles: ["admin"], icon: "major" },
+            component: () => import("@/views/settings/major/index.vue"),
           },
           {
             path: "/teacher",
-            name: "teacher",
-            meta: { title: "教师表" },
-            component: () => import("../views/tables/teacher/index.vue"),
+            name: "Teacher",
+            meta: { title: "教师管理", roles: ["admin"], icon: "tutor" },
+            component: () => import("@/views/settings/teacher/index.vue"),
           },
           {
             path: "/student",
-            name: "student",
-            meta: { title: "学生表" },
-            component: () => import("../views/tables/student/index.vue"),
+            name: "Student",
+            meta: { title: "学生管理", roles: ["admin"], icon: "stu" },
+            component: () => import("@/views/settings/student/index.vue"),
           },
           {
             path: "/course",
-            name: "course",
-            meta: { title: "课程表" },
-            component: () => import("../views/tables/course/index.vue"),
+            name: "Course",
+            meta: { title: "课程管理", roles: ["admin", "teacher", "student"], icon: "intro" },
+            component: () => import("@/views/settings/course/index.vue"),
           },
           {
             path: "/selectCourse",
-            name: "selectCourse",
-            meta: { title: "选课表" },
-            component: () => import("../views/tables/selectCourse/index.vue"),
+            name: "SelectCourse",
+            meta: { title: "选课管理", roles: ["admin", "teacher"], icon: "sc" },
+            component: () => import("@/views/settings/selectCourse/index.vue"),
           },
         ],
       },
       {
-        path: "/tabs",
-        name: "tabs",
-        meta: { title: "tab标签", icon: "el-icon-ali-copy", roles: ['admin'] },
-        component: () => import("../views/tabs/index.vue"),
+        path: "/messages",
+        name: "Messages",
+        meta: { title: "消息中心", icon: "msg", roles: ["admin", "teacher", "student"] },
+        component: () => import("@/views/messages/index.vue"),
       },
       {
-        path: "/form",
-        name: "form",
-        meta: { title: "表单相关", icon: "el-icon-ali-calendar", roles: ['admin'] },
-        component: Form,
-        children: [
-          {
-            path: "/baseform",
-            name: "baseform",
-            meta: { title: "基本表单" },
-            component: () => import("../views/form/baseForm/index.vue"),
-          },
-        ],
-      },
-      {
-        path: "/permission",
-        name: "permission",
-        meta: { title: "权限管理", icon: "el-icon-ali-warn", roles: ['admin'] },
-        component: () => import("../views/permission/index.vue"),
-      },
-      {
-        path: "/error",
-        name: "error",
-        meta: { title: "错误处理", icon: "el-icon-ali-warn", roles: ['admin'] },
-        component: error,
-        children: [
-          {
-            path: "/404",
-            name: "404",
-            meta: { title: "找不到页面" },
-            component: () => import("../views/40x/404/index.vue"),
-          },
-          {
-            path: "/403",
-            name: "403",
-            meta: { title: "没有权限" },
-            component: () => import("../views/40x/403/index.vue"),
-          },
-        ],
-      },
-      {
-        path: '/user',
-        name: 'user',
-        meta: { title: '个人中心', icon: "el-icon-ali-cascades", roles: ['admin', 'teacher', 'student'] },
-        component: () => import("../views/user/index.vue"),
+        path: "/user",
+        name: "User",
+        meta: { title: "个人中心", icon: "user", roles: ["admin", "teacher", "student"] },
+        component: () => import("@/views/user/index.vue"),
       },
     ],
   },
   {
-    path: "/login",
-    name: "login",
-    meta: { title: "登录" },
-    component: () => import("../views/login/index.vue"),
+    path: "/403",
+    name: "403",
+    meta: { title: "没有权限" },
+    component: () => import("@/views/error/403/index.vue"),
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "404",
+    meta: { title: "找不到页面" },
+    component: () => import("@/views/error/404/index.vue"),
+  },
+  // {
+  //   path: '/:pathMatch(.*)',
+  //   redirect: '/404'
+  // }
 ];
 
 const router = createRouter({
@@ -130,8 +103,9 @@ const router = createRouter({
   routes: routes,
 });
 
-// 全局路由守卫
+// 全局路由守卫(前置)
 router.beforeEach((to, from, next) => {
+  // VNode.component?.exposed?.startLoading();
   document.title = `${to.meta.title} | ${TITLE}`; // 页面名
   const userInfo = JSON.parse(getLocal("userInfo"));
   const role = getLocal("role");
@@ -144,6 +118,11 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+
+// 全局路由守卫(后置）
+router.afterEach((to, from) => {
+  // VNode.component?.exposed?.stopLoading();
 });
 
 export default router;

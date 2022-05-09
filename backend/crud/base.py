@@ -55,7 +55,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def create(self, db: AsyncSession, obj_in: CreateSchemaType) -> int:
         """ 添加对象 """
-        setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
+        if self.model.__tablename__ != 'selectcourse':
+            setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
         sql = insert(self.model).values(obj_in.dict())
         result = await db.execute(sql)
         await db.commit()
@@ -109,3 +110,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if not verify_password(password, user.hashed_password):
             return None
         return user
+
+    async def sort(self, db: AsyncSession, name: str, pageIndex: int = 1, pageSize: int = 10) -> List[ModelType]:
+        """ 验证用户 """
+        filed_name = self.model.__table__.c[name]
+        if pageIndex == -1 and pageSize == -1:
+            sql = select(self.model).order_by(desc(filed_name))
+        else:
+            sql = select(self.model).offset((pageIndex - 1) * pageSize).limit(pageSize).order_by(desc(filed_name))
+        result = await db.scalars(sql)
+        # print(list_obj_as_dict(await db.scalars(sql)))
+        await db.close()  # 释放会话
+        return result.all()

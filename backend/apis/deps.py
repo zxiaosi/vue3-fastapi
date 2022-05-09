@@ -36,7 +36,7 @@ async def get_current_user(
         token: str = Depends(get_token)
 ):
     """ 得到当前用户(docs接口文档) """
-    payload = check_jwt_token(token)  # 检验token是否过期
+    payload = await check_jwt_token(token)  # 检验token是否过期
     token_scopes = payload.get("scopes", [])  # 得不到值,返回[]
     token_data = TokenData(scopes=token_scopes, sub=payload.get("sub"))  # token存储的用户权限
     crud_obj = by_scopes_get_crud(token_scopes)  # 验证用户是否存在

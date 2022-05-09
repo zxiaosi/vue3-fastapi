@@ -1,22 +1,14 @@
 import { defineStore } from "pinia";
-import type { formDataType } from "@/types/table";
-
-interface stateType {
-  departmentData: formDataType[];
-  majorData: formDataType[];
-  teacherData: formDataType[];
-  studentData: formDataType[];
-  courseData: formDataType[];
-}
+import type { CourseForm, DeptForm, MajorForm, StudentForm, TeacherForm } from "@/types/table";
 
 export const useDataStore = defineStore({
-  id: "data",
-  state: (): stateType => ({
-    departmentData: [], // 院系
-    majorData: [], // 专业
-    teacherData: [], // 教师
-    studentData: [], // 学生
-    courseData: [], // 课程
+  id: "table",
+  state: () => ({
+    departmentData: [] as DeptForm[], // 院系
+    majorData: [] as MajorForm[], // 专业
+    teacherData: [] as TeacherForm[], // 教师
+    studentData: [] as StudentForm[], // 学生
+    courseData: [] as CourseForm[], // 课程
   }),
   getters: {},
   actions: {

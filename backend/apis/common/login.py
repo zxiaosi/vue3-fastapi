@@ -49,7 +49,9 @@ async def login_access_token(
     except Exception as e:
         raise SetRedis(f'Redis存储 token 失败！-- {e}')
 
-    return {"access_token": token, "token_type": "bearer"}  # 这里返回的格式一定这么写,否则get_current_user依赖拿不到token
+    # 这里'access_token'和'token_type'一定要写,否则get_current_user依赖拿不到token
+    # 可添加字段(先修改schemas/token里面的Token返回模型)
+    return {"access_token": token, "token_type": "bearer"}
 
 
 @router.get("/admin/index", response_model=Result[AdminOut], summary="获取当前管理员")

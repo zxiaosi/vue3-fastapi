@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useRoute } from "vue-router";
-import type { stateType } from ".";
+
+interface Meta {
+  title?: string;
+  icon?: string;
+  roles?: string[];
+}
 
 const route = useRoute(); // 操作路由
 
-const state: stateType = reactive({
-  secondRouterMeta: route.matched[1].meta, // 二级目录的标题
-  currentRouterMeta: route.meta, // 当前路由
+const state = reactive({
+  secondMeta: route.matched[1].meta as Meta, // 二级路由元信息
+  currentMeta: route.meta as Meta, // 当前路由元信息
 });
 </script>
 
@@ -16,12 +21,12 @@ const state: stateType = reactive({
   <div class="crumbs">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>
-        <el-icon :class="state.secondRouterMeta.icon" />
-        <span>&nbsp;{{ state.secondRouterMeta.title }}</span>
+        <el-icon :class="`el-icon-ali-${state.secondMeta.icon}`" />
+        <span>&nbsp;{{ state.secondMeta.title }}</span>
       </el-breadcrumb-item>
 
-      <el-breadcrumb-item v-if="state.currentRouterMeta.title != state.secondRouterMeta.title">
-        <span>{{ state.currentRouterMeta.title }}</span>
+      <el-breadcrumb-item v-if="state.currentMeta.title != state.secondMeta.title">
+        <span>{{ state.currentMeta.title }}</span>
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>

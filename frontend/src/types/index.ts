@@ -15,11 +15,20 @@ export interface ResponseData<T> {
 }
 
 /**
- * 缓存存储的字段
+ * 权限参数类型(限定可选值)
  */
-export interface userInfoType {
+export enum Roles {
+  admin = "admin", // 管理员权限
+  teacher = "teacher", // 教师权限
+  student = "student", // 学生权限
+}
+
+/**
+ * 缓存用户信息的字段
+ */
+export interface UserInfo {
   name: string; // 名称
+  image: string; // 头像
   address: string; // 地址
-  avatar: string; // 头像
-  modifyTime: string; // 最后更新时间
+  update_time: string; // 最后更新时间
 }

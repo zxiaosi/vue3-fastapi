@@ -1,4 +1,4 @@
-export const showStatus = (status: number) => {
+export const showStatus = (status?: number) => {
   let message = "";
   switch (status) {
     case 400:

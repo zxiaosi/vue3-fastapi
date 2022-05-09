@@ -46,7 +46,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 
 # https://www.cnblogs.com/CharmCode/p/14191112.html?ivk_sa=1024320u
-def check_jwt_token(token: Optional[str] = Header(...)) -> Union[str, Any]:
+async def check_jwt_token(token: Optional[str] = Header(...)) -> Union[str, Any]:
     """ 解密token """
     try:
         payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])

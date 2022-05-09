@@ -1,7 +1,7 @@
 /**
  * 路径参数类型(限定可选值)
  */
-export enum pathEnum {
+export enum PathEnum {
   dept = "department",
   major = "major",
   teacher = "teacher",
@@ -13,7 +13,7 @@ export enum pathEnum {
 /**
  * 查询参数类型
  */
-export interface queryType {
+export interface Query {
   id: string; // 请求id
   currentPage: number; // 页码
   pageSize: number; // 每页个数
@@ -22,15 +22,15 @@ export interface queryType {
 /**
  * form表单时间数据类型(创建时间和更新时间)
  */
-export interface formTimeType {
-  gmt_create?: string; // 创建时间
-  gmt_modify?: string; // 更新时间
+export interface TimeForm {
+  create_time?: string; // 创建时间
+  update_time?: string; // 更新时间
 }
 
 /**
  * 院系表数据类型(请使用 ?: , 后面继承接口用到)
  */
-export interface deptFormType extends formTimeType {
+export interface DeptForm extends TimeForm {
   id: number | string; // 编号
   name?: string; // 名称
   chairman?: string; // 主任名
@@ -40,7 +40,7 @@ export interface deptFormType extends formTimeType {
 /**
  * 专业表数据类型
  */
-export interface majorFormType extends formTimeType {
+export interface MajorForm extends TimeForm {
   id: number | string; // 编号
   name?: string; // 名称
   assistant?: string; // 辅导员名
@@ -51,7 +51,7 @@ export interface majorFormType extends formTimeType {
 /**
  * 教师表数据类型
  */
-export interface teachFormType extends formTimeType {
+export interface TeacherForm extends TimeForm {
   id: number | string; // 编号
   name?: string; // 名称
   sex?: "0" | "1"; // 性别
@@ -67,7 +67,7 @@ export interface teachFormType extends formTimeType {
 /**
  * 学生表数据类型
  */
-export interface stuFormType extends formTimeType {
+export interface StudentForm extends TimeForm {
   id: number | string; // 编号
   name?: string; // 名称
   sex?: "0" | "1"; // 性别
@@ -81,7 +81,7 @@ export interface stuFormType extends formTimeType {
 /**
  * 课程表数据类型
  */
-export interface courseFormType extends formTimeType {
+export interface CourseForm extends TimeForm {
   id: number | string; // 编号
   name?: string; // 名称
   credit?: number | string; // 学分
@@ -91,7 +91,7 @@ export interface courseFormType extends formTimeType {
 /**
  * 选课表数据类型
  */
-export interface selectCourseFormType extends formTimeType {
+export interface SelectCourseForm extends TimeForm {
   id: number | string; // 编号
   grade?: number | string; // 成绩
   student_id?: number | string; // 学生编号
@@ -102,18 +102,4 @@ export interface selectCourseFormType extends formTimeType {
 /**
  * form表单数据类型
  */
-export interface formDataType
-  extends deptFormType,
-    majorFormType,
-    teachFormType,
-    stuFormType,
-    courseFormType,
-    selectCourseFormType {}
-
-/**
- * 依赖数据类型
- */
-export interface relationData {
-  id: string | number; // 编号
-  name: string; // 名称
-}
+export interface FormData extends DeptForm, MajorForm, TeacherForm, StudentForm, CourseForm, SelectCourseForm {}

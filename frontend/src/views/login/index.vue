@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from "vue";
-import { useStore } from "@/stores";
+import { ref, reactive, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ElForm, ElMessage } from "element-plus";
+import { ElForm, ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 import { login } from "@/api/login";
 import { setLocal } from "@/request/auth";
-import type { userInfoType } from ".";
-
-// 状态管理
-const store = useStore();
-store.clearTags; // 清空标签
+import { getUserInfo } from "@/api";
+import type { UserNamePwd } from ".";
 
 // 全局路由
 const router = useRouter();
 
-const radio = ref("admin");
+// 权限
+const roles = ref<"admin" | "teacher" | "student">("admin");
 
 // 用户账号与密码
-const userInfo: userInfoType = reactive({
+const userInfo: UserNamePwd = reactive({
   username: "admin",
   password: "123456",
 });
 
-watch(radio, (newVal: string, oldVal: string) => {
+watch(roles, (newVal: string, oldVal: string) => {
   switch (newVal) {
     case "admin":
       userInfo.username = "admin";
@@ -40,33 +37,30 @@ watch(radio, (newVal: string, oldVal: string) => {
   }
 });
 
-// 实例化表单
-type FormInstance = InstanceType<typeof ElForm>;
 const loginRef = ref<FormInstance>();
 
 // 数据校验
-const loginRules = {
+const loginRules = reactive<FormRules>({
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-};
+});
 
 /**
  * 提交表单
  */
-const submitForm = (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  formEl.validate(async (valid: any) => {
+  await formEl.validate(async (valid: any) => {
     if (valid) {
-      let params = { username: userInfo.username, password: userInfo.password, scope: [radio.value] };
-      const { access_token } = await login(params);
-      ElMessage.success("登录成功");
-      setLocal("userInfo", JSON.stringify({ name: userInfo.username }));
+      const { access_token } = await login({ ...userInfo, scope: [roles.value] });
       setLocal("Authorization", access_token);
-      setLocal("role", radio.value);
+      setLocal("role", roles.value);
+      ElMessage.success("登录成功");
+      const { data: { name, image, address, update_time } } = await getUserInfo({ roles: roles.value });
+      setLocal("userInfo", JSON.stringify({ name, image, address, update_time }));
       router.push("/");
     } else {
       ElMessage.warning("数据校验失败！");
-      return false;
     }
   });
 };
@@ -86,7 +80,12 @@ const submitForm = (formEl: FormInstance | undefined) => {
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input type="password" placeholder="密码" v-model="userInfo.password" show-password maxlength="20" @keyup.enter="submitForm(loginRef)"> </el-input>
+          <el-input type="password" placeholder="密码" v-model="userInfo.password" show-password maxlength="20"
+            @keyup.enter="submitForm(loginRef)">
+            <template #prepend>
+              <el-button :icon="Lock" />
+            </template>
+          </el-input>
         </el-form-item>
 
         <div class="login-btn">
@@ -94,7 +93,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         </div>
 
         <p class="login-tips">
-          <el-radio-group v-model="radio">
+          <el-radio-group v-model="roles">
             <el-radio label="admin">管理员</el-radio>
             <el-radio label="teacher">教师</el-radio>
             <el-radio label="student">学生</el-radio>
@@ -114,6 +113,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   background-image: url(https://open.saintic.com/api/bingPic/);
   background-size: 100%;
 }
+
 .ms-title {
   width: 100%;
   line-height: 50px;
@@ -122,6 +122,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   color: #fff;
   border-bottom: 1px solid #ddd;
 }
+
 .ms-login {
   position: absolute;
   left: 50%;
@@ -132,17 +133,21 @@ const submitForm = (formEl: FormInstance | undefined) => {
   background: rgba(255, 255, 255, 0.3);
   overflow: hidden;
 }
+
 .ms-content {
   padding: 30px 30px;
 }
+
 .login-btn {
   text-align: center;
 }
+
 .login-btn button {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
 }
+
 .login-tips {
   font-size: 12px;
   line-height: 30px;

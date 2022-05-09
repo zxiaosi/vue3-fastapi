@@ -1,27 +1,23 @@
 import { defineStore } from "pinia";
+import type { UserInfo } from "@/types";
 
-interface tagType {
+interface Tags {
   name: string;
-  title: string;
   path: string;
-}
-
-interface stateType {
-  tagsList: tagType[];
-  collapse: boolean;
-  userInfo: any;
+  title: string;
 }
 
 export const useStore = defineStore({
   id: "index",
-  state: (): stateType => ({
-    tagsList: [], // 标签列表
-    collapse: false, // 侧边栏是否折叠
-    userInfo: {} as any, // 用户信息
+  state: () => ({
+    tagsList: [] as Tags[], // 标签列表
+    collapse: false as boolean, // 侧边栏是否折叠
+    userInfo: {} as UserInfo, // 用户信息
+    messages: 4 as number, // 消息数量
   }),
   getters: {
     tagNameList(state) {
-      return state.tagsList.map((item) => {
+      return state.tagsList.map((item: Tags) => {
         return item.name;
       });
     },
@@ -39,7 +35,7 @@ export const useStore = defineStore({
      * 添加路由对象
      * @param route 路由对象
      */
-    setTagsItem(route: tagType) {
+    setTagsItem(route: Tags) {
       this.tagsList.push(route);
     },
 
@@ -54,7 +50,7 @@ export const useStore = defineStore({
      * 关闭其他标签
      * @param data 标签数组
      */
-    closeTagsOther(data: tagType[]) {
+    closeTagsOther(data: Tags[]) {
       this.tagsList = data;
     },
   },

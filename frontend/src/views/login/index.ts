@@ -1,4 +1,4 @@
-export interface userInfoType {
+export interface UserNamePwd {
   username: string;
   password: string;
 }

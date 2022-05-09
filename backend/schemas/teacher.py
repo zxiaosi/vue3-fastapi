@@ -24,7 +24,7 @@ class TeacherIn(BaseModel):
 
 class TeacherUpdate(TeacherIn):
     """ 更新数据的字段验证 """
-    password: str = Field(max_length=60, example='密码')
+    password: Optional[str] = Field(max_length=60, example='密码')  # 前端返回可不带该字段
 
 
 class TeacherCreate(TeacherUpdate):

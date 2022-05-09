@@ -1,12 +1,11 @@
-import type { formDataType, relationData } from "@/types/table";
+import type { FormData } from "@/types/table";
 
-export interface stateType {
-  pathParam: any;
+export interface State {
   pageName: any;
-  searched: formDataType[];
+  searched: FormData[];
   isShowSearched: boolean;
   selectedList: string[];
-  relationData: relationData[];
+  relationData: any;
   showDialog: boolean;
   addOrUpdate: boolean;
 }

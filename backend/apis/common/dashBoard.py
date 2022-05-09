@@ -33,13 +33,12 @@ async def get_visit_todo_request(redis: MyRedis = Depends(get_redis)):
     return resp_200(data=data, msg='查询了访问量 && 待办事项 && 请求数')
 
 
-@router.post("/todo/add", response_class=ORJSONResponse, summary='添加待办')
+@router.post("/todo/add", summary='添加待办')
 async def add_todo(todo_in: Todo, redis: MyRedis = Depends(get_redis)):
     """ 添加待办 """
     text = {'title': todo_in.title, 'status': todo_in.status}
     await redis.cus_lpush('todo_list', text)
-    todo_list = await redis.list_loads('todo_list', 6)
-    return resp_200(data=todo_list, msg='添加待办成功！')
+    return resp_200(msg='添加待办成功！')
 
 
 @router.post("/todo/update", response_class=ORJSONResponse, summary='根据索引更新待办')
@@ -48,4 +47,4 @@ async def update_todo(todo_in: TodoId, redis: MyRedis = Depends(get_redis)):
     obj = await redis.get_list_by_index('todo_list', todo_in.id)
     obj["status"] = bool(1 - obj["status"])  # noqa 取反
     await redis.lset('todo_list', todo_in.id, json.dumps(obj))
-    return resp_200(data=None, msg='更新待办成功！')
+    return resp_200(msg='更新待办成功！')

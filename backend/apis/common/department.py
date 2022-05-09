@@ -66,3 +66,11 @@ async def delete_departments(idList: List, db: AsyncSession = Depends(get_db),
     if not rowcount:
         raise IdNotExist(err_desc="系统中不存在列表中的id.")
     return resp_200(msg='成功删除多个院系信息.')
+
+
+@router.get("/sort/{name}", summary='根据字段排序')
+async def get_select_courses(name: str, pageIndex: int = 1, pageSize: int = 10, db: AsyncSession = Depends(get_db)):
+    """ 查询所有院系 (pageIndex = -1 && pageSize = -1 表示查询所有) """
+    _count = await department.get_number(db)
+    _departments = await department.sort(db, name, pageIndex, pageSize)
+    return resp_200(data={"count": _count, "list": _departments}, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个院系信息.")

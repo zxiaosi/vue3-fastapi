@@ -10,4 +10,4 @@ from .teacher import Teacher
 from .student import Student
 from .admin import Admin
 from .course import Course
-from .select_course import SelectCourse
+from .selectCourse import SelectCourse

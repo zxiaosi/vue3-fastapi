@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { reactive, onMounted, inject, onUnmounted, watchEffect } from "vue";
-import { useStore } from "@/stores";
+import { reactive, onMounted, inject, onUnmounted } from "vue";
 import { UserFilled, List, Promotion } from "@element-plus/icons-vue";
-import { get_lang_todo_list, get_visit_todo_request, add_todo, update_todo } from "@/api/index";
-import { getLocal, setLocal } from "@/request/auth";
+import { getLangTodoList, getVisitTodoRequest, addTodo, updateTodo } from "@/api/index";
+import { getLocal } from "@/request/auth";
 import { dateFunction } from "@/utils/handleTime";
-import type { stateType } from ".";
+import { type State, RolesEnum } from ".";
+import type { UserInfo } from "@/types";
 
 // echarts图
 let echarts: any = inject("echarts");
 
-// 状态管理
-const store = useStore();
+// 缓存的用户信息
+const userInfo: UserInfo = reactive(JSON.parse(getLocal("userInfo")));
 
-const userInfo: any = reactive(JSON.parse(getLocal("userInfo"))); // 缓存的用户信息
-
-const state: stateType = reactive({
+const state: State = reactive({
+  identity: RolesEnum[getLocal("role")], // 角色权限
   languageDetails: [], // 语言使用详情
   todoList: [], // 待办列表
   visitNumber: 0, // 访问量
@@ -25,40 +24,29 @@ const state: stateType = reactive({
   todoText: "", // 待办文本
 });
 
-watchEffect(() => {
-  let user = JSON.parse(getLocal("userInfo"));
-  if (store.userInfo.image) {
-    Object.assign(userInfo, store.userInfo);
-  } else {
-    Object.assign(userInfo, user);
-  }
-  console.log("用户信息", userInfo);
-});
-
 let pieChart: any;
 let barChart: any;
 
 onMounted(async () => {
-  pieChart = echarts.init(document.getElementById("pie"));
-  barChart = echarts.init(document.getElementById("bar"));
-
   await getData();
 
+  pieChart = echarts.init(document.getElementById("pie"));
+  barChart = echarts.init(document.getElementById("bar"));
   echartPie();
   eachartBar();
 });
 
 // 销毁echarts
 onUnmounted(() => {
-  pieChart.dispose();
-  barChart.dispose();
+  pieChart?.dispose();
+  barChart?.dispose();
 });
 
 /**
  * 获取 语言详情 && 待办事项 || 获取 访问量 && 待办数 && 请求数
  */
 const getData = async () => {
-  const [{ data: langTodoList }, { data: visitTodoRequest }] = await Promise.all([get_lang_todo_list(), get_visit_todo_request()]);
+  const [{ data: langTodoList }, { data: visitTodoRequest }] = await Promise.all([getLangTodoList(), getVisitTodoRequest()]);
   state.todoList = langTodoList.todo_list;
   state.languageDetails = langTodoList.language_details;
   state.visitNumber = visitTodoRequest.visit_num;
@@ -66,27 +54,36 @@ const getData = async () => {
   state.requestNumber = visitTodoRequest.request_num;
 };
 
-// 添加待办
-const addTodo = async () => {
-  const { data } = await add_todo({ title: state.todoText });
+/**
+ * 添加待办事项
+ */
+const createTodo = async () => {
+  const { data } = await addTodo({ title: state.todoText });
   state.todoList = data;
   state.showDialog = false;
   await getData();
   state.todoText = "";
 };
 
-// 勾选待办
-const updateTodo = async (index: number) => {
-  await update_todo({ id: index });
+/**
+ * 勾选待办事项
+ */
+const modifyTodo = async (index: number) => {
+  await updateTodo({ id: index });
+  await getData();
 };
 
-// 取消
+/**
+ * 取消添加事项
+ */
 const cancel = () => {
   state.showDialog = false;
   state.todoText = "";
 };
 
-// echarts-pie
+/**
+ * echarts-pie(饼状图)
+ */
 const echartPie = () => {
   pieChart.setOption({
     title: { text: "信息", left: "center", top: "center" },
@@ -110,7 +107,9 @@ const echartPie = () => {
   };
 };
 
-// echarts-bar
+/**
+ * echarts-bar(柱状图)
+ */
 const eachartBar = () => {
   barChart.setOption({
     title: { text: "周进度", left: "center" },
@@ -138,7 +137,10 @@ const eachartBar = () => {
             <img :src="userInfo.image" class="user-avator" />
             <div class="user-info-cont">
               <div class="user-info-name">{{ userInfo.name }}</div>
-              <div>{{ userInfo.name === "admin" ? "超级管理员" : "普通用户" }}</div>
+              <div>
+                <el-icon size="16" class="el-icon-ali-id" />
+                {{ state.identity }}
+              </div>
             </div>
           </div>
           <div class="user-info-list">最后更新时间：{{ dateFunction(userInfo.update_time) }}</div>
@@ -221,7 +223,7 @@ const eachartBar = () => {
           <el-table :show-header="false" :data="state.todoList" style="width: 100%">
             <el-table-column width="40">
               <template #default="scope">
-                <el-checkbox v-model="scope.row.status" @change="updateTodo(scope.$index)" />
+                <el-checkbox v-model="scope.row.status" @change="modifyTodo(scope.$index)" />
               </template>
             </el-table-column>
 
@@ -264,7 +266,7 @@ const eachartBar = () => {
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="cancel">取 消</el-button>
-          <el-button type="primary" @click="addTodo">添 加</el-button>
+          <el-button type="primary" @click="createTodo">添 加</el-button>
         </span>
       </template>
     </el-dialog>
@@ -356,6 +358,10 @@ const eachartBar = () => {
 .user-info-cont div:first-child {
   font-size: 30px;
   color: #222;
+}
+
+.el-icon-ali-id {
+  font-size: 16px;
 }
 
 .user-info-list {

@@ -1,60 +1,40 @@
 <script setup lang="ts">
 import { reactive, onMounted } from "vue";
-import { get_current_user, read_data } from "@/api";
-import { getLocal, setLocal } from "@/request/auth";
 import { Clock } from "@element-plus/icons-vue";
-import { dateFunction } from "../../utils/handleTime";
-import { pathEnum } from "@/types/table";
-import type { UserInfo, Details } from ".";
-
-// 性别枚举
-const sexEnum = {
-  "0": "男",
-  "1": "女",
-};
-
-// 学历枚举
-const eduEnum = {
-  "1": "学士",
-  "2": "硕士",
-  "3": "博士",
-};
-
-// 职称枚举
-const titleEnum = {
-  "1": "助教",
-  "2": "讲师",
-  "3": "副教授",
-  "4": "教授",
-};
+import { getUserInfo, readData } from "@/api";
+import { getLocal, setLocal } from "@/request/auth";
+import { dateFunction } from "@/utils/handleTime";
+import { PathEnum } from "@/types/table";
+import { type UserInfo, type State, SexEnum, EduEnum, TitleEnum } from ".";
 
 let userInfo: UserInfo = reactive({});
 
-const state = reactive({
+const state: State = reactive({
   role: "",
   foreignKeyName: "",
-  details: [] as Details[],
+  details: [],
 });
 
 onMounted(async () => {
   let role = getLocal("role");
   state.role = role;
-  const data = await getUserInfo(role); // 请求接口
+  const data = await getUser(role); // 请求接口
   await processData(role, data); // 处理数据
-  console.log("userInfo--", userInfo);
 });
 
 /**
  * 获取用户信息
  */
-const getUserInfo = async (role: any) => {
-  const { data } = await get_current_user({ roles: role });
+const getUser = async (role: any) => {
+  const { data } = await getUserInfo({ roles: role });
   Object.assign(userInfo, data);
-  console.log(data);
   setLocal("userInfo", JSON.stringify(data));
   return data;
 };
 
+/**
+ * 加工数据(感觉权限返回不同用户的信息)
+ */
 const processData = async (role: string, data: any) => {
   switch (role) {
     case "admin":
@@ -65,24 +45,24 @@ const processData = async (role: string, data: any) => {
       ];
       break;
     case "teacher":
-      const { data: dept } = await read_data({ path: pathEnum.dept, id: data.department_id });
+      const { data: dept } = await readData({ path: PathEnum.dept, id: data.department_id });
       state.details = [
         { text: "头像", value: data.image },
         { text: "职工号", value: data.id },
-        { text: "性别", value: sexEnum[data.sex] },
+        { text: "性别", value: SexEnum[data.sex] },
         { text: "生日", value: data.birthday },
-        { text: "学历", value: eduEnum[data.education] },
-        { text: "职称", value: titleEnum[data.title] },
+        { text: "学历", value: EduEnum[data.education] },
+        { text: "职称", value: TitleEnum[data.title] },
         { text: "院系编号", value: dept.name },
         { text: "上次登录地点", value: data.address },
       ];
       break;
     case "student":
-      const { data: major } = await read_data({ path: pathEnum.major, id: data.major_id });
+      const { data: major } = await readData({ path: PathEnum.major, id: data.major_id });
       state.details = [
         { text: "头像", value: data.image },
         { text: "学号", value: data.id },
-        { text: "性别", value: sexEnum[data.sex] },
+        { text: "性别", value: SexEnum[data.sex] },
         { text: "生日", value: data.birthday },
         { text: "专业编号", value: major.name },
         { text: "上次登录地点", value: data.address },

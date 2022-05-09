@@ -3,6 +3,8 @@
 # @Time : 2021/9/22 10:01
 # @Author : zxiaosi
 # @desc : 选课表模型
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 from schemas import GMT
@@ -10,7 +12,7 @@ from schemas import GMT
 
 class SelectCourseIn(BaseModel):
     """ 共享模型字段 """
-    grade: str = Field(default=0, regex=r'^100|(^([0]{0})([1-9]{0,1})([0-9]{1}))$', max_length=3, example='成绩')
+    grade: Optional[str] = Field(regex=r'(^\s{0}$)|(^100)|(^([0]{0})([1-9]?)([0-9]))$', max_length=3, example='成绩')
     student_id: str = Field(regex=r'^[1-9][0-9]{9}$', min_length=10, max_length=10, example='学号：1810020401')
     teacher_id: str = Field(regex=r'^[1-9][0-9]{5}$', min_length=6, max_length=6, example='职工号：180404')
     course_id: str = Field(regex=r'^[1-9][0-9]{3}$', min_length=4, max_length=4, example='课程编号：1101')

@@ -1,5 +1,5 @@
 import http from "@/request/http";
-import { API_URL } from "@/assets/global";
+import { API_URL } from "@/assets/js/global";
 import type { loginType } from "./model";
 
 /**
@@ -18,7 +18,7 @@ export const login = (data: loginType): Promise<any> =>
         for (var it in data) {
           // 判断是否是数组
           if (Array.isArray(data[it])) {
-            let tmp = data[it].join(" "); // 将 ['admin','teacher','student'] 中 , 转为 ' '
+            let tmp = data[it].join(" "); // 将 ['admin','teacher','student'] 转为 ['admin' 'teacher' 'student']
             ret += encodeURIComponent(it) + "=" + encodeURIComponent(tmp) + "&";
           } else {
             ret += encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";

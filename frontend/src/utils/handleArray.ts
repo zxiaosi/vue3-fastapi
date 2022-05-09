@@ -1,4 +1,4 @@
-import type { formDataType } from "@/types/table";
+import type { FormData } from "@/types/table";
 
 /**
  * 加工数组
@@ -18,7 +18,7 @@ export const valueList = (data: any[], keyName: string): string[] => {
  * @param {*} data 外键对应的表数据
  * @returns 对应的name
  */
-export const byIdGetName = (id: string, data: formDataType[]) => {
+export const byIdGetName = (id: string, data: FormData[]) => {
   if (!id) {
     return null;
   }

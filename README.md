@@ -30,8 +30,7 @@
 + `2.4` 加入TS
 + `2.5` 支持PostgreSQL，实现图片上传
 + `2.6` 前端文件分离(vue与ts)，后端实现权限管理
-
-TODO：学习 `SQLAlchemy1.4`, [`Fastapi异步操作数据库`](https://fastapi.tiangolo.com/zh/advanced/async-sql-databases/)
++ `2.7` 简单实现权限管理
 
 ## 开启服务
 

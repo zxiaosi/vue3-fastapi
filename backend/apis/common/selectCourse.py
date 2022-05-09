@@ -64,3 +64,11 @@ async def delete_courses(idList: List, db: AsyncSession = Depends(get_db),
     if not rowcount:
         raise IdNotExist(err_desc="系统中不存在列表中的id.")
     return resp_200(msg='成功删除多个选课信息.')
+
+
+@router.get("/get/", summary='根据页码 pageIndex 和每页个数 pageSize 查询所有选课')
+async def get_select_courses(pageIndex: int = 1, pageSize: int = 10, db: AsyncSession = Depends(get_db)):
+    """ 查询所有院系 (pageIndex = -1 && pageSize = -1 表示查询所有) """
+    _count = await selectCourse.get_number(db)
+    _select_courses = await selectCourse.get_multi_id_name(db, pageIndex, pageSize)
+    return resp_200(data={"count": _count, "list": _select_courses}, msg=f"查询了第 {pageIndex} 页中的 {pageSize} 个选课信息.")

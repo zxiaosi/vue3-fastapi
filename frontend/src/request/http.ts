@@ -1,10 +1,10 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
+import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
 import { ElLoading, ElMessage } from "element-plus";
 import type { LoadingInstance } from "element-plus/lib/components/loading/src/loading";
 import type { ResponseData } from "@/types";
+import { API_URL, TIME_OUT } from "@/assets/js/global";
+import { clearLocal, getLocal } from "./auth";
 import { showStatus } from "./statusCode";
-import { API_URL, TIME_OUT } from "@/assets/global";
-import { getLocal } from "./auth";
 
 // 请求
 class AppRequest {
@@ -32,13 +32,12 @@ class AppRequest {
    * 开始加载动画: https://www.cxybb.com/article/weixin_45685252/114917309
    */
   startLoading() {
-    this.closeLoading(); // 先清除动画, 防止连续请求两次
+    this.closeLoading(); // 先清除动画, 防止连续请求多次加载
 
     this.loading = ElLoading.service({
-      // target: ".el-table, .table-flex, .region", // 设置加载动画区域
       target: ".el-table, .ms-content, .info", // 设置加载动画区域(样式class名)
       lock: true, // 锁定屏幕的滚动
-      text: "正在请求数据...", // 文案
+      text: "正在请求数据...", // 显示文案
     });
 
     // 设定定时器，超时5S后自动关闭遮罩层，避免请求失败时，遮罩层一直存在的问题
@@ -55,12 +54,12 @@ class AppRequest {
 
 // 创建对象
 const http = new AppRequest({
-  baseURL: API_URL, // url链接
+  baseURL: API_URL, // 请求地址
   timeout: TIME_OUT, // 超时时间
   headers: { "Content-Type": "application/json;charset=utf-8" }, // 请求头
   transformRequest: [
-    // 请求参数序列化(对象转字符串)
     (data) => {
+      // 请求参数序列化(对象转字符串)
       return JSON.stringify(data);
     },
   ],
@@ -69,8 +68,8 @@ const http = new AppRequest({
     return true;
   },
   transformResponse: [
-    // 响应数据反序列化(字符串转对象)
     (data) => {
+      // 响应数据反序列化(字符串转对象)
       if (typeof data === "string" && data.startsWith("{")) {
         data = JSON.parse(data);
       }
@@ -87,15 +86,15 @@ http.instance.interceptors.request.use(
     //获取token，并将其添加至请求头中
     let token = getLocal("Authorization");
     if (token) {
-      // @ts-ignore
+      // @ts-ignore (防止下面报错)
       config.headers.Authorization = "Bearer " + token; // 前面一定要加 Bearer
     }
 
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     // @ts-ignore
-    error.data.msg = "服务器异常，请联系管理员！";
+    error.data.msg = "请求超时或服务器异常，请检查网络或联系管理员！";
     return Promise.reject(error);
   }
 );
@@ -107,28 +106,28 @@ http.instance.interceptors.response.use(
 
     let msg = "";
     if (response.status == 200 && typeof response.status == "number") {
+      // 请求成功
       return response;
     } else if (response.status == 401) {
       // 后端验证是否有token,没有则返回401
       window.location.href = "/login"; // 跳转登录
-      return false;
+      clearLocal(); // 清除本地存储
+      msg = "Token已过期，请重新登录！";
+    } else if (response.status == 403) {
+      window.location.href = "/403"; // 没有权限
+      msg = "没有权限！";
     } else {
       if (response.data.msg != null) {
         msg = response.data.msg; // 后端返回的msg
       } else {
         msg = showStatus(response.status); // 后端未返回msg,前端根据状态码自定义的msg
       }
-      ElMessage.error(msg);
     }
+    ElMessage.error({ message: msg, grouping: true });
   },
-  (error) => {
-    if (axios.isCancel(error)) {
-      console.log("repeated request: " + error.message);
-    } else {
-      error.data = {};
-      error.data.msg = "请求超时或服务器异常，请检查网络或联系管理员！";
-      ElMessage.error(error.data.msg);
-    }
+  (error: AxiosError) => {
+    let msg = showStatus(error.response?.status);
+    ElMessage.error(msg);
     return Promise.reject(error);
   }
 );

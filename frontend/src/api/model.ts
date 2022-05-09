@@ -1,4 +1,4 @@
-import type { formDataType, pathEnum } from "@/types/table";
+import type { FormData, PathEnum } from "@/types/table";
 
 /**
  * 登录
@@ -9,24 +9,27 @@ export interface loginType {
   scope: any;
 }
 
-export interface GetCurrentUser {
-  roles: 'admin' | 'student' | 'teacher';
+/**
+ * 获取用户信息
+ */
+export interface GetUserInfo {
+  roles: "admin" | "student" | "teacher";
 }
 
 /**
  * 添加待办/根据索引更新待办
  */
-export interface todoType {
+export interface Todo {
   id?: number; // 待办索引(临时数据)
   title?: string; // 待办文案
   status?: boolean; // 是否选中
 }
 
 /**
- * 获取所有数据
+ * 获取所有数据(表格数据)
  */
-export interface tableDataListType {
-  path: pathEnum;
+export interface TableDataList {
+  path: PathEnum; // 路径参数
   pageIndex?: number; // 页码
   pageSize?: number; // 每页个数
 }
@@ -34,22 +37,22 @@ export interface tableDataListType {
 /**
  * 根据id查询/删除(多条)信息
  */
-export interface tableDataType {
-  path: pathEnum;
+export interface TableData {
+  path: PathEnum; // 路径参数
   id: number | string; // id
 }
 
 /**
  * 添加/更新信息
  */
-export interface tableObjectType extends formDataType {
-  path: pathEnum;
+export interface TableObject extends FormData {
+  path: PathEnum; // 路径参数
 }
 
 /**
  * 同时删除多个信息
  */
-export interface delDataListType {
-  path: pathEnum;
+export interface DelDataList {
+  path: PathEnum; // 路径参数
   idList: number[] | string[]; // id列表
 }

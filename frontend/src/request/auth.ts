@@ -21,13 +21,8 @@ export function removeLocal(key?: string) {
 }
 
 /*
- * getBaseFile64
+ * 清空所有Item
  * */
-export async function getBaseFile64(file: Blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+export function clearLocal() {
+  return localStorage.clear();
 }

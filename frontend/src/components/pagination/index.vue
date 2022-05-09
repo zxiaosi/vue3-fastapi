@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { reactive } from "vue";
-import type { stateType } from ".";
 
-// 此处接口不能写到其他页面
-interface propsType {
-  currentPage: number; // 当前页码
+// 由上个页面传下来的数据, 不能写到其他页面
+interface Props {
+  currentPage: number; // 当前页码 G
   pageSize: number; // 每页个数
   pageTotal: number; // 总个数
   disabled: boolean; // 是否显示分页
 }
 
-const props = defineProps<propsType>();
+const props = defineProps<Props>();
 
-const state: stateType = reactive({
-  pageIndex: props.currentPage, // 当前页码(不能直接修改props里面的值)
-  layout: "->, total, prev, pager, next, jumper", // 布局
+const state = reactive({
+  pageIndex: props.currentPage as number, // 当前页码(不能直接修改props里面的值)
+  layout: "->, total, prev, pager, next, jumper" as string, // 布局
 });
 
 const emit = defineEmits<{

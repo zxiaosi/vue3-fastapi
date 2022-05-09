@@ -3,6 +3,8 @@
 # @Time : 2021/9/22 10:01
 # @Author : zxiaosi
 # @desc : 管理员表的模型
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 from core import settings
@@ -18,7 +20,7 @@ class AdminIn(BaseModel):
 
 class AdminUpdate(AdminIn):
     """ 更新数据的字段验证 """
-    password: str = Field(max_length=60, example='管理员密码')
+    password: Optional[str] = Field(max_length=60, example='管理员密码')  # 前端返回可不带该字段
 
 
 class AdminCreate(AdminUpdate):
