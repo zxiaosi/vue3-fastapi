@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { reactive, onMounted, inject, onUnmounted } from "vue";
 import { UserFilled, List, Promotion } from "@element-plus/icons-vue";
-import { getLangTodoList, getVisitTodoRequest, addTodo, updateTodo } from "@/api/index";
+import { getDashboard, getLangList, addTodo, updateTodo } from "@/api/index";
 import { getLocal } from "@/request/auth";
 import { dateFunction } from "@/utils/handleTime";
-import { type State, RolesEnum } from ".";
+import { type State, type Language, RolesEnum } from ".";
 import type { UserInfo } from "@/types";
 
 // echarts图
@@ -15,11 +15,11 @@ const userInfo: UserInfo = reactive(JSON.parse(getLocal("userInfo")));
 
 const state: State = reactive({
   identity: RolesEnum[getLocal("role")], // 角色权限
-  languageDetails: [], // 语言使用详情
+  langDetails: [], // 语言使用详情
   todoList: [], // 待办列表
-  visitNumber: 0, // 访问量
-  todoNumber: 0, // 待办数
-  requestNumber: 0, // 请求次数
+  visitNum: 0, // 访问量
+  todoNum: 0, // 待办数
+  requestNum: 0, // 请求次数
   showDialog: false, // 待办添加弹框
   todoText: "", // 待办文本
 });
@@ -46,12 +46,42 @@ onUnmounted(() => {
  * 获取 语言详情 && 待办事项 || 获取 访问量 && 待办数 && 请求数
  */
 const getData = async () => {
-  const [{ data: langTodoList }, { data: visitTodoRequest }] = await Promise.all([getLangTodoList(), getVisitTodoRequest()]);
-  state.todoList = langTodoList.todo_list;
-  state.languageDetails = langTodoList.language_details;
-  state.visitNumber = visitTodoRequest.visit_num;
-  state.todoNumber = visitTodoRequest.todo_num;
-  state.requestNumber = visitTodoRequest.request_num;
+  const [{ data: langList }, { data: dashboard }] = await Promise.all([getLangList(), getDashboard()]);
+  let item = processData(langList);
+  state.langDetails = item;
+  state.visitNum = dashboard.visit_num;
+  state.todoNum = dashboard.todo_num;
+  state.requestNum = dashboard.request_num;
+  state.todoList = dashboard.todo_list;
+};
+
+/**
+ * 随机生成十六进制颜色
+ * https://www.jb51.net/article/102109.htm
+ */
+const randomHexColor = () => {
+  return "#" + ("00000" + ((Math.random() * 0x1000000) << 0).toString(16)).slice(-6);
+};
+
+/**
+ * 加工数据
+ * @param data
+ */
+const processData = (data: any) => {
+  console.log(randomHexColor());
+  let keyList = Object.keys(data); // key列表
+  let valueList = Object.values(data); // value列表
+  let total = eval(valueList.join("+")); // 总数
+  let proportion: number = 0; // 比例
+  let item: Language[] = []; // 加工后数据
+  for (let i = 0; i < 3; i++) {
+    let percentage = Math.trunc((data[keyList[i]] / total) * 100);
+    item.push({ title: keyList[i], percentage, color: randomHexColor() });
+    proportion += percentage;
+  }
+  // Other
+  item.push({ title: "Other", percentage: 100 - proportion, color: randomHexColor() });
+  return item;
 };
 
 /**
@@ -94,9 +124,9 @@ const echartPie = () => {
         type: "pie",
         radius: ["40%", "70%"],
         data: [
-          { value: state.visitNumber, name: "用户访问量" },
-          { value: state.todoNumber, name: "待办事项" },
-          { value: state.requestNumber, name: "请求次数" },
+          { value: state.visitNum, name: "用户访问量" },
+          { value: state.todoNum, name: "待办事项" },
+          { value: state.requestNum, name: "请求次数" },
         ],
       },
     ],
@@ -156,7 +186,7 @@ const eachartBar = () => {
           </template>
 
           <!-- 进度条 -->
-          <el-table :show-header="false" :data="state.languageDetails" class="language">
+          <el-table :show-header="false" :data="state.langDetails" class="language">
             <el-table-column width="100">
               <template #default="scope">{{ scope.row.title }}</template>
             </el-table-column>
@@ -179,7 +209,7 @@ const eachartBar = () => {
               <div class="grid-content grid-con-1">
                 <el-icon class="grid-con-icon"><user-filled /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">{{ state.visitNumber }}</div>
+                  <div class="grid-num">{{ state.visitNum }}</div>
                   <div>用户访问量</div>
                 </div>
               </div>
@@ -191,7 +221,7 @@ const eachartBar = () => {
               <div class="grid-content grid-con-2">
                 <el-icon class="grid-con-icon"><list /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">{{ state.todoNumber }}</div>
+                  <div class="grid-num">{{ state.todoNum }}</div>
                   <div>待办事项</div>
                 </div>
               </div>
@@ -203,7 +233,7 @@ const eachartBar = () => {
               <div class="grid-content grid-con-3">
                 <el-icon class="grid-con-icon"><promotion /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">{{ state.requestNumber }}</div>
+                  <div class="grid-num">{{ state.requestNum }}</div>
                   <div>请求次数</div>
                 </div>
               </div>

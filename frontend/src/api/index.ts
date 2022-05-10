@@ -1,3 +1,4 @@
+import axios from "axios";
 import { get, post, put, del } from "@/request";
 import type { GetUserInfo, Todo, TableDataList, TableData, TableObject, DelDataList } from "./model";
 
@@ -12,14 +13,9 @@ export const logout = (): Promise<any> => post("/logout");
 export const getUserInfo = (data: GetUserInfo): Promise<any> => get(`${data.roles}/index`);
 
 /**
- * 获取首页数据(语言详情 && 待办事项)
+ * 查询首页数据(访问量 && 待办事项 && 请求数 && 待办事项)
  */
-export const getLangTodoList = (): Promise<any> => get("/dashboard/lang_todo_list");
-
-/**
- * 查询首页数据(访问量 && 待办事项 && 请求数)
- */
-export const getVisitTodoRequest = (): Promise<any> => get("/dashboard/visit_todo_request");
+export const getDashboard = (): Promise<any> => get("/dashboard");
 
 /**
  * 添加待办
@@ -71,3 +67,10 @@ export const deleteData = (data: TableData): Promise<any> => del(`${data.path}/$
  * @param {*} data id列表
  */
 export const deleteDatas = (data: DelDataList): Promise<any> => post(`${data.path}/del/`, data.idList);
+
+/**
+ * 获取语言详情
+ */
+export const getLangList = async (): Promise<any> => {
+  return await axios.get("https://api.github.com/repos/zxiaosi/Vue3-FastAPI/languages");
+};

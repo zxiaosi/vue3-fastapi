@@ -1,11 +1,11 @@
 import http from "@/request/http";
 import { API_URL } from "@/assets/js/global";
-import type { loginType } from "./model";
+import type { Login } from "./model";
 
 /**
  * 登录(发送表单请求)
  */
-export const login = (data: loginType): Promise<any> =>
+export const login = async (data: Login): Promise<any> =>
   http.request({
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     url: `${API_URL}/login`,

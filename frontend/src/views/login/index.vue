@@ -56,7 +56,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       setLocal("Authorization", access_token);
       setLocal("role", roles.value);
       ElMessage.success("登录成功");
-      const { data: { name, image, address, update_time } } = await getUserInfo({ roles: roles.value });
+      const {
+        data: { name, image, address, update_time },
+      } = await getUserInfo({ roles: roles.value });
       setLocal("userInfo", JSON.stringify({ name, image, address, update_time }));
       router.push("/");
     } else {
@@ -80,8 +82,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input type="password" placeholder="密码" v-model="userInfo.password" show-password maxlength="20"
-            @keyup.enter="submitForm(loginRef)">
+          <el-input type="password" placeholder="密码" v-model="userInfo.password" show-password maxlength="20" @keyup.enter="submitForm(loginRef)">
             <template #prepend>
               <el-button :icon="Lock" />
             </template>

@@ -11,11 +11,11 @@ export interface Todo {
 
 export interface State {
   identity: string;
-  languageDetails: Language[];
+  langDetails: Language[];
   todoList: Todo[];
-  visitNumber: number;
-  todoNumber: number;
-  requestNumber: number;
+  visitNum: number;
+  todoNum: number;
+  requestNum: number;
   showDialog: boolean;
   todoText: string;
 }

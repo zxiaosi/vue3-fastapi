@@ -3,7 +3,7 @@ import type { FormData, PathEnum } from "@/types/table";
 /**
  * 登录
  */
-export interface loginType {
+export interface Login {
   username: string;
   password: string;
   scope: any;
