@@ -8,6 +8,9 @@ set "visit_num" 1
 set "request_num" 1
 ```
 
+>Github <font color="red">公开</font>仓库详情见 API: https://api.github.com/repos/user/repo/languages
+>例如：https://api.github.com/repos/zxiaosi/Vue3-FastAPI/languages
+
 ```sh
 rpush "language_details" {"title": "Python", "percentage": 45.4, "color": "#f1e05a"}
 

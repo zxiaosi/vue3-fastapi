@@ -15,22 +15,15 @@ from utils import resp_200
 router = APIRouter()
 
 
-@router.get("/dashboard/lang_todo_list", response_class=ORJSONResponse, summary='语言详情 && 待办事项')
-async def get_lang_todo(redis: MyRedis = Depends(get_redis)):
-    """ 查询首页数据(语言详情 && 待办事项) """
-    language_details = await redis.list_loads('language_details')
-    todo_list = await redis.list_loads('todo_list', 6)
-    return resp_200(data={'todo_list': todo_list, 'language_details': language_details}, msg='查询了语言详情 && 待办事项')
-
-
-@router.get("/dashboard/visit_todo_request", response_class=ORJSONResponse, summary='访问量 && 待办数 && 请求数')
+@router.get("/dashboard", response_class=ORJSONResponse, summary='访问量 && 待办数 && 请求数 && 待办事项')
 async def get_visit_todo_request(redis: MyRedis = Depends(get_redis)):
-    """ 查询首页数据(访问量 && 待办事项 && 请求数) """
+    """ 查询首页数据(访问量 && 待办事项 && 请求数 && 待办事项) """
     visit_num = await redis.get('visit_num')
     todo_num = await redis.llen('todo_list')
     request_num = await redis.get('request_num')
-    data = {'visit_num': visit_num, 'todo_num': todo_num, 'request_num': request_num}
-    return resp_200(data=data, msg='查询了访问量 && 待办事项 && 请求数')
+    todo_list = await redis.list_loads('todo_list', 6)
+    data = {'visit_num': visit_num, 'todo_num': todo_num, 'request_num': request_num, 'todo_list': todo_list}
+    return resp_200(data=data, msg='查询了访问量 && 待办事项 && 请求数 && 待办事项')
 
 
 @router.post("/todo/add", summary='添加待办')

@@ -5,6 +5,7 @@
 + [Vue3++TS+ElementPlus+Vite](http://8.136.82.204:8001/)
 + [FastAPI接口预览](http://8.136.82.204:8000/)
 + 🎉🎉🎉感谢 [wendingming](https://gitee.com/wendingming) 整理的 [<font color="red">项目部署的准备工作</font>](https://gitee.com/zxiaosi/fast-api/issues/I4V6WV)
++ 🎉🎉🎉感谢 [wendingming](https://gitee.com/dreamrise) 整理的 [<font color="red">运行配置介绍</font>](https://gitee.com/zxiaosi/fast-api/issues/I56HPN)
 
 ## 安装
 
