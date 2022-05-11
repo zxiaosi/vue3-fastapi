@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2022/1/17 15:15
 # @Author : zxiaosi
-# @desc : 管理员首页
+# @desc : 首页
 import json
 from fastapi import APIRouter, Depends
 from fastapi.responses import ORJSONResponse

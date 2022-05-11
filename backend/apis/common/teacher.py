@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apis.deps import get_db, get_current_user
-from schemas import Teacher, TeacherCreate, TeacherUpdate, Result, ResultPlus
+from schemas import TeacherCreate, TeacherUpdate, TeacherOut as Teacher, Result, ResultPlus
 from crud import teacher
 from utils import resp_200, IdNotExist
 

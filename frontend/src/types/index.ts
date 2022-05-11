@@ -27,6 +27,7 @@ export enum Roles {
  * 缓存用户信息的字段
  */
 export interface UserInfo {
+  id: number | string; // 用户id
   name: string; // 名称
   image: string; // 头像
   address: string; // 地址

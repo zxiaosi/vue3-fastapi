@@ -55,9 +55,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def create(self, db: AsyncSession, obj_in: CreateSchemaType) -> int:
         """ 添加对象 """
-        if self.model.__tablename__ != 'selectcourse':
+        if self.model.__tablename__ not in ['taught', 'elective']:
             setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
-        sql = insert(self.model).values(obj_in.dict())
+        if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
+            obj_data = obj_in
+        else:
+            obj_data = obj_in.dict()
+        sql = insert(self.model).values(obj_data)
         result = await db.execute(sql)
         await db.commit()
         return result.rowcount

@@ -8,4 +8,5 @@ export interface State {
   relationData: any;
   showDialog: boolean;
   addOrUpdate: boolean;
+  isStudent: boolean;
 }

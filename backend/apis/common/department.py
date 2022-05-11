@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apis.deps import get_db, get_current_user
-from schemas import DepartmentUpdate, DepartmentCreate, Department, Result, ResultPlus
+from schemas import DepartmentUpdate, DepartmentCreate, DepartmentOut as Department, Result, ResultPlus
 from crud import department
 from utils import resp_200, IdNotExist
 

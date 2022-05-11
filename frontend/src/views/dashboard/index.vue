@@ -68,7 +68,6 @@ const randomHexColor = () => {
  * @param data
  */
 const processData = (data: any) => {
-  console.log(randomHexColor());
   let keyList = Object.keys(data); // key列表
   let valueList = Object.values(data); // value列表
   let total = eval(valueList.join("+")); // 总数
@@ -246,7 +245,7 @@ const eachartBar = () => {
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text" @click="state.showDialog = true">添加</el-button>
+              <el-button size="small" style="float: right" type="primary" @click="state.showDialog = true">添加</el-button>
             </div>
           </template>
 
@@ -412,6 +411,12 @@ const eachartBar = () => {
 
 .mgb20 {
   margin-bottom: 20px;
+}
+
+.clearfix {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .todo-item {

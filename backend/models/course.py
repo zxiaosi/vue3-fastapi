@@ -20,4 +20,6 @@ class Course(Base):
 
     period = Column(SmallInteger, server_default='0', comment='课时')
 
-    selectCourses = relationship('SelectCourse')  # 不是字段, 可以通过 course ORM对象引用 selectCourse 表的类集合
+    taught = relationship('Taught')  # 不是字段, 可以通过 course ORM对象引用 taught 表的类集合
+
+    elective = relationship('Elective')  # 不是字段, 可以通过 elective ORM对象引用 taught 表的类集合

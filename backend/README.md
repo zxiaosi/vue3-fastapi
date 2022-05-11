@@ -37,6 +37,7 @@
 + `v4.9` 支持PostgreSQL,以及图片上传
 + `v5.0` 后台实现权限管理模块
 + `v5.1` 整理接口,简单实现权限管理模块
++ `v5.2` 调整数据库结构
 
 ## 安装
 
@@ -101,7 +102,7 @@
             |-- department.py	    # 院系表接口
             |-- major.py	        # 专业表接口
             |-- index.py	        # 管理员首页    
-            |-- selectCourse.py	    # 选课表接口
+            |-- elective.py	    # 选课表接口
             |-- student.py	        # 学生表接口
             |-- teacher.py	        # 教师表接口   
         |-- common                  
@@ -124,7 +125,7 @@
 		|-- course.py	        # 课程表
 		|-- department.py	    # 院系表
 		|-- major.py		    # 专业表
-		|-- selectCourse.py     # 选课表
+		|-- elective.py     # 选课表
 		|-- teacher.py		    # 教师表
 		|-- student.py		    # 学生表
 		
@@ -148,7 +149,7 @@
 		|-- course.py			# 课程表
 		|-- department.py		# 院系表
 		|-- major.py			# 专业表
-		|-- selectCourse.py		# 选课表
+		|-- elective.py		# 选课表
 		|-- student.py			# 学生表
 		|-- teacher.py			# 教师表
 		
@@ -168,7 +169,7 @@
 		|-- login.py		    # 登录模型
 		|-- major.py			# 专业表模型
 		|-- result.py			# 返回数据模型
-		|-- selectCourse.py		# 选课表模型
+		|-- elective.py		# 选课表模型
 		|-- student.py			# 学生表模型
 		|-- teacher.py			# 教师表模型
 		|-- todo.py			    # 待办模型

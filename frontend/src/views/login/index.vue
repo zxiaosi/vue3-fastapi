@@ -57,9 +57,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       setLocal("role", roles.value);
       ElMessage.success("登录成功");
       const {
-        data: { name, image, address, update_time },
+        data: { id, name, image, address, update_time },
       } = await getUserInfo({ roles: roles.value });
-      setLocal("userInfo", JSON.stringify({ name, image, address, update_time }));
+      setLocal("userInfo", JSON.stringify({ id, name, image, address, update_time }));
       router.push("/");
     } else {
       ElMessage.warning("数据校验失败！");

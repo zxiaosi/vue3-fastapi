@@ -33,6 +33,6 @@ class Teacher(Base):
 
     image = Column(String(60), server_default=f'{settings.BASE_URL}/{settings.STATIC_DIR}/author.jpg', comment='头像')
 
-    department_id = Column(Integer, ForeignKey('department.id', ondelete='CASCADE'), doc='院系编号')
+    department_id = Column(Integer, ForeignKey('department.id', ondelete='CASCADE'), nullable=False, doc='院系编号')
 
-    selectCourses = relationship('SelectCourse')  # 不是字段, 可以通过 teacher ORM对象引用 selectCourse 表的类集合
+    taught = relationship('Taught')  # 不是字段, 可以通过 teacher ORM对象引用 taught 表的类集合

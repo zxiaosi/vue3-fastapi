@@ -6,7 +6,7 @@
 from core.logger import logger
 from db import engine
 from db.data import *
-from models import Base, Department, Major, Student, Teacher, Admin, Course, SelectCourse
+from models import Base, Department, Major, Student, Teacher, Admin, Course, Taught, Elective
 
 
 async def init_db():
@@ -38,15 +38,14 @@ async def init_data():
     """ 初始化表数据 """
     try:
         async with engine.begin() as conn:
-            # await conn.execute(Permission.__table__.insert(), [permission for permission in
-            # generate_permission_data()])
             await conn.execute(Department.__table__.insert(), [department for department in departmentData])
             await conn.execute(Major.__table__.insert(), [major for major in majorData])
             await conn.execute(Student.__table__.insert(), [student for student in studentData])
             await conn.execute(Teacher.__table__.insert(), [teacher for teacher in teacherData])
             await conn.execute(Admin.__table__.insert(), [admin for admin in adminData])
             await conn.execute(Course.__table__.insert(), [course for course in courseData])
-            await conn.execute(SelectCourse.__table__.insert(), [selectCourse for selectCourse in selectCourseData])
+            await conn.execute(Taught.__table__.insert(), [selectCourse for selectCourse in taughtData])
+            await conn.execute(Elective.__table__.insert(), [selectCourse for selectCourse in electiveData])
             logger.info(f"成功初始化表数据!!!")
     except Exception as e:
         logger.error(f"初始化表数据失败!!! -- 错误信息如下:\n{e}")

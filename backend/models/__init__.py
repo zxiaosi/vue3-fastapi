@@ -10,4 +10,5 @@ from .teacher import Teacher
 from .student import Student
 from .admin import Admin
 from .course import Course
-from .selectCourse import SelectCourse
+from .taught import Taught
+from .elective import Elective

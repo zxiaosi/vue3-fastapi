@@ -28,7 +28,6 @@ const state: State = reactive({
 const handleRead = (index: number) => {
   const item = state.unread.splice(index, 1);
   state.read = item.concat(state.read);
-  console.log(store.messages);
   if (store.messages > 0) {
     store.$patch({ messages: store.messages - 1 });
   } else {

@@ -135,7 +135,7 @@ const getChange = (res: string | number | undefined) => {
 
     <!-- 渲染表格数据 -->
     <template #tableColumn>
-      <el-table-column prop="id" label="职工号" width="120" align="center" />
+      <el-table-column prop="id" label="职工号" width="100" align="center" />
       <el-table-column prop="name" label="名字" width="120" align="center" />
 
       <el-table-column prop="sex" label="性别" width="80" align="center">
@@ -164,6 +164,10 @@ const getChange = (res: string | number | undefined) => {
         </template>
       </el-table-column>
 
+      <el-table-column prop="department_id" label="院系名字" width="180" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
+      </el-table-column>
+
       <el-table-column label="头像" width="100" align="center">
         <template #default="scope">
           <el-image class="table-td-thumb" :src="scope.row.image" />
@@ -171,10 +175,6 @@ const getChange = (res: string | number | undefined) => {
       </el-table-column>
 
       <el-table-column prop="address" label="上次登录地点" width="160" align="center" />
-
-      <el-table-column prop="department_id" label="院系名字" width="180" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
-      </el-table-column>
     </template>
 
     <!-- 弹出框内容 -->

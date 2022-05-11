@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apis.deps import get_db, get_current_user
-from schemas import CourseCreate, CourseUpdate, Course, Result, ResultPlus
+from schemas import CourseCreate, CourseUpdate, CourseOut as Course, Result, ResultPlus
 from crud import course
 from utils import resp_200, IdNotExist
 

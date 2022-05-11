@@ -100,9 +100,21 @@ courseData = [
     {'id': 1404, 'name': '形式与政策', 'credit': 1, 'period': 16},
 ]
 
-selectCourseData = [
-    {'student_id': 1810020301, 'teacher_id': 180101, 'course_id': 1201},
-    {'student_id': 1810020302, 'teacher_id': 180102, 'course_id': 1202},
+taughtData = [
+    {'teacher_id': 180101, 'course_id': 1101},
+    {'teacher_id': 180101, 'course_id': 1102},
+    {'teacher_id': 180102, 'course_id': 1103},
+    {'teacher_id': 180102, 'course_id': 1104},
+]
+
+electiveData = [
+    {'student_id': 1810010101, 'course_id': 1101},
+    {'student_id': 1810010101, 'course_id': 1102},
+    {'student_id': 1810010102, 'course_id': 1102},
+    {'student_id': 1810010201, 'course_id': 1103},
+    {'student_id': 1810010202, 'course_id': 1104},
+    {'student_id': 1810020301, 'course_id': 1201},
+    {'student_id': 1810020302, 'course_id': 1202},
 ]
 
 adminData = [{'name': 'admin'}]

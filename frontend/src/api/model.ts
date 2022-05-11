@@ -56,3 +56,17 @@ export interface DelDataList {
   path: PathEnum; // 路径参数
   idList: number[] | string[]; // id列表
 }
+
+/**
+ * 根据课程id添加/删除选课信息
+ */
+export interface CourseId {
+  path: PathEnum; // 路径参数
+  courseId: number | string; // 课程id
+}
+/**
+ * 得到课程详情
+ */
+export interface Details {
+  path: PathEnum; // 路径参数
+}

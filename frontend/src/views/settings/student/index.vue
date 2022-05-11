@@ -143,6 +143,10 @@ const getChange = (res: string | number | undefined) => {
       </el-table-column>
       <el-table-column prop="birthday" label="生日" width="120" align="center" />
 
+      <el-table-column prop="major_id" label="专业名字" min-width="220" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.major_id, state.majorData) }}</template>
+      </el-table-column>
+
       <el-table-column label="头像" width="100" align="center">
         <template #default="scope">
           <el-image class="table-td-thumb" :src="scope.row.image" />
@@ -150,10 +154,6 @@ const getChange = (res: string | number | undefined) => {
       </el-table-column>
 
       <el-table-column prop="address" label="上次登录地点" width="160" align="center" />
-
-      <el-table-column prop="major_id" label="专业名字" min-width="220" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.major_id, state.majorData) }}</template>
-      </el-table-column>
     </template>
 
     <!-- 弹出框内容 -->

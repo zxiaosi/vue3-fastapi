@@ -113,9 +113,9 @@ const emitIsDisabled = (res: boolean) => (state.isDisabled = res);
     <!-- 渲染表格数据 -->
     <template #tableColumn>
       <el-table-column prop="id" label="课程编号" width="140" align="center" />
-      <el-table-column prop="name" label="课程名字" width="220" align="center" />
+      <el-table-column prop="name" label="课程名字" width="280" align="center" />
       <el-table-column prop="credit" label="学分" width="140" align="center" />
-      <el-table-column prop="period" label="课时" min-width="140" align="center" />
+      <el-table-column prop="period" label="课时" width="140" align="center" />
     </template>
 
     <!-- 弹出框内容 -->

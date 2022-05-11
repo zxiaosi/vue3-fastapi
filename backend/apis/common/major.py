@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apis.deps import get_db, get_current_user
-from schemas import MajorCreate, MajorUpdate, Major, Result, ResultPlus
+from schemas import MajorCreate, MajorUpdate, MajorOut as Major, Result, ResultPlus
 from crud import major
 from utils import resp_200, IdNotExist
 

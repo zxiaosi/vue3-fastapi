@@ -14,7 +14,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from core import settings, create_access_token
 from db import MyRedis
 from models import Admin, Teacher, Student
-from schemas import Result, Token, Admin as AdminOut, Teacher as TeacherOut, Student as StudentOut
+from schemas import Result, Token, AdminOut, TeacherOut, StudentOut
 from apis.deps import get_redis, get_db, get_current_user
 from utils import resp_200, SetRedis, ErrorUser, by_ip_get_address
 from utils.permission_assign import by_scopes_get_crud

@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ref, reactive, watchEffect, onMounted } from "vue";
+import { ref, reactive, watchEffect, onMounted, onBeforeMount, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useDataStore } from "@/stores/data";
 import { ElForm, ElMessage, ElMessageBox, type FormInstance } from "element-plus";
-import { Search, Remove, Delete, Plus, Edit } from "@element-plus/icons-vue";
+import { Search, Remove, Delete, Plus, Edit, Select, SemiSelect } from "@element-plus/icons-vue";
 import Breadcrumb from "../breadcrumb/index.vue";
 import Pagination from "../pagination/index.vue";
-import { readData, deleteData, createData, updateData, deleteDatas, readDatas } from "@/api";
+import { readData, deleteData, createData, updateData, deleteDatas, readDatas, addByCourseId, delByCourseId } from "@/api";
 import type { State } from ".";
-import type { Query, FormData } from "@/types/table";
+import { type Query, type FormData, PathEnum } from "@/types/table";
 import { clickRecover } from "@/utils/clickRecover";
+import { getLocal } from "@/request/auth";
+import { Roles } from "@/types";
+import { getSpanMethod } from "@/utils/spanMethod";
 
 // 路由对象
 const route = useRoute();
 
 // 请求接口路径参数(首字母小写)
-let path: any = route.name?.toString();
-const pathParam = ref<any>(path.replace(path[0], path[0].toLowerCase()));
+let pathParam = ref<any>(route.path?.toString().slice(1));
 
 // 状态管理
 const dataStore = useDataStore();
@@ -42,6 +44,7 @@ const state: State = reactive({
   relationData: [], // 依赖数据
   showDialog: false, // 是否显示弹窗
   addOrUpdate: true, // 是否是添加或更新(true-添加 | false-更新)
+  isStudent: false, // 是否是学生
 });
 
 // 表单的值
@@ -55,6 +58,11 @@ const emit = defineEmits<{
 watchEffect(() => {
   // 是否是添加或者更新
   emit("emitAddOrUpdate", state.addOrUpdate);
+});
+
+onBeforeMount(() => {
+  let role = getLocal("role");
+  state.isStudent = pathParam.value == "course" && role == Roles.student;
 });
 
 /**
@@ -129,7 +137,7 @@ const handleAdd = async (event: MouseEvent) => {
   // 重置表单
   Object.keys(props.formData).forEach((key) => (props.formData[key] = ""));
 
-  if (pathParam.value == "selectCourse") {
+  if (pathParam.value == "elective") {
     props.formData["grade"] = 0;
   } else {
     await getRelationData();
@@ -233,6 +241,39 @@ const removeSearch = async (isNeedData: boolean = false) => {
     await props.getData();
   }
 };
+
+/**
+ * 学生选课
+ */
+const onSelectCourse = async (row: any) => {
+  let params = { path: PathEnum.elective, courseId: row.id };
+  const { data } = await addByCourseId(params);
+  if (Number(data)) {
+    ElMessage.success(`成功选择课程！`);
+  } else {
+    ElMessage.error(`已经选择过该课程, 请勿重复选择！`);
+  }
+};
+
+/**
+ * 学生退课
+ */
+const onQuitCourse = async (row: any) => {
+  let params = { path: PathEnum.elective, courseId: row.id };
+  const { data } = await delByCourseId(params);
+  if (Number(data)) {
+    ElMessage.success(`成功退出课程！`);
+  } else {
+    ElMessage.error(`没有选择过该课程, 请勿重复退出！`);
+  }
+};
+
+/**
+ * 合并单元格(元素相同的)
+ */
+const spanMethod = computed(() => {
+  // return getSpanMethod(props.data, ["teacher_id", "student_id"], []);
+});
 </script>
 
 <template>
@@ -259,7 +300,7 @@ const removeSearch = async (isNeedData: boolean = false) => {
             <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0" @click="onRemove">清除</el-button>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="8" v-if="!state.isStudent">
             <!-- 添加按钮 -->
             <el-button type="primary" :icon="Plus" class="grid-content float-right" @click="handleAdd">添 加</el-button>
 
@@ -270,22 +311,28 @@ const removeSearch = async (isNeedData: boolean = false) => {
       </div>
 
       <!-- 表格数据 -->
-      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" @selection-change="onSelectionChange">
+      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" :span-method="spanMethod" @selection-change="onSelectionChange">
         <!-- 勾选框 -->
-        <el-table-column type="selection" width="80" align="center" />
+        <el-table-column type="selection" width="80" align="center" v-if="!state.isStudent"/>
 
         <!-- 列表数据 -->
         <slot name="tableColumn" />
 
         <!-- 创建时间和更新时间 -->
-        <el-table-column prop="create_time" label="创建时间" width="180" align="center" />
-        <el-table-column prop="update_time" label="更新时间" width="180" align="center" />
+        <el-table-column prop="create_time" label="创建时间" min-width="200" align="center" />
+        <el-table-column prop="update_time" label="更新时间" min-width="200" align="center" />
 
         <!-- 操作 -->
         <el-table-column label="操作" min-width="180" align="center" fixed="right">
           <template #default="scope">
-            <el-button type="text" :icon="Edit" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button type="text" :icon="Delete" class="red" @click="handleDelete(scope.row)">删除</el-button>
+            <div v-if="state.isStudent">
+              <el-button size="small" type="primary" :icon="Select" @click="onSelectCourse(scope.row)">选课</el-button>
+              <el-button size="small" type="danger" :icon="SemiSelect" @click="onQuitCourse(scope.row)">退课</el-button>
+            </div>
+            <div v-else>
+              <el-button size="small" type="primary" :icon="Edit" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="small" type="danger" :icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -314,10 +361,6 @@ const removeSearch = async (isNeedData: boolean = false) => {
 <style scoped>
 .table {
   width: 100%;
-}
-
-.red {
-  color: #ff0000;
 }
 
 .table-td-thumb {

@@ -9,5 +9,6 @@ from .major import major
 from .teacher import teacher
 from .student import student
 from .course import course
-from .selectCourse import selectCourse
+from .elective import elective
+from .taught import taught
 from .admin import admin

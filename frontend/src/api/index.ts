@@ -1,6 +1,6 @@
 import axios from "axios";
 import { get, post, put, del } from "@/request";
-import type { GetUserInfo, Todo, TableDataList, TableData, TableObject, DelDataList } from "./model";
+import type { GetUserInfo, Todo, TableDataList, TableData, TableObject, DelDataList, CourseId, Details } from "./model";
 
 /**
  * 退出登录
@@ -67,6 +67,21 @@ export const deleteData = (data: TableData): Promise<any> => del(`${data.path}/$
  * @param {*} data id列表
  */
 export const deleteDatas = (data: DelDataList): Promise<any> => post(`${data.path}/del/`, data.idList);
+
+/**
+ * 根据 课程id 添加表格信息
+ */
+export const addByCourseId = (data: CourseId): Promise<any> => post(`${data.path}/add/${data.courseId}`);
+
+/**
+ * 根据 课程id 删除表格信息
+ */
+export const delByCourseId = (data: CourseId): Promise<any> => post(`${data.path}/del/${data.courseId}`);
+
+/**
+ * 得到课程详情
+ */
+export const getCourseDetail = (data: Details): Promise<any> => get(`${data.path}/detail/`);
 
 /**
  * 获取语言详情

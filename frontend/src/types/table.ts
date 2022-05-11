@@ -7,7 +7,8 @@ export enum PathEnum {
   teacher = "teacher",
   student = "student",
   course = "course",
-  elective = "selectCourse",
+  taught = "taught",
+  elective = "elective",
 }
 
 /**
@@ -31,7 +32,7 @@ export interface TimeForm {
  * 院系表数据类型(请使用 ?: , 后面继承接口用到)
  */
 export interface DeptForm extends TimeForm {
-  id: number | string; // 编号
+  id?: number | string; // 编号
   name?: string; // 名称
   chairman?: string; // 主任名
   phone?: string; // 手机号
@@ -41,7 +42,7 @@ export interface DeptForm extends TimeForm {
  * 专业表数据类型
  */
 export interface MajorForm extends TimeForm {
-  id: number | string; // 编号
+  id?: number | string; // 编号
   name?: string; // 名称
   assistant?: string; // 辅导员名
   phone?: string; // 手机号
@@ -52,7 +53,7 @@ export interface MajorForm extends TimeForm {
  * 教师表数据类型
  */
 export interface TeacherForm extends TimeForm {
-  id: number | string; // 编号
+  id?: number | string; // 编号
   name?: string; // 名称
   sex?: "0" | "1"; // 性别
   birthday?: string; // 生日
@@ -68,7 +69,7 @@ export interface TeacherForm extends TimeForm {
  * 学生表数据类型
  */
 export interface StudentForm extends TimeForm {
-  id: number | string; // 编号
+  id?: number | string; // 编号
   name?: string; // 名称
   sex?: "0" | "1"; // 性别
   birthday?: string; // 生日
@@ -82,24 +83,33 @@ export interface StudentForm extends TimeForm {
  * 课程表数据类型
  */
 export interface CourseForm extends TimeForm {
-  id: number | string; // 编号
+  id?: number | string; // 编号
   name?: string; // 名称
   credit?: number | string; // 学分
   period?: number | string; // 学时
 }
 
 /**
+ * 讲授表数据类型
+ */
+export interface TaughtForm extends TimeForm {
+  id?: number | string; // 编号
+  grade?: number | string; // 成绩
+  teacher_id?: number | string; // 教师编号
+  course_id?: number | string; // 课程编号
+}
+
+/**
  * 选课表数据类型
  */
-export interface SelectCourseForm extends TimeForm {
-  id: number | string; // 编号
+export interface ElectiveForm extends TimeForm {
+  id?: number | string; // 编号
   grade?: number | string; // 成绩
   student_id?: number | string; // 学生编号
-  teacher_id?: number | string; // 教师编号
   course_id?: number | string; // 课程编号
 }
 
 /**
  * form表单数据类型
  */
-export interface FormData extends DeptForm, MajorForm, TeacherForm, StudentForm, CourseForm, SelectCourseForm {}
+export interface FormData extends DeptForm, MajorForm, TeacherForm, StudentForm, CourseForm, TaughtForm, ElectiveForm {}
