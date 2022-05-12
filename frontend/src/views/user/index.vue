@@ -45,7 +45,7 @@ const processData = async (role: string, data: any) => {
       ];
       break;
     case "teacher":
-      const { data: dept } = await readData({ path: PathEnum.dept, id: data.department_id });
+      const { data: dept } = await readData({ path: PathEnum.dept, id: data.departmentId });
       state.details = [
         { text: "头像", value: data.image },
         { text: "职工号", value: data.id },
@@ -58,7 +58,7 @@ const processData = async (role: string, data: any) => {
       ];
       break;
     case "student":
-      const { data: major } = await readData({ path: PathEnum.major, id: data.major_id });
+      const { data: major } = await readData({ path: PathEnum.major, id: data.majorId });
       state.details = [
         { text: "头像", value: data.image },
         { text: "学号", value: data.id },

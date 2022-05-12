@@ -13,6 +13,6 @@ class Taught(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True, comment='编号')
 
-    teacher_id = Column(Integer, ForeignKey('teacher.id', ondelete='CASCADE'), comment='职工号')
+    teacherId = Column(Integer, ForeignKey('teacher.id', ondelete='CASCADE'), comment='职工号')
 
-    course_id = Column(Integer, ForeignKey('course.id', ondelete='CASCADE'), comment='课程编号')
+    courseId = Column(Integer, ForeignKey('course.id', ondelete='CASCADE'), comment='课程编号')

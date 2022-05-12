@@ -37,7 +37,7 @@ const formData: StudentForm = reactive({
   address: "",
   image: "",
   password: "123456",
-  major_id: "",
+  majorId: "",
 });
 
 /**
@@ -76,7 +76,7 @@ const formRules = reactive<FormRules>({
   sex: [{ required: true, message: "请输入学生性别", trigger: "change" }],
   birthday: [{ required: true, message: "请选择生日", trigger: "change" }],
   password: [{ message: "请输入新密码", trigger: "change" }],
-  major_id: [{ required: true, message: "请选择专业", trigger: "change" }],
+  majorId: [{ required: true, message: "请选择专业", trigger: "change" }],
 });
 
 /**
@@ -143,8 +143,8 @@ const getChange = (res: string | number | undefined) => {
       </el-table-column>
       <el-table-column prop="birthday" label="生日" width="120" align="center" />
 
-      <el-table-column prop="major_id" label="专业名字" min-width="220" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.major_id, state.majorData) }}</template>
+      <el-table-column prop="majorId" label="专业名字" min-width="220" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.majorId, state.majorData) }}</template>
       </el-table-column>
 
       <el-table-column label="头像" width="100" align="center">
@@ -180,8 +180,8 @@ const getChange = (res: string | number | undefined) => {
         <el-input v-model="formData.password" :placeholder="state.addOrUpdate ? `默认密码为123456` : `设置新密码`" maxlength="20" show-password />
       </el-form-item>
 
-      <el-form-item label="专业名字" prop="major_id">
-        <el-select v-model="formData.major_id" placeholder="请选择专业" @change="getChange(formData.major_id)">
+      <el-form-item label="专业名字" prop="majorId">
+        <el-select v-model="formData.majorId" placeholder="请选择专业" @change="getChange(formData.majorId)">
           <el-option v-for="(major, index) in state.majorData" :key="index" :label="major.name" :value="major.id" />
         </el-select>
       </el-form-item>

@@ -42,7 +42,7 @@ async def create_elective(elective_in: ElectiveCreate, db: AsyncSession = Depend
 
 @router.put("/{id}", response_model=Result, summary='通过 id 更新选课信息')
 async def update_elective(id: int, elective_in: ElectiveUpdate, db: AsyncSession = Depends(get_db),
-                          user=Security(get_current_user, scopes=['admin'])):
+                          user=Security(get_current_user, scopes=[])):
     rowcount = await elective.update(db, id=id, obj_in=elective_in)
     if not rowcount:
         raise IdNotExist(err_desc=f"系统中不存在 id 为 {id} 的选课.")
@@ -69,19 +69,19 @@ async def delete_electives(idList: List, db: AsyncSession = Depends(get_db),
 @router.post("/add/{courseId}", response_model=Result, summary='添加选课信息')
 async def create_elective_by_course_id(courseId: int, db: AsyncSession = Depends(get_db),
                                        user: Student = Security(get_current_user, scopes=[])):
-    obj = await elective.is_exist(db, course_id=courseId, student_id=user.id)
+    obj = await elective.is_exist(db, courseId=courseId, studentId=user.id)
     if obj:
         data, msg = 0, '数据已存在.'
     else:
         data, msg = 1, '添加了选课信息.'
-        await elective.create(db, obj_in={'grade': 0, 'student_id': user.id, 'course_id': courseId})
+        await elective.create(db, obj_in={'grade': 0, 'studentId': user.id, 'courseId': courseId})
     return resp_200(data=data, msg=msg)
 
 
 @router.post("/del/{courseId}", response_model=Result, summary='通过其他字段删除选课信息')
 async def del_elective_by_filed(courseId: int, db: AsyncSession = Depends(get_db),
                                 user: Student = Security(get_current_user, scopes=[])):
-    obj = await elective.is_exist(db, course_id=courseId, student_id=user.id)
+    obj = await elective.is_exist(db, courseId=courseId, studentId=user.id)
     if obj:
         data, msg = 1, '数据存在, 退课成功'
         rowcount = await elective.remove(db, id=obj.id)

@@ -15,6 +15,6 @@ class Elective(Base):
 
     grade = Column(Integer, default=0, server_default='0', comment='成绩')
 
-    student_id = Column(Integer, ForeignKey('student.id', ondelete='CASCADE'), nullable=False, comment='学号')
+    studentId = Column(Integer, ForeignKey('student.id', ondelete='CASCADE'), nullable=False, comment='学号')
 
-    course_id = Column(Integer, ForeignKey('course.id', ondelete='CASCADE'), nullable=False, comment='课程编号')
+    courseId = Column(Integer, ForeignKey('course.id', ondelete='CASCADE'), nullable=False, comment='课程编号')

@@ -13,8 +13,8 @@ from schemas import GMT
 class ElectiveIn(BaseModel):
     """ 共享模型字段 """
     grade: Optional[str] = Field(regex=r'(^\s{0}$)|(^100)|(^([0]{0})([1-9]?)([0-9]))$', max_length=3, example='成绩')
-    student_id: str = Field(regex=r'^[1-9][0-9]{9}$', min_length=10, max_length=10, example='学号：1810020401')
-    course_id: str = Field(regex=r'^[1-9][0-9]{3}$', min_length=4, max_length=4, example='课程编号：1101')
+    studentId: str = Field(regex=r'^[1-9][0-9]{9}$', min_length=10, max_length=10, example='学号：1810020401')
+    courseId: str = Field(regex=r'^[1-9][0-9]{3}$', min_length=4, max_length=4, example='课程编号：1101')
 
 
 class ElectiveCreate(ElectiveIn):
@@ -30,8 +30,8 @@ class ElectiveUpdate(ElectiveIn):
 class ElectiveOut(ElectiveIn, GMT):
     """ 查询数据的字段验证 """
     id: int = Field(..., example='自增编号')
-    student_id: int = Field(..., example='学号')
-    course_id: int = Field(..., example='课程号')
+    studentId: int = Field(..., example='学号')
+    courseId: int = Field(..., example='课程号')
 
     class Config:
         orm_mode = True  # 是否使用orm模型(结果为字典类型)

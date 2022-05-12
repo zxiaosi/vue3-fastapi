@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apis.deps import get_db, get_current_user
+from models import Teacher
 from schemas import TaughtCreate, TaughtUpdate, TaughtOut as Taught, Result, ResultPlus
 from crud import taught
 from utils import resp_200, IdNotExist
@@ -63,3 +64,9 @@ async def delete_taughts(idList: List, db: AsyncSession = Depends(get_db),
     if not rowcount:
         raise IdNotExist(err_desc="系统中不存在列表中的id.")
     return resp_200(msg='成功删除多个讲授信息.')
+
+
+@router.get("/detail/", response_model=Result, summary='获取教师讲授信息详情')
+async def get_course_detail(db: AsyncSession = Depends(get_db), user: Teacher = Security(get_current_user, scopes=[])):
+    data = await taught.get_course(db, id=user.id)
+    return resp_200(data=data, msg='获取教师讲授信息详情.')

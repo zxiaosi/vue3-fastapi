@@ -51,7 +51,7 @@ class CRUDStudent(CRUDBase[Student, StudentCreate, StudentUpdate]):
 
     # async def get_detail(self, db: AsyncSession, id: int):
     #     sql = select(self.model, Major.name.label("major_name")) \
-    #         .join(Major, self.model.major_id == Major.id) \
+    #         .join(Major, self.model.majorId == Major.id) \
     #         .where(self.model.id == id)
     #     result = await db.execute(sql)
     #     await db.close()  # 释放会话

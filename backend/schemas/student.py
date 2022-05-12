@@ -17,7 +17,7 @@ class StudentIn(BaseModel):
     birthday: date = Field(..., example='生日: 1998-7-2')
     image: str = Field(..., example='头像')
     address: str = Field(..., example='地址')
-    major_id: str = Field(regex=r'^10\d{4}$', min_length=6, max_length=6, example='专业编号')
+    majorId: str = Field(regex=r'^10\d{4}$', min_length=6, max_length=6, example='专业编号')
 
 
 class StudentUpdate(StudentIn):
@@ -33,7 +33,7 @@ class StudentCreate(StudentUpdate):
 class StudentOut(StudentIn, GMT):
     """ 查询数据的字段验证 """
     id: int = Field(..., example='学号：1810020401')
-    major_id: int = Field(..., example='专业编号')
+    majorId: int = Field(..., example='专业编号')
 
     class Config:
         orm_mode = True  # 是否使用orm模型(结果为字典类型)

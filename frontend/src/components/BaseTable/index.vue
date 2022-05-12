@@ -12,7 +12,6 @@ import { type Query, type FormData, PathEnum } from "@/types/table";
 import { clickRecover } from "@/utils/clickRecover";
 import { getLocal } from "@/request/auth";
 import { Roles } from "@/types";
-import { getSpanMethod } from "@/utils/spanMethod";
 
 // 路由对象
 const route = useRoute();
@@ -45,6 +44,7 @@ const state: State = reactive({
   showDialog: false, // 是否显示弹窗
   addOrUpdate: true, // 是否是添加或更新(true-添加 | false-更新)
   isStudent: false, // 是否是学生
+  isTeacher: false, // 是否是教师
 });
 
 // 表单的值
@@ -62,7 +62,10 @@ watchEffect(() => {
 
 onBeforeMount(() => {
   let role = getLocal("role");
-  state.isStudent = pathParam.value == "course" && role == Roles.student;
+  if (pathParam.value == "course") {
+    state.isStudent = role == Roles.student;
+    state.isTeacher = role == Roles.teacher;
+  }
 });
 
 /**
@@ -172,7 +175,7 @@ const saveAdd = (formEl: FormInstance | undefined) => {
 };
 
 /**
- * 编辑院系信息
+ * 编辑信息
  */
 const handleEdit = (row: any) => {
   Object.keys(props.formData).forEach((item) => {
@@ -267,13 +270,6 @@ const onQuitCourse = async (row: any) => {
     ElMessage.error(`没有选择过该课程, 请勿重复退出！`);
   }
 };
-
-/**
- * 合并单元格(元素相同的)
- */
-const spanMethod = computed(() => {
-  // return getSpanMethod(props.data, ["teacher_id", "student_id"], []);
-});
 </script>
 
 <template>
@@ -300,7 +296,7 @@ const spanMethod = computed(() => {
             <el-button type="primary" :icon="Remove" :disabled="query.id.length == 0" @click="onRemove">清除</el-button>
           </el-col>
 
-          <el-col :span="8" v-if="!state.isStudent">
+          <el-col :span="8" v-if="!state.isStudent && !state.isTeacher">
             <!-- 添加按钮 -->
             <el-button type="primary" :icon="Plus" class="grid-content float-right" @click="handleAdd">添 加</el-button>
 
@@ -311,9 +307,9 @@ const spanMethod = computed(() => {
       </div>
 
       <!-- 表格数据 -->
-      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" :span-method="spanMethod" @selection-change="onSelectionChange">
+      <el-table :data="state.isShowSearched ? state.searched : data" border stripe class="table" @selection-change="onSelectionChange">
         <!-- 勾选框 -->
-        <el-table-column type="selection" width="80" align="center" v-if="!state.isStudent"/>
+        <el-table-column type="selection" width="80" align="center" v-if="!state.isStudent && !state.isTeacher" />
 
         <!-- 列表数据 -->
         <slot name="tableColumn" />
@@ -323,7 +319,7 @@ const spanMethod = computed(() => {
         <el-table-column prop="update_time" label="更新时间" min-width="200" align="center" />
 
         <!-- 操作 -->
-        <el-table-column label="操作" min-width="180" align="center" fixed="right">
+        <el-table-column label="操作" min-width="180" align="center" fixed="right" v-if="!state.isTeacher">
           <template #default="scope">
             <div v-if="state.isStudent">
               <el-button size="small" type="primary" :icon="Select" @click="onSelectCourse(scope.row)">选课</el-button>

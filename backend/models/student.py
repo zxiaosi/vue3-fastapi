@@ -30,6 +30,6 @@ class Student(Base):
 
     hashed_password = Column(String(60), server_default=get_password_hash('123456'), comment='密码')
 
-    major_id = Column(Integer, ForeignKey('major.id', ondelete='CASCADE'), nullable=False, comment='专业编号')
+    majorId = Column(Integer, ForeignKey('major.id', ondelete='CASCADE'), nullable=False, comment='专业编号')
 
     elective = relationship('Elective')  # 不是字段, 可以通过 student ORM对象引用 elective 表的类集合

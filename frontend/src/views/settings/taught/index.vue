@@ -27,14 +27,14 @@ const query: Query = reactive({
 // 表单对象
 const formData: TaughtForm = reactive({
   id: "",
-  teacher_id: "",
-  course_id: "",
+  teacherId: "",
+  courseId: "",
 });
 
 // 定义校验规则
 const formRules = reactive<FormRules>({
-  teacher_id: [{ required: true, message: "请选择教师", trigger: "change" }],
-  course_id: [{ required: true, message: "请选课课程", trigger: ["change", "blur"] }],
+  teacherId: [{ required: true, message: "请选择教师", trigger: "change" }],
+  courseId: [{ required: true, message: "请选课课程", trigger: ["change", "blur"] }],
 });
 
 /**
@@ -80,25 +80,25 @@ const emitIsDisabled = (res: boolean) => (state.isDisabled = res);
     <template #tableColumn>
       <el-table-column prop="id" label="编号" width="140" align="center" />
 
-      <el-table-column prop="teacher_id" width="200" label="教师姓名" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.teacher_id, state.teacherData) }}</template>
+      <el-table-column prop="teacherId" width="200" label="教师姓名" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.teacherId, state.teacherData) }}</template>
       </el-table-column>
 
-      <el-table-column prop="course_id" width="300" label="课程名" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.course_id, state.courseData) }}</template>
+      <el-table-column prop="courseId" width="300" label="课程名" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.courseId, state.courseData) }}</template>
       </el-table-column>
     </template>
 
     <!-- 弹出框内容 -->
     <template #showDialog>
-      <el-form-item label="教师" prop="teacher_id">
-        <el-select v-model="formData.teacher_id" placeholder="教师名">
+      <el-form-item label="教师" prop="teacherId">
+        <el-select v-model="formData.teacherId" placeholder="教师名">
           <el-option v-for="(teacher, index) in state.teacherData" :key="index" :label="teacher.name" :value="teacher.id" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="课程" prop="course_id">
-        <el-select v-model="formData.course_id" placeholder="课程名">
+      <el-form-item label="课程" prop="courseId">
+        <el-select v-model="formData.courseId" placeholder="课程名">
           <el-option v-for="(course, index) in state.courseData" :key="index" :label="course.name" :value="course.id" />
         </el-select>
       </el-form-item>

@@ -33,7 +33,7 @@ const formData: MajorForm = reactive({
   name: "",
   assistant: "",
   phone: "",
-  department_id: "",
+  departmentId: "",
 });
 
 /**
@@ -71,7 +71,7 @@ const formRules = reactive<FormRules>({
   name: [{ required: true, message: "请输入专业名称", trigger: ["change", "blur"] }, { validator: nameValidate }],
   assistant: [{ required: true, message: "请输入辅导员姓名", trigger: ["change", "blur"] }],
   phone: [{ pattern: /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/, message: "请输入正确的手机号", trigger: ["change", "blur"] }],
-  department_id: [{ required: true, message: "请选择院系", trigger: ["change"] }],
+  departmentId: [{ required: true, message: "请选择院系", trigger: ["change"] }],
 });
 
 /**
@@ -124,8 +124,8 @@ const getChange = (res: string | number | undefined) => {
       <el-table-column prop="name" label="专业名字" width="200" align="center" />
       <el-table-column prop="assistant" label="辅导员姓名" width="120" align="center" />
       <el-table-column prop="phone" label="辅导员手机号" width="180" align="center" />
-      <el-table-column prop="department_id" label="院系名字" width="200" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
+      <el-table-column prop="departmentId" label="院系名字" width="200" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.departmentId, state.deptData) }}</template>
       </el-table-column>
     </template>
 
@@ -143,8 +143,8 @@ const getChange = (res: string | number | undefined) => {
       <el-form-item label="辅导员手机号" prop="phone">
         <el-input v-model="formData.phone" type="tel" placeholder="请输入辅导员手机号" maxlength="11" />
       </el-form-item>
-      <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
+      <el-form-item label="院系名字" prop="departmentId">
+        <el-select v-model="formData.departmentId" placeholder="请选择院系" @change="getChange(formData.departmentId)">
           <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name" :value="dept.id" />
         </el-select>
       </el-form-item>

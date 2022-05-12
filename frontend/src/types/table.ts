@@ -46,7 +46,7 @@ export interface MajorForm extends TimeForm {
   name?: string; // 名称
   assistant?: string; // 辅导员名
   phone?: string; // 手机号
-  department_id?: number | string; // 院系编号
+  departmentId?: number | string; // 院系编号
 }
 
 /**
@@ -62,7 +62,7 @@ export interface TeacherForm extends TimeForm {
   address?: string; // 地址
   image?: string; //头像
   password?: string; // 密码
-  department_id?: number | string; // 院系编号
+  departmentId?: number | string; // 院系编号
 }
 
 /**
@@ -76,7 +76,7 @@ export interface StudentForm extends TimeForm {
   address?: string; // 地址
   image?: string; //头像
   password?: string; // 密码
-  major_id?: number | string; // 专业编号
+  majorId?: number | string; // 专业编号
 }
 
 /**
@@ -95,8 +95,8 @@ export interface CourseForm extends TimeForm {
 export interface TaughtForm extends TimeForm {
   id?: number | string; // 编号
   grade?: number | string; // 成绩
-  teacher_id?: number | string; // 教师编号
-  course_id?: number | string; // 课程编号
+  teacherId?: number | string; // 教师编号
+  courseId?: number | string; // 课程编号
 }
 
 /**
@@ -105,8 +105,8 @@ export interface TaughtForm extends TimeForm {
 export interface ElectiveForm extends TimeForm {
   id?: number | string; // 编号
   grade?: number | string; // 成绩
-  student_id?: number | string; // 学生编号
-  course_id?: number | string; // 课程编号
+  studentId?: number | string; // 学生编号
+  courseId?: number | string; // 课程编号
 }
 
 /**

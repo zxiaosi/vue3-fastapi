@@ -69,19 +69,24 @@ export const deleteData = (data: TableData): Promise<any> => del(`${data.path}/$
 export const deleteDatas = (data: DelDataList): Promise<any> => post(`${data.path}/del/`, data.idList);
 
 /**
- * 根据 课程id 添加表格信息
+ * 得到讲授详情
+ */
+export const getTughtDetail = (data: Details): Promise<any> => get(`${data.path}/detail/`);
+
+/**
+ * 根据 课程id 添加选课信息
  */
 export const addByCourseId = (data: CourseId): Promise<any> => post(`${data.path}/add/${data.courseId}`);
 
 /**
- * 根据 课程id 删除表格信息
+ * 根据 课程id 删除选课信息
  */
 export const delByCourseId = (data: CourseId): Promise<any> => post(`${data.path}/del/${data.courseId}`);
 
 /**
- * 得到课程详情
+ * 得到选课详情
  */
-export const getCourseDetail = (data: Details): Promise<any> => get(`${data.path}/detail/`);
+export const getElectiveDetail = (data: Details): Promise<any> => get(`${data.path}/detail/`);
 
 /**
  * 获取语言详情

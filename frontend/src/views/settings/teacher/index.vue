@@ -38,7 +38,7 @@ const formData: TeacherForm = reactive({
   address: "",
   image: "",
   password: "123456",
-  department_id: "",
+  departmentId: "",
 });
 
 /**
@@ -79,7 +79,7 @@ const formRules = reactive<FormRules>({
   password: [{ message: "请输入新密码", trigger: "change" }],
   education: [{ required: true, message: "请选择教师学历", trigger: "change" }],
   title: [{ required: true, message: "请选择教师职称", trigger: "change" }],
-  department_id: [{ required: true, message: "请选择院系", trigger: "change" }],
+  departmentId: [{ required: true, message: "请选择院系", trigger: "change" }],
 });
 
 /**
@@ -164,8 +164,8 @@ const getChange = (res: string | number | undefined) => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="department_id" label="院系名字" width="180" align="center">
-        <template #default="scope">{{ byIdGetName(scope.row.department_id, state.deptData) }}</template>
+      <el-table-column prop="departmentId" label="院系名字" width="180" align="center">
+        <template #default="scope">{{ byIdGetName(scope.row.departmentId, state.deptData) }}</template>
       </el-table-column>
 
       <el-table-column label="头像" width="100" align="center">
@@ -218,8 +218,8 @@ const getChange = (res: string | number | undefined) => {
         </el-select>
       </el-form-item>
 
-      <el-form-item label="院系名字" prop="department_id">
-        <el-select v-model="formData.department_id" placeholder="请选择院系" @change="getChange(formData.department_id)">
+      <el-form-item label="院系名字" prop="departmentId">
+        <el-select v-model="formData.departmentId" placeholder="请选择院系" @change="getChange(formData.departmentId)">
           <el-option v-for="(dept, index) in state.deptData" :key="index" :label="dept.name" :value="dept.id" />
         </el-select>
       </el-form-item>

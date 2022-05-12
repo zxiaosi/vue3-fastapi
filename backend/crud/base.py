@@ -57,11 +57,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """ 添加对象 """
         if self.model.__tablename__ not in ['taught', 'elective']:
             setattr(obj_in, 'id', int(obj_in.id))  # postgresql 字段类型限制
-        if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
-            obj_data = obj_in
-        else:
-            obj_data = obj_in.dict()
-        sql = insert(self.model).values(obj_data)
+        sql = insert(self.model).values(obj_in.dict())
         result = await db.execute(sql)
         await db.commit()
         return result.rowcount

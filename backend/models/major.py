@@ -20,6 +20,6 @@ class Major(Base):
 
     phone = Column(String(11), comment='辅导员手机号')
 
-    department_id = Column(Integer, ForeignKey('department.id', ondelete='CASCADE'), nullable=False, comment='院系编号')
+    departmentId = Column(Integer, ForeignKey('department.id', ondelete='CASCADE'), nullable=False, comment='院系编号')
 
     students = relationship('Student')  # 不是字段, 可以通过 major ORM对象引用 student 表的类集合

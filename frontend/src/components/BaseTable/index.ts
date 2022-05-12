@@ -9,4 +9,5 @@ export interface State {
   showDialog: boolean;
   addOrUpdate: boolean;
   isStudent: boolean;
+  isTeacher: boolean;
 }

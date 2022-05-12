@@ -19,7 +19,7 @@ class TeacherIn(BaseModel):
     title: Literal['1', '2', '3', '4'] = Field(..., example='职称：1->助教, 2->讲师, 3->副教授, 4->教授')
     image: str = Field(example='头像')
     address: str = Field(example='地址')
-    department_id: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='院系编号')
+    departmentId: str = Field(regex=r'^10[0-9]{2}$', min_length=4, max_length=4, example='院系编号')
 
 
 class TeacherUpdate(TeacherIn):
@@ -35,7 +35,7 @@ class TeacherCreate(TeacherUpdate):
 class TeacherOut(TeacherIn, GMT):
     """ 查询数据的字段验证 """
     id: int = Field(..., example='职工号：180404')
-    department_id: int = Field(..., example='院系编号')
+    departmentId: int = Field(..., example='院系编号')
 
     class Config:
         orm_mode = True  # 是否使用orm模型(结果为字典类型)
