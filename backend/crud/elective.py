@@ -24,7 +24,6 @@ class CRUDElective(CRUDBase[Elective, ElectiveCreate, ElectiveUpdate]):
             .join(Course, self.model.courseId == Course.id) \
             .join(Taught, self.model.courseId == Taught.courseId, isouter=True) \
             .join(Teacher, Taught.teacherId == Teacher.id, isouter=True)
-        print(id, sql)
         result = await db.execute(sql)
         # print(list_obj_as_dict(result.all()))
         await db.close()  # 释放会话

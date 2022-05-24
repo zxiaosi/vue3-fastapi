@@ -3,6 +3,8 @@
 # @Time : 2022/4/17 17:08
 # @Author : zxiaosi
 # @desc : 主函数
+import asyncio
+
 import uvicorn
 from fastapi import FastAPI
 

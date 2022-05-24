@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from core import check_jwt_token, settings
-from db import async_session, MyRedis
+from db import async_session, MyRedis, init_redis_pool
 from schemas import TokenData
 from utils import UserNotExist, PermissionNotEnough
 from utils.permission_assign import by_scopes_get_crud, handle_oauth2_scopes
