@@ -3,6 +3,7 @@
 # @Time : 2022/3/4 15:21
 # @Author : zxiaosi
 # @desc : 根据ip获取地址
+import json
 import re
 from urllib import request
 from ipaddress import ip_address
@@ -22,11 +23,12 @@ def by_ip_get_address(ip) -> str:
     """ 根据ip获取地址 """
     verify_ip(ip)
 
-    req = request.Request(f"http://ip.ws.126.net/ipquery?ip={ip}")
+    req = request.Request(f"https://whois.pconline.com.cn/ipJson.jsp?json=true&ip={ip}")
     response = request.urlopen(req).read().decode('gbk')  # 获取响应
 
-    handle_address = re.findall(r'"([^"]*)"', response)
-    if handle_address:
-        return handle_address[0] + handle_address[1]
-    else:
+    response_dict = json.loads(response)
+
+    if response_dict["proCode"] == "999999":
         return '广东省广州市'
+    else:
+        return response_dict["pro"] + response_dict["city"]
