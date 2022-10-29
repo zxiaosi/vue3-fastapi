@@ -17,6 +17,7 @@ engine = create_async_engine(
     echo=settings.DATABASE_ECHO,  # 是否打印日志
     # pool_size=10,  # 队列池个数
     # max_overflow=20,  # 队列池最大溢出个数
+    pool_pre_ping=True
 )
 
 # 操作表会话
