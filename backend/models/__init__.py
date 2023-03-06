@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-# @Time : 2021/9/19 17:12
+# -*- coding: utf-8 -*-
+# @Time : 2023/1/28 17:19
 # @Author : zxiaosi
-# @desc : ORM模型对象(创建/删除表的顺序, 慎动)
-from .base import Base
-from .department import Department
-from .major import Major
-from .teacher import Teacher
-from .student import Student
-from .admin import Admin
-from .course import Course
-from .taught import Taught
-from .elective import Elective
+""" 前面加.防止与官方包重名(文件名尽量不要与官方包名相同) """
+from .database import Base, User, Role, Resource, UserRole, RoleResource
+from .redis import LocalUser, RequestIp, LocalResource

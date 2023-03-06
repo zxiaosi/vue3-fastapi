@@ -1,52 +1,42 @@
 #!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-# @Time : 2022/1/8 13:48
+# -*- coding: utf-8 -*-
+# @Time : 2023/2/1 16:07
 # @Author : zxiaosi
 # @desc : 自定义异常
-class IpError(Exception):
-    """ ip错误 """
+from starlette import status
 
-    def __init__(self, err_desc: str = "ip错误"):
+
+class CustomException(Exception):
+    """ 自定义异常 """
+
+    def __init__(self, code: int, err_desc: str = ""):
+        self.code = code
         self.err_desc = err_desc
 
 
-class SetRedis(Exception):
-    """ Redis存储失败 """
+class DuplicateRequests(CustomException):
+    """ 重复请求 """
 
-    def __init__(self, err_desc: str = "Redis存储失败"):
-        self.err_desc = err_desc
-
-
-class IdNotExist(Exception):
-    """ 查询id不存在 """
-
-    def __init__(self, err_desc: str = "查询id不存在"):
-        self.err_desc = err_desc
+    def __init__(self, code: int = status.HTTP_500_INTERNAL_SERVER_ERROR, err_desc: str = "请勿重复提交"):
+        super().__init__(code=code, err_desc=err_desc)
 
 
-class UserNotExist(Exception):
-    """ 用户不存在 """
+class WrongPublicKey(CustomException):
+    """ 错误的公钥 """
 
-    def __init__(self, err_desc: str = "用户不存在"):
-        self.err_desc = err_desc
-
-
-class AccessTokenFail(Exception):
-    """ 访问令牌失败 """
-
-    def __init__(self, err_desc: str = "访问令牌失败"):
-        self.err_desc = err_desc
+    def __init__(self, code: int = status.HTTP_401_UNAUTHORIZED, err_desc: str = "密码解密错误"):
+        super().__init__(code=code, err_desc=err_desc)
 
 
-class ErrorUser(Exception):
-    """ 错误的用户名或密码 """
+class BadCredentials(CustomException):
+    """ 错误的凭证 """
 
-    def __init__(self, err_desc: str = "错误的用户名或密码"):
-        self.err_desc = err_desc
+    def __init__(self, code: int = status.HTTP_401_UNAUTHORIZED, err_desc: str = "用户登录信息已失效"):
+        super().__init__(code=code, err_desc=err_desc)
 
 
-class PermissionNotEnough(Exception):
-    """ 权限不足,拒绝访问 """
+class UserErrors(CustomException):
+    """ 用户相关错误集合 """
 
-    def __init__(self, err_desc: str = "权限不足,拒绝访问"):
-        self.err_desc = err_desc
+    def __init__(self, code: int = status.HTTP_500_INTERNAL_SERVER_ERROR, err_desc: str = ""):
+        super().__init__(code=code, err_desc=err_desc)

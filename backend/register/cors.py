@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-# @Time : 2022/1/9 16:48
+# -*- coding: utf-8 -*-
+# @Time : 2023/1/31 10:04
 # @Author : zxiaosi
-# @desc : 跨域请求
+# @desc : 解决跨域请求
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
-from core import settings
+from core.config import settings
 
 
 def register_cors(app: FastAPI):
@@ -16,6 +16,6 @@ def register_cors(app: FastAPI):
         CORSMiddleware,
         allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
         allow_credentials=True,
-        allow_methods=("GET", "POST", "PUT", "DELETE"),
-        allow_headers=("*", "authentication"),
+        allow_methods=["*"],
+        allow_headers=["*"],
     )

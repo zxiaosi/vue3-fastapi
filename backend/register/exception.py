@@ -1,102 +1,103 @@
 #!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-# @Time : 2022/1/8 15:48
+# -*- coding: utf-8 -*-
+# @Time : 2023/1/31 10:05
 # @Author : zxiaosi
-# @desc : 全局异常
+# @desc : 全局异常捕获
 import traceback
-from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError
-from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError, ProgrammingError
-from sqlalchemy.orm.exc import UnmappedInstanceError
-from starlette.requests import Request
 
-from core.logger import logger
-from utils.custom_exc import IpError, ErrorUser, UserNotExist, SetRedis, AccessTokenFail, IdNotExist, \
-    PermissionNotEnough
-from utils.resp_code import resp_400, resp_401, resp_403, resp_422, resp_500
+from fastapi import FastAPI, HTTPException
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from sqlalchemy.exc import SQLAlchemyError
+from redis.exceptions import RedisError
+from starlette import status
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
+from common import get_request_params, Result, ResultSchema
+from utils.custom_exc import CustomException
+from utils.custom_log import my_logger
+
+"""
+    {
+      "headers": "xxx", # 请求头
+      "status_code": 200, # HTTP通讯状态, eg: 401、403、500
+      "content": { # 自定义内容, eg: Result.success | Result.fail
+        "code": 0, # 自定义状态码, 方便前端判断. 为了区别 HTTP通讯状态, 常规定 0 | 1.
+        "data": T, # 数据
+        "msg": "xxx"
+      }
+    }
+"""
+
+
+def response_body(
+        request: Request,
+        content: ResultSchema,
+        status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
+) -> JSONResponse:
+    """ 返回响应体 """
+
+    response = {
+        "content": content,
+        "status_code": status_code,
+        "headers": {  # 解决跨域问题(仿照500错误的响应头)
+            "access-control-allow-origin": request.headers.get("origin"),
+            "access-control-allow-credentials": "true",
+            "content-type": "application/json",
+            "vary": "Origin",
+        }
+    }
+
+    return JSONResponse(**jsonable_encoder(response))
 
 
 def register_exception(app: FastAPI):
-    """ 全局异常捕获 -- https://www.charmcode.cn/article/2020-07-19_fastapi_exception """
+    """
+        全局异常捕获 -- https://fastapi.tiangolo.com/tutorial/handling-errors/
+        starlette 服务器在返回500时删除了请求头信息, 从而导致了cors跨域问题, 前端无法获取到响应头信息
+        详见: https://github.com/encode/starlette/issues/1175#issuecomment-1225519424
+    """
 
-    @app.exception_handler(IpError)
-    async def ip_error_handler(request: Request, exc: IpError):
-        """ ip错误(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
+    @app.exception_handler(CustomException)
+    async def error_user_handler(request: Request, exc: CustomException) -> JSONResponse:
+        """ 自定义异常 """
+        my_logger.error(f"自定义异常: URL:{request.url}\nHeaders:{request.headers}\nException:{exc.err_desc}.")
+        if exc.code == status.HTTP_401_UNAUTHORIZED:
+            return JSONResponse(status_code=exc.code, content=Result.fail(msg=exc.err_desc).dict())
+        else:
+            return response_body(request=request, content=Result.fail(msg=exc.err_desc), status_code=exc.code)
 
-    @app.exception_handler(ErrorUser)
-    async def error_user_handler(request: Request, exc: ErrorUser):
-        """ 错误的用户名或密码(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
+    @app.exception_handler(RedisError)
+    async def validation_exception_handler(request: Request, exc: RedisError) -> JSONResponse:
+        """ 系统异常 -- Redis错误 """
+        my_logger.error(f"Redis错误: URL:{request.url}\nHeaders:{request.headers}\nException:{exc}.")
+        return response_body(request=request, content=Result.fail(msg="Redis错误!"))
 
-    @app.exception_handler(UserNotExist)
-    async def user_not_exist_handler(request: Request, exc: UserNotExist):
-        """ 用户不存在(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
-    @app.exception_handler(IdNotExist)
-    async def id_not_exist_handler(request: Request, exc: IdNotExist):
-        """ 查询id不存在(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
-    @app.exception_handler(SetRedis)
-    async def set_redis_handler(request: Request, exc: SetRedis):
-        """ Redis存储失败(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=exc.err_desc)
-
-    @app.exception_handler(AccessTokenFail)
-    async def access_token_fail_handler(request: Request, exc: AccessTokenFail):
-        """ 访问令牌失败(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_401(msg=exc.err_desc)
-
-    @app.exception_handler(PermissionNotEnough)
-    async def permission_not_enough_handler(request: Request, exc: AccessTokenFail):
-        """ 权限不足,拒绝访问(自定义异常) """
-        logger.warning(f"{exc.err_desc}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_403(msg=exc.err_desc)
-
-    @app.exception_handler(IntegrityError)
-    async def integrity_error_handler(request: Request, exc: IntegrityError):
-        """ 添加/更新的数据与数据库中数据冲突 """
-        text = f"添加/更新的数据与数据库中数据冲突!"
-        logger.warning(f"{text}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.orig}")
-        return resp_400(msg=text)
-
-    @app.exception_handler(ProgrammingError)
-    async def programming_error_handle(request: Request, exc: ProgrammingError):
-        """ 请求参数丢失 """
-        logger.error(f"请求参数丢失\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc}")
-        return resp_400(msg='请求参数丢失!(实际请求参数错误)')
+    @app.exception_handler(SQLAlchemyError)
+    async def validation_exception_handler(request: Request, exc: SQLAlchemyError) -> JSONResponse:
+        """ 系统异常 -- SQLAlchemy错误 """
+        my_logger.error(f"SQL语法错误: URL:{request.url}\nHeaders:{request.headers}\nException:{exc}.")
+        return response_body(request=request, content=Result.fail(msg="SQL语法错误!"))
 
     @app.exception_handler(RequestValidationError)
-    async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-        """ 请求参数验证异常 """
-        logger.error(f"请求参数格式错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
-        return resp_422(msg=exc.errors())
+    async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+        """ HTTP通信错误 -- 请求参数验证错误 """
+        params = await get_request_params(request)
+        my_logger.error(f"请求参数验证错误: URL:{request.url}, Params:{params}\nHeaders:{request.headers}\n"
+                        f"Exception:{jsonable_encoder(exc.errors())}.")
 
-    @app.exception_handler(ValidationError)
-    async def inner_validation_exception_handler(request: Request, exc: ValidationError):
-        """ 内部参数验证异常 """
-        logger.error(f"内部参数验证错误\nURL:{request.method}-{request.url}\nHeaders:{request.headers}\nerror:{exc.errors()}")
-        return resp_500(msg=exc.errors())
+        content = Result.fail(msg="请求参数异常!").dict()
+        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=content)
 
-    @app.exception_handler(UnmappedInstanceError)
-    async def un_mapped_instance_error_handler(request: Request, exc: UnmappedInstanceError):
-        """ 删除数据的id在数据库中不存在 """
-        id = request.path_params.get("id")
-        text = f"不存在编号为 {id} 的数据, 删除失败!"
-        logger.warning(f"{text}\nURL:{request.method}-{request.url}\nHeaders:{request.headers}")
-        return resp_400(msg=text)
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+        """ HTTP通信错误(未进到接口里面) """
+        my_logger.error(f"HTTP通讯错误: URL:{request.url}\nHeaders:{request.headers} \nException:{repr(exc)}.")
+        return response_body(request=request, content=Result.fail(msg=exc.detail), status_code=exc.status_code)
 
     @app.exception_handler(Exception)
-    async def all_exception_handler(request: Request, exc: Exception):
-        """ 捕获全局异常 """
-        logger.error(f"全局异常\n{request.method}URL:{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
-        return resp_500(msg="服务器内部错误")
+    async def http_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+        """ 全局异常 """
+        my_logger.error(f"全局异常: URL:{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
+        return response_body(request=request, content=Result.fail(msg="未知错误！"))

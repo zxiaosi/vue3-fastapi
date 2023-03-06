@@ -1,90 +1,122 @@
->最新代码见 dev 分支
+## Vue3+ FastAPI Demo
 
-# 学生选课系统
+### 1.项目目录
 
-## 预览
+```sh
+-- 服务器
+	-- ...
+	-- root
+	-- opt
+		-- containerd 
+		-- docker 								# 存放docker容器配置
+			-- mysql							# mysql 配置
+			-- nginx							# nginx 配置
+				-- conf.d						
+					-- default.conf				 # nginx 配置 【重要】
+				-- html							# 存放打包后的文件 【重要】
+				-- ...
+			-- redis							# redis
+			-- demo								# 项目配置
+				-- frontend						# 前端
+				-- backend						# 后端
+					-- Dockerfile				# 构建镜像【重要】 
+				-- docker-compose.yml			 # docker-compose 【重要】
+				-- ...
+			-- ...
+```
 
-+ 🎉🎉🎉感谢 [**wendingming**](https://gitee.com/wendingming) 整理的 [<font color="red">项目部署的准备工作</font>](https://gitee.com/zxiaosi/fast-api/issues/I4V6WV)
-+ 🎉🎉🎉感谢 [**dreamrise**](https://gitee.com/dreamrise) 整理的 [<font color="red">运行配置介绍</font>](https://gitee.com/zxiaosi/fast-api/issues/I56HPN)
 
-## 安装
 
-+ **后端安装**：[FastAPI](https://gitee.com/zxiaosi/fast-api/tree/master/backend#安装)（代码参考[CharmCode](https://www.charmcode.cn/category/FastAPI?page=1)）
-+ **前端安装**：[Vue3+Ts](https://gitee.com/zxiaosi/fast-api/tree/master/frontend#安装) (代码参考[Vue-Manage-System](https://github.com/lin-xin/vue-manage-system))
+### 2. Dcoker浅学
 
-## 版本
++ [Ubuntu18.4 内使用 Docker-Compose](https://zxiaosi.com/archives/ae105511.html)
++ [Docker 部署项目](https://zxiaosi.com/archives/b32496b.html)
 
-+ `1.0` 测试数据的增删改查已完成
-+ `1.1` 院系表的增删改查已完成（见`信息表格`）
-+ `1.2` 首页仪表盘信息的优化
-+ `1.3` 院系表的增删改查初步完成
-+ `1.4` 整理代码
-+ `1.5` 添加了教师表
-+ `1.6` 添加了学生表、课程表、选课表
-+ `1.7` 重构前端代码
-+ `1.8` 封装组件，取出冗余代码
-+ `1.9` 自定义表格组件
-+ `2.0` 部署项目
-+ `2.1` 重构FastAPI
-+ `2.2` 配置nginx以及SSL证书(域名未备案，ssl证书未生效)
-+ `2.3` 添加Redis
-+ `2.4` 加入TS
-+ `2.5` 支持PostgreSQL，实现图片上传
-+ `2.6` 前端文件分离(vue与ts)，后端实现权限管理
-+ `2.7` 简单实现权限管理
-+ `2.8` 调整数据库结构&&简单实现学生选课
-+ `2.9` 简单实现教师讲授课程
+### 3. 前端部署
 
->TODO：优化代码
++ 将 `frontend/src/assets/js/global.ts` 文件中 `API_URL_PRODUCTION` 字段改为服务器 `IP`
 
-## 开启服务
++ 修改 `frontend/src/request/https.ts` 文件中的 `isDev` 字段为 `false`
 
-1. 后端
+  ```javascript
+  // 是否是开发环境
+  // const isDev: boolean = true;
+  const isDev: boolean = false;
+  ```
 
-   + 进入到 `backend` 项目下
-   + 找到 `main.py` 右键运行（建议用Pycharm启动）
++ 运行 `npm run build` 命令打包文件
 
-   >接口文档：http://127.0.0.1:8000/docs
++ 将 `frontend/dist` 中的文件上传到服务器 `/opt/docker/nginx/html` 文件夹下
 
-2. 前端
+### 4. 后端部署
 
-   + 进到 `frontend` 目录下
-   + `npm run dev` 运行项目（建议用Vscode）
++ 修改 `backend/core/config.py` 中的 `IS_DEV` 字段为 `false`
 
-   >服务接口：http://localhost:3000/
-
-3. 效果
-
-+ 登录界面
+  ```sh
+  # IS_DEV = True  # 是否开发环境
+  IS_DEV = False  # 是否开发环境
+  ```
   
-  + `用户名`：`admin`
++ 修改 `backend/core/config.py` 中的部分字段
 
-  + `密码`：`123`
++ 使用 `Docker` 创建网络桥段 
+
+  ```sh
+  # docker network ls 查看网络桥段
+  # docker network create 桥段名 
   
-  + 如图
-  
-    ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/frontend-login.png)
-  
-+ 首页（假数据）
+  # app 为 docker-compose.yml 中定义的桥段名
+  docker network create app
+  ```
 
-  ![home](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/home.png)
-  
-+ 数据的`增`
++ 运行 `/opt/docker/demo` 文件下的 `docker-compose.yml`
 
-  ![add](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/add.gif)
-  
-+ 数据的`删`
+  ```sh
+  docoker-compose -f /opt/docker/demo/docker-compose.yml up -d
+  ```
 
-  ![delete](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/delete.gif)
++ 创建名为 `demo` 的数据库, 并导入 `demo.sql`
 
-+ 数据的`改`
+### 5. Nginx 配置 ( `/nginx/conf.d/default.conf` )
 
-  ![update](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/update.gif)
+```sh
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
 
-+ 搜索数据
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
 
-  ![](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/search.gif)
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html; # 防止页面刷新404
+    }
 
-+ 多选删除
+    location /api {
+        client_max_body_size 5m;
+        proxy_pass http://fastapi:8000; # 这里 localhost -> 对应的容器名
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr; 
+        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+    }
+    
+    # 可选
+    location /api/docs { # docs 文档地址
+        proxy_pass http://fastapi:8000/docs;
+    }
 
-  ![selectedDelete](https://gitee.com/zxiaosi/image/raw/master/Project/Vue+FastAPI/selectedDelete.gif)
+    location /api/redoc { # redoc 文档地址
+        proxy_pass http://fastapi:8000/redoc;
+    }
+
+    location /openapi.json { # openapi 地址 (如果代理上述文档地址, 请务必添加 openapi 的代理)
+        proxy_pass http://fastapi:8000/openapi.json;
+    }
+
+    ...
+}
+
+```
+

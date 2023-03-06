@@ -1,57 +1,36 @@
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import type { UserInfo } from "@/types";
+import { iterateMenu } from "@/utils/handle_data";
+import { LayoutPage } from "@/assets/js/global";
 
-interface Tags {
-  name: string;
-  path: string;
-  title: string;
-}
+export const useUserStore = defineStore("userStore", () => {
+  const menu = ref<any>([]); // 菜单列表
+  const isOpenSidebar = ref<boolean>(true); // 是否展开侧边栏
 
-export const useStore = defineStore({
-  id: "index",
-  state: () => ({
-    tagsList: [] as Tags[], // 标签列表
-    collapse: false as boolean, // 侧边栏是否折叠
-    userInfo: {} as UserInfo, // 用户信息
-    messages: 4 as number, // 消息数量
-  }),
-  getters: {
-    tagNameList(state) {
-      return state.tagsList.map((item: Tags) => {
-        return item.name;
-      });
-    },
-  },
-  actions: {
-    /**
-     * 根据索引删除标签
-     * @param index 索引值
-     */
-    delTagsItem(index: number) {
-      this.tagsList.splice(index, 1);
-    },
+  // const doubleCount = computed(() => count.value * 2)
+
+  /**
+   * 添加动态路由，并同步到状态管理器中
+   * @param data 路由列表
+   * @param router 路由实例
+   */
+  function addRoutes(data: any, router: any) {
+    menu.value = iterateMenu(data);
+    menu.value.forEach((item: any) => router.addRoute(LayoutPage, item));
 
     /**
-     * 添加路由对象
-     * @param route 路由对象
+     * router.getRoutes() 获取的是所有路由，扁平化输出，看不到嵌套的路由，但实际有嵌套的路由
+     * 详见: https://github.com/vuejs/router/issues/600
      */
-    setTagsItem(route: Tags) {
-      this.tagsList.push(route);
-    },
+    // console.log("router", router.getRoutes());
+  }
 
-    /**
-     * 关闭全部标签
-     */
-    clearTags() {
-      this.tagsList = [];
-    },
+  /**
+   * 切换侧边栏
+   */
+  function toggleSidebar() {
+    isOpenSidebar.value = !isOpenSidebar.value;
+  }
 
-    /**
-     * 关闭其他标签
-     * @param data 标签数组
-     */
-    closeTagsOther(data: Tags[]) {
-      this.tagsList = data;
-    },
-  },
+  return { menu, isOpenSidebar, addRoutes, toggleSidebar };
 });

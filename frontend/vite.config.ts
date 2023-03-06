@@ -1,4 +1,4 @@
-import { fileURLToPath, URL } from "url";
+import { fileURLToPath, URL } from "node:url";
 
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
@@ -12,16 +12,16 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  server: {
-    // 服务器配置
-    host: "localhost",
-    port: 3000, // 端口号
-    open: false, // 是否打开新窗口
-    strictPort: false, // 设为 true 时若端口已被占用则会直接退出，而不是尝试下一个可用端口
-    https: false, // 是否开启https
+  css: {
+    preprocessorOptions: {
+      less: {
+        math: "always",
+      },
+    },
   },
-  // 打包限制
-  build: {
-    chunkSizeWarningLimit: 2000,
+  server: {
+    host: 'localhost', // 请务必指定精确ip, 否则可能会Cookie无法写入 (这里localhost -> 127.0.0.1)
+    strictPort: false, // 设为 true 时若端口已被占用则会直接退出，而不是尝试下一个可用端口
+    https: false, // 是否启用 https
   },
 });

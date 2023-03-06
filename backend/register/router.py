@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-# @Time : 2022/1/8 23:06
+# -*- coding: utf-8 -*-
+# @Time : 2023/1/31 11:04
 # @Author : zxiaosi
 # @desc : 注册路由
-from fastapi import FastAPI, Security
+from fastapi import FastAPI, Depends
 
-from core import settings
-from apis import app_router
-from apis.deps import get_current_user
-from apis.common import redis_check, login, dashboard
+from apis import hello, user
+from common import check_cookie
+from core.config import settings
 
 
 def register_router(app: FastAPI):
     """ 注册路由 """
 
-    app.include_router(redis_check.router, prefix=settings.API_PREFIX, tags=["Redis"])  # Redis(不需要权限)
+    app.include_router(hello.router, prefix=settings.API_PREFIX, tags=["Hello"])
 
-    app.include_router(login.router, prefix=settings.API_PREFIX, tags=["Login"])  # Login(权限在每个接口上)
-
-    app.include_router(dashboard.router, prefix=settings.API_PREFIX, tags=["Dashboard"],
-                       dependencies=[Security(get_current_user, scopes=[])])  # Dashboard(不需要权限,但需要登录)
-
-    # 权限(权限在每个接口上)
-    app.include_router(app_router, prefix=settings.API_PREFIX)
+    app.include_router(user.router, prefix=settings.API_PREFIX + "/user", tags=["User"],
+                       dependencies=[Depends(check_cookie)])
