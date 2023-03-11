@@ -29,33 +29,36 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+router.beforeResolve(async to => {
+  const userStore = useUserStore();
+
+  if (to.path !== "/login" && userStore.menu.length == 0) { // 检查是否存在菜单列表, 不存在则获取菜单列表 (避免无限重定向)
+    try {
+      const { data: { data } } = await getMenus(); // 获取菜单列表
+      if (data.length > 0) {
+        userStore.addRoutes(data, router); // 添加动态路由
+        return { ...to, replace: true };
+      } else {
+        ElMessage.error("菜单列表为空");
+        return false
+      }
+    } catch (error: any) {
+      throw error; // 抛出异常, 被全局异常捕获
+    }
+  }
+});
+
+
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   document.title = `${to.meta.title} | ${TITLE}`; // 页面名
 
-  if (to.path !== "/login") { // 避免无限重定向
-
-    const userStore = useUserStore();
-
-    if (!document.cookie) { // 检查是否存在cookie, 不存在则用户登录状态失效
-      ElMessage.error("登录状态失效, 请重新登录");
-      next("/login"); // 重定向到登录页
-    } else if (userStore.menu.length == 0) {
-      try {
-        const { data: { data } } = await getMenus(); // 获取菜单列表
-        if (data.length < 1) throw new Error("菜单列表为空"); // 菜单列表为空, 抛出异常, 方便下方捕获
-        userStore.addRoutes(data, router); // 添加动态路由
-        next({ ...to, replace: true, }); // 防止刷新页面, 导致路由丢失
-      } catch (error: any) {
-        ElMessage.error(error.message);
-        throw error; // 向上抛出异常, 方便全局捕获
-      }
-    } else {
-      next();
-    }
-
+  if (to.path !== "/login" && !document.cookie) { // 检查是否存在cookie, 不存在则用户登录状态失效 (避免无限重定向)
+    ElMessage.error("登录状态失效, 请重新登录");
+    next("/login"); // 重定向到登录页
   } else {
     next();
   }
 });
+
 
 export default router;

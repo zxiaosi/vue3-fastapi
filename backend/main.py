@@ -20,20 +20,12 @@ register_router(app)  # 注册路由
 
 register_exception(app)  # 注册异常捕获
 
-register_middleware(app)  # 注册请求响应拦截
+# register_middleware(app)  # 注册请求响应拦截
 
+# init_table()  # 初始化表
+# init_data()  # 初始化表数据
 
-@app.on_event("startup")
-async def startup():
-    # init_table()  # 初始化表
-    # init_data()  # 初始化表数据
-    my_logger.info("项目启动成功！！！")
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    pass
-
+my_logger.info("项目启动成功！！！")
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1", port=8000)

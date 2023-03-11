@@ -25,6 +25,7 @@ class Settings(BaseSettings):
 
     REDIS_URI: str = "redis://:123456@localhost:6379/0"  # Redis
     REDIS_EXPIRE: int = 24 * 60 * 60  # Redis 过期时长
+    REDIS_GLOBAL_PREFIX: str = "redis-om"  # Redis 全局前缀
     DATABASE_URI: str = "mysql://root:123456@localhost:3306/demo?charset=utf8"  # MySQL
     DATABASE_ECHO: bool = False  # 是否打印数据库日志 (可看到创建表、表数据增删改查的信息)
 

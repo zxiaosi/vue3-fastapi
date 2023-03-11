@@ -2,14 +2,29 @@
 import { useUserStore } from "@/stores";
 import { IMAGE_URL } from "@/assets/js/global";
 import { useRouter } from "vue-router";
-import { computed, onMounted } from "vue";
+import { userLogout } from "@/apis";
+import { clearLocal } from "@/request/auth";
 
 const router = useRouter();
 const userStore = useUserStore();
 
-/** 选中菜单 */
-const selectMenu = (menu: any) => {
-  router.push(menu.path);
+/** 计算样式 */
+const handleStyle = (type: "aside" | "menu" | "image"): any => {
+  switch (type) {
+    case "aside":
+      return userStore.isOpenSidebar ? "200px" : "64px";
+    case "menu":
+      return { width: userStore.isOpenSidebar ? "200px" : "64px" };
+    case "image":
+      return { "margin-right": userStore.isOpenSidebar ? "10px" : "0px" };
+  }
+};
+
+/** 退出登录 */
+const handleLogout = async () => {
+  await userLogout();
+  clearLocal();
+  router.push("/login");
 };
 </script>
 
@@ -17,7 +32,7 @@ const selectMenu = (menu: any) => {
   <div class="layout-page">
     <el-container>
       <el-header>
-        <div class="left">
+        <div class="header-left">
           <div class="sidebar-btn" @click="userStore.toggleSidebar">
             <el-icon v-if="userStore.isOpenSidebar">
               <Fold />
@@ -29,12 +44,28 @@ const selectMenu = (menu: any) => {
 
           <div class="title">Demo</div>
         </div>
-        <div class="right"></div>
+
+        <div class="header-right">
+          <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+
+          <el-dropdown>
+            <span class="el-dropdown-link"> {{ "zxiaosi" }}</span>
+
+            <template #dropdown>
+              <el-dropdown-menu>
+                <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
+                  <el-dropdown-item>项目仓库</el-dropdown-item>
+                </a>
+                <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </el-header>
 
       <el-container>
         <!-- 加el-aside为了动画 -->
-        <el-aside :width="userStore.isOpenSidebar ? '200px' : '64px'">
+        <el-aside :width="handleStyle('aside')">
           <el-menu
             router
             unique-opened
@@ -43,7 +74,7 @@ const selectMenu = (menu: any) => {
             active-text-color="#409EFF"
             :collapse-transition="false"
             :collapse="!userStore.isOpenSidebar"
-            :style="{ width: userStore.isOpenSidebar ? '200px' : '64px' }"
+            :style="handleStyle('menu')"
             :default-active="router.currentRoute.value.path"
           >
             <template v-for="item in userStore.menu">
@@ -52,7 +83,7 @@ const selectMenu = (menu: any) => {
                 <el-sub-menu :index="item.path">
                   <template #title>
                     <el-image
-                      :style="{ 'margin-right': userStore.isOpenSidebar ? '10px' : '0px' }"
+                      :style="handleStyle('image')"
                       :src="IMAGE_URL + item.meta.icon"
                     />
                     <span>{{ item.meta.title }}</span>
@@ -61,7 +92,7 @@ const selectMenu = (menu: any) => {
                   <template v-for="subItem in item.children">
                     <el-menu-item :index="subItem.path">
                       <el-image
-                        :style="{ 'margin-right': userStore.isOpenSidebar ? '10px' : '0px' }"
+                        :style="handleStyle('image')"
                         :src="IMAGE_URL + subItem.meta.icon"
                       />
                       <template #title>{{ subItem.meta.title }}</template>
@@ -74,7 +105,7 @@ const selectMenu = (menu: any) => {
               <template v-else>
                 <el-menu-item :index="item.path">
                   <el-image
-                    :style="{ 'margin-right': userStore.isOpenSidebar ? '10px' : '0px' }"
+                    :style="handleStyle('image')"
                     :src="IMAGE_URL + item.meta.icon"
                   />
                   <template #title>{{ item.meta.title }}</template>
@@ -111,7 +142,7 @@ const selectMenu = (menu: any) => {
     justify-content: space-between;
     align-items: center;
 
-    .left {
+    .header-left {
       display: flex;
       align-items: center;
       font-size: 24px;
@@ -125,7 +156,30 @@ const selectMenu = (menu: any) => {
       }
     }
 
-    .right {
+    .header-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .el-image {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin-right: 15px;
+      }
+
+      .el-dropdown {
+        color: #ffffff;
+        font-size: 18px;
+
+        .el-dropdown-link {
+          display: flex;
+        }
+
+        .el-dropdown-link:focus-visible {
+          outline: unset;
+        }
+      }
     }
   }
 

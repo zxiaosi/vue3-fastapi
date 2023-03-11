@@ -20,7 +20,6 @@ axios.defaults.baseURL = isDev ? API_URL_DEVELOPMENT : API_URL_PRODUCTION;
 // 请求拦截器(全局配置)
 axios.interceptors.request.use(
   (config: any) => {
-    config.withCredentials = true; // 跨域请求时携带Cookie
     config.headers = { "Content-Type": "application/json;charset=utf-8" }; // 请求头
     return config;
   },
@@ -35,7 +34,7 @@ axios.interceptors.response.use(
   (response: AxiosResponse) => { // status >= 200 && status < 300 (HTTP 成功)
     const { data: { code, msg }, config } = response;
     const { isShowLoading, isShowFailToast, isThrowError } = config as IRequestOption; // 请求配置
-    
+
     if (code == 0) { // 业务成功 (后端定义的成功)
       if (isShowLoading) ElMessage.success("请求成功！");
     } else { // 业务失败 (后端定义的失败)
@@ -48,7 +47,7 @@ axios.interceptors.response.use(
   (error: AxiosError) => { // HTTP 失败
     const { response, config } = error;
     const { url, isShowLoading, isShowFailToast, isThrowError } = config as IRequestOption;
-    
+
     let errMsg = ""; // 错误信息
 
     if (response) { // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
@@ -57,7 +56,6 @@ axios.interceptors.response.use(
 
       if (status == 401) {// 跳转登录
         setTimeout(() => { window.location.href = "/login" }, 2000);
-        clearLocal();
       }
     } else { // 请求已经成功发起，但没有收到响应
       errMsg = "请求超时或服务器异常，请检查网络或联系管理员！";
@@ -114,10 +112,11 @@ class Http {
 
   // 请求配置 https://www.axios-http.cn/docs/req_config
   request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<AxiosResponse<string | IResponseData<T>>> {
+    const withCredentials = true; // 是否携带cookie (放到实例配置中)
     const requestUrl = url;
     const requestData = this.transformParam(options, data);
     const requestOptions = { ...this.defaultOptions, ...options };
-    const config = { url: requestUrl, data: requestData, ...requestOptions };
+    const config = { withCredentials, url: requestUrl, data: requestData, ...requestOptions };
 
     return axios.request(config);
   }

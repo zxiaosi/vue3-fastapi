@@ -1,10 +1,56 @@
-<script setup lang='ts'>
+<script setup lang="ts">
+import { getUsers } from "@/apis";
+import { onMounted, reactive, ref } from "vue";
 
+const tableData = reactive({
+  list: [] as any,
+  total: 0,
+});
+
+onMounted(async () => {
+  const { data: { data, total } } = await getUsers();
+  tableData.list = data;
+  tableData.total = total;
+});
 </script>
 
 <template>
-  <h2>我是User页</h2>
+  <div class="page">
+    <div class="header"> 搜索条件 </div>
+    <el-table :data="tableData.list" stripe :border="true">
+      <el-table-column prop="id" label="Id" />
+      <el-table-column prop="name" label="Name" />
+      <el-table-column prop="sex" label="Sex" />
+      <el-table-column prop="avatar" label="avatar" />
+      <el-table-column prop="phone" label="phone" />
+      <el-table-column prop="create_time" label="create_time" />
+      <el-table-column prop="update_time" label="update_time" />
+    </el-table>
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="tableData.total" />
+  </div>
 </template>
 
 <style scoped lang="less">
+.page {
+  width: calc(100% - 40px);
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    padding: 20px;
+    background-color: #f5f7fa;
+  }
+
+  .el-table {
+    flex: 1;
+  }
+
+  .el-pagination {
+    padding: 20px 0px;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #f5f7fa;
+  }
+}
 </style>

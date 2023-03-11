@@ -2,3 +2,8 @@
 
 // 防止 ElementPlus 国际化报红
 declare module "element-plus/dist/locale/zh-cn.mjs";
+
+declare module 'echarts' {
+  const echarts: any
+  export default echarts
+}

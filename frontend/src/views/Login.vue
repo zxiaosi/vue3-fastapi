@@ -5,9 +5,11 @@ import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 import { userLogin, userSignUp } from "@/apis/index";
 import { encryptContent } from "@/utils/encryption";
+import { useUserStore } from "@/stores";
+import { setLocal } from "@/request/auth";
 
-// 路由实例
 const router = useRouter();
+const userStore = useUserStore();
 
 // 表单实例
 const loginRef = ref<FormInstance>();
@@ -31,9 +33,12 @@ const submitForm = async (formEl: FormInstance | undefined, type: "login" | "sig
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       let params = { name: userInfo.name, password: encryptContent(userInfo.password) };
-      if (type == "login") await userLogin(params);
-      if (type == "signup") await userSignUp(params);
+      let resp: any;
+      if (type == "login") resp = await userLogin(params);
+      if (type == "signup") resp = await userSignUp(params);
 
+      userStore.user = resp.data.data;
+      setLocal("userInfo", resp.data.data);
       router.push("/");
     } else {
       ElMessage.warning("数据校验失败!");

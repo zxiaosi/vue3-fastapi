@@ -26,7 +26,7 @@ class LogRoute(APIRoute):
         original_route_handler = super().get_route_handler()
 
         async def custom_route_handler(request: Request) -> Response:
-            prevent_duplicate_requests(request)
+            prevent_duplicate_requests(request)  # 防止重复请求
 
             before = time.time()
             response: Response = await original_route_handler(request)
@@ -42,6 +42,19 @@ class LogRoute(APIRoute):
             return response
 
         return custom_route_handler
+
+
+def prevent_duplicate_requests(request: Request):
+    """ 防止重复请求 (3秒内请求5次) """
+    key = f"{request.client.host}+{request.get('path')}"
+    try:
+        request_obj = RequestIp.get(key)
+        if request_obj.num >= 5:
+            raise DuplicateRequests()
+        else:
+            RequestIp(num=request_obj.num + 1, pk=key).update()
+    except NotFoundError:
+        RequestIp(num=1, pk=key).save().expire(3)
 
 
 async def get_request_params(request: Request) -> dict:
@@ -66,17 +79,6 @@ async def get_request_params(request: Request) -> dict:
     return params
 
 
-def prevent_duplicate_requests(request: Request):
-    """ 防止重复请求 (3秒内请求5次) """
-    key = f"{request.client.host}+{request.get('path')}"
-    try:
-        request_obj = RequestIp.get(key)
-        if request_obj.num >= 5:
-            raise DuplicateRequests()
-        else:
-            request_ip = RequestIp(num=request_obj.num + 1, pk=key)
-            request_ip.update()
-    except NotFoundError:
-        request_ip = RequestIp(num=1, pk=key)
-        request_ip.save()
-        request_ip.expire(3)
+# 保存日志
+def save_log(request: Request, response: Response):
+    pass

@@ -2,12 +2,25 @@
 # -*- coding: utf-8 -*-
 # @Time : 2023/1/28 18:48
 # @Author : zxiaosi
-# @desc : 创建与删除所有表, 初始化数据
-from sqlalchemy.orm import Session
+# @desc : 创建会话, 创建与删除所有表, 初始化数据
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from common import engine
+from core.config import settings
 from models import Base, User, Role, Resource, UserRole, RoleResource
 from utils.custom_log import my_logger
+
+# 文档中介绍了四种 创建会话 的方式: https://docs.sqlalchemy.org/en/20/orm/session_basics.html
+
+# 创建表引擎
+engine = create_engine(
+    url=settings.DATABASE_URI,  # 数据库uri
+    echo=settings.DATABASE_ECHO,  # 是否打印日志
+    pool_pre_ping=True,  # 每次连接前都会检查连接是否有效
+)
+
+# 会话创建器
+Session = sessionmaker(engine, expire_on_commit=False, autoflush=False)
 
 
 def init_table(is_drop: bool = True):
@@ -32,7 +45,7 @@ def drop_table():
 
 def init_data():
     """ 初始化表数据 """
-    with Session(engine) as session:
+    with Session() as session:
         user1 = User(name="admin", password="30780cc6f2e56945aaf9c9578c932e22")
         user2 = User(name="user", password="30780cc6f2e56945aaf9c9578c932e22", sex=1)
         user3 = User(name="guest", password="30780cc6f2e56945aaf9c9578c932e22", sex=2)
@@ -83,4 +96,5 @@ def init_data():
             role_resource1, role_resource2, role_resource3, role_resource4, role_resource5, role_resource6,
             role_resource7, role_resource8, role_resource9, role_resource10, role_resource11, role_resource12
         ])
+
         session.commit()

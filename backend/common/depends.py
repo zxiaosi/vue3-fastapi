@@ -3,27 +3,15 @@
 # @Time : 2023/1/29 16:23
 # @Author : zxiaosi
 # @desc : 依赖项
+from fastapi import Depends
 from redis_om import NotFoundError
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from starlette import status
 from starlette.requests import Request
-from starlette.responses import Response
 
 from core.config import settings
+from core.init_db import Session
 from models import LocalUser
-from utils.custom_exc import BadCredentials
-from utils.handle_cookie import clear_cookie
-
-# 文档中介绍了四种 创建会话 的方式: https://docs.sqlalchemy.org/en/20/orm/session_basics.html
-
-# 创建表引擎
-engine = create_engine(
-    url=settings.DATABASE_URI,  # 数据库uri
-    echo=settings.DATABASE_ECHO,  # 是否打印日志
-)
-
-# 会话创建器
-Session = sessionmaker(engine, expire_on_commit=False)
+from utils.custom_exc import BadCredentials, UserErrors
 
 
 def get_db():
@@ -32,14 +20,27 @@ def get_db():
         yield session
 
 
-def check_cookie(request: Request, response: Response):
-    """ 校验cookie """
+def check_cookie(request: Request):
+    """ 校验cookie -- 认证"""
     if request.get("path") in settings.COOKIE_NOT_CHECK:  # 不校验Cookie
         return
 
     session = request.cookies.get(settings.COOKIE_KEY)
     try:
+        # print(LocalUser.get(session).json())
         return LocalUser.get(session)
     except NotFoundError:
-        clear_cookie(response)
         raise BadCredentials()
+
+
+def check_permission(code: list[str] = None):
+    """ 校验权限code -- 权限"""
+
+    def wrapper(user: LocalUser = Depends(check_cookie)):
+        # TODO 获取 JsonModel 里面的数据是真的麻烦 eg: resource.json()
+        resources = [resource.permission_code for resource in user.resources]
+        # 判断一个列表中是否包含另一个列表中的元素
+        if not set(code).issubset(set(resources)):
+            raise UserErrors(code=status.HTTP_403_FORBIDDEN, err_desc="没有权限")
+
+    return wrapper
