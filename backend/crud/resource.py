@@ -3,8 +3,6 @@
 # @Time : 2023/2/25 22:35
 # @Author : zxiaosi
 # @desc : 资源表表的增删改查
-from typing import Any
-
 from sqlalchemy import select, insert
 from sqlalchemy.orm import Session
 
@@ -25,6 +23,15 @@ class CRUDResource(CRUDBase[Resource, UserCreate, UserUpdate]):
             .where(self.model.is_deleted == 0)
         )
         return db.scalars(stmt).all()  # type: ignore
+
+    def get_resource_by_url(self, db: Session, url: str) -> Resource | None:
+        """ 得到资源 """
+        stmt = (
+            select(self.model)
+            .where(self.model.request_url == url)
+            .where(self.model.is_deleted == 0)
+        )
+        return db.scalar(stmt)
 
 
 resource_crud = CRUDResource(Resource)

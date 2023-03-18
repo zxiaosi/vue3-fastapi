@@ -16,7 +16,7 @@ export const userLogout = (): Promise<any> => post("/user/logout");
 export const getMenus = (): Promise<any> => get("/user/menu");
 
 /** 得到所有用户 */
-export const getUsers = (): Promise<any> => get("/user/users");
+export const getUsers = (): Promise<any> => get("/user/list");
 
 /**
  * 仓库获取语言详情

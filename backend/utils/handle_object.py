@@ -18,8 +18,9 @@ def list_obj_as_dict(list_obj):
     return [obj_as_dict(obj) for obj in list_obj]
 
 
-def generate_tree_menu(menu_list):
+def generate_tree_menu(menu_obj_list):
     """ 生成树形菜单 """
+    menu_list = list_obj_as_dict(menu_obj_list)
     menu_dict = {}
     for menu in menu_list:
         menu_dict[menu["id"]] = menu

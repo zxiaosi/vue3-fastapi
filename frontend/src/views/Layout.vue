@@ -4,21 +4,12 @@ import { IMAGE_URL } from "@/assets/js/global";
 import { useRouter } from "vue-router";
 import { userLogout } from "@/apis";
 import { clearLocal } from "@/request/auth";
+import { TITLE } from "@/assets/js/global";
+import { pageTo } from "@/utils/handle_data";
+import world from "@/assets/img/logo.png";
 
 const router = useRouter();
 const userStore = useUserStore();
-
-/** 计算样式 */
-const handleStyle = (type: "aside" | "menu" | "image"): any => {
-  switch (type) {
-    case "aside":
-      return userStore.isOpenSidebar ? "200px" : "64px";
-    case "menu":
-      return { width: userStore.isOpenSidebar ? "200px" : "64px" };
-    case "image":
-      return { "margin-right": userStore.isOpenSidebar ? "10px" : "0px" };
-  }
-};
 
 /** 退出登录 */
 const handleLogout = async () => {
@@ -29,20 +20,52 @@ const handleLogout = async () => {
 </script>
 
 <template>
-  <div class="layout-page">
+  <el-container class="pages">
+    <el-aside>
+      <div class="logo" @click="pageTo(router, '/')">
+        <img :src="world">
+        <span>{{ TITLE }}</span>
+      </div>
+
+      <el-menu router unique-opened background-color="#324157" text-color="#FFFFFF" active-text-color="#409EFF"
+        :collapse-transition="false" :default-active="router.currentRoute.value.path">
+        <template v-for="item in userStore.menu">
+          <!-- 二级菜单 -->
+          <template v-if="item.children.length > 0">
+            <el-sub-menu :index="item.path">
+              <template #title>
+                <el-image :src="IMAGE_URL + item.meta.icon" />
+                <span>{{ item.meta.title }}</span>
+              </template>
+
+              <template v-for="subItem in item.children">
+                <el-menu-item :index="subItem.path">
+                  <el-image :src="IMAGE_URL + subItem.meta.icon" />
+                  <template #title>{{ subItem.meta.title }}</template>
+                </el-menu-item>
+              </template>
+            </el-sub-menu>
+          </template>
+
+          <!-- 一级菜单 -->
+          <template v-else>
+            <el-menu-item :index="item.path">
+              <el-image :src="IMAGE_URL + item.meta.icon" />
+              <template #title>{{ item.meta.title }}</template>
+            </el-menu-item>
+          </template>
+        </template>
+      </el-menu>
+    </el-aside>
+
     <el-container>
       <el-header>
         <div class="header-left">
-          <div class="sidebar-btn" @click="userStore.toggleSidebar">
-            <el-icon v-if="userStore.isOpenSidebar">
-              <Fold />
-            </el-icon>
-            <el-icon v-else>
-              <Expand />
-            </el-icon>
-          </div>
-
-          <div class="title">Demo</div>
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item v-for="item in router.currentRoute.value.matched" :key="item.path">
+              <router-link :to="{ path: item.path }">{{ item.meta.title }}</router-link>
+            </el-breadcrumb-item>
+          </el-breadcrumb>
         </div>
 
         <div class="header-right">
@@ -63,76 +86,61 @@ const handleLogout = async () => {
         </div>
       </el-header>
 
-      <el-container>
-        <!-- 加el-aside为了动画 -->
-        <el-aside :width="handleStyle('aside')">
-          <el-menu
-            router
-            unique-opened
-            background-color="#324157"
-            text-color="#FFFFFF"
-            active-text-color="#409EFF"
-            :collapse-transition="false"
-            :collapse="!userStore.isOpenSidebar"
-            :style="handleStyle('menu')"
-            :default-active="router.currentRoute.value.path"
-          >
-            <template v-for="item in userStore.menu">
-              <!-- 二级菜单 -->
-              <template v-if="item.children.length > 0">
-                <el-sub-menu :index="item.path">
-                  <template #title>
-                    <el-image
-                      :style="handleStyle('image')"
-                      :src="IMAGE_URL + item.meta.icon"
-                    />
-                    <span>{{ item.meta.title }}</span>
-                  </template>
-
-                  <template v-for="subItem in item.children">
-                    <el-menu-item :index="subItem.path">
-                      <el-image
-                        :style="handleStyle('image')"
-                        :src="IMAGE_URL + subItem.meta.icon"
-                      />
-                      <template #title>{{ subItem.meta.title }}</template>
-                    </el-menu-item>
-                  </template>
-                </el-sub-menu>
-              </template>
-
-              <!-- 一级菜单 -->
-              <template v-else>
-                <el-menu-item :index="item.path">
-                  <el-image
-                    :style="handleStyle('image')"
-                    :src="IMAGE_URL + item.meta.icon"
-                  />
-                  <template #title>{{ item.meta.title }}</template>
-                </el-menu-item>
-              </template>
-            </template>
-          </el-menu>
-        </el-aside>
-
+      <el-container class="content">
         <el-main>
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item v-for="item in router.currentRoute.value.matched" :key="item.path">
-              <router-link style="font-weight: 400" :to="{ path: item.path }">{{ item.meta.title }}</router-link>
-            </el-breadcrumb-item>
-          </el-breadcrumb>
-
-          <el-container class="content">
-            <router-view />
-          </el-container>
+          <router-view />
         </el-main>
       </el-container>
     </el-container>
-  </div>
+  </el-container>
 </template>
 
 <style scoped lang="less">
-.layout-page {
+.pages {
+  min-width: 1200px;
+
+  .el-aside {
+    width: 200px;
+    min-width: 200px;
+    height: 100vh;
+    background-color: #324157;
+    color: #ffffff;
+
+    .logo {
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+      }
+    }
+
+    .el-menu {
+      border-right: none;
+
+      .el-sub-menu,
+      .el-menu-item {
+        .el-image {
+          width: 20px;
+          height: 20px;
+          background-color: #adb9c9;
+          margin-right: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
   .el-header {
     position: relative;
     color: #ffffff;
@@ -143,16 +151,14 @@ const handleLogout = async () => {
     align-items: center;
 
     .header-left {
-      display: flex;
-      align-items: center;
-      font-size: 24px;
+      .el-breadcrumb {
+        font-size: 16px;
+        padding: 10px;
 
-      .sidebar-btn {
-        display: flex;
-      }
-
-      .title {
-        margin-left: 20px;
+        .router-link-active {
+          color: #fff;
+          font-weight: 400;
+        }
       }
     }
 
@@ -183,53 +189,19 @@ const handleLogout = async () => {
     }
   }
 
-  .el-menu {
-    height: 100vh;
-    background-color: #324157;
-    color: #ffffff;
+  .content {
+    padding: 0;
+    background-color: #F0F0F0;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
 
-    .el-sub-menu,
-    .el-menu-item {
-      .el-image {
-        width: 20px;
-        height: 20px;
-        background-color: #adb9c9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    .el-main {
+      height: max-content;
+      background: #fff;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin: 20px;
     }
   }
-
-  .el-main {
-    margin: 20px;
-
-    .el-breadcrumb {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-
-    .content {
-      width: 100%;
-      height: calc(100% - 60px - 20px - 16px);
-      background-color: #dfdcdc;
-    }
-  }
-}
-
-.layout-page .layout-page .el-menu {
-  border-right: none;
-}
-
-.layout-page .el-main {
-  padding: 0;
-}
-
-.el-aside {
-  transition: width 0.35s;
-  -webkit-transition: width 0.35s;
-  -moz-transition: width 0.35s;
-  -webkit-transition: width 0.35s;
-  -o-transition: width 0.35s;
 }
 </style>

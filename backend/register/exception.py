@@ -42,7 +42,7 @@ def response_body(
         "content": content,
         "status_code": status_code,
         "headers": {  # 解决跨域问题(仿照500错误的响应头)
-            "access-control-allow-origin": request.headers.get("origin"),
+            "access-control-allow-origin": request.headers.get("origin") or '*',
             "access-control-allow-credentials": "true",
             "content-type": "application/json",
             "vary": "Origin",

@@ -10,11 +10,11 @@ from sqlalchemy.orm import Session
 from common import get_db, ResultSchema, Result, LogRoute, check_cookie, check_permission
 from core.security import rsa_decrypt_password, verify_password
 from crud import user_crud, resource_crud, user_role_crud
-from models import LocalUser, LocalResource
+from models import LocalUser
 from schemas import UserLogin, UserOut, MenuOut, UserRoleIn
 from utils.custom_exc import UserErrors
 from utils.handle_cookie import set_cookie, clear_cookie
-from utils.handle_object import list_obj_as_dict, generate_tree_menu
+from utils.handle_object import generate_tree_menu
 
 router = APIRouter(route_class=LogRoute)
 
@@ -63,18 +63,17 @@ async def user_logout(response: Response, _user: LocalUser = Depends(check_cooki
 def user_menu(db: Session = Depends(get_db), _user: LocalUser = Depends(check_cookie)) -> ResultSchema[list[MenuOut]]:
     """ 获取用户菜单 """
     user_resource_obj = resource_crud.get_resource_by_user_id(db, _user.id)
-    user_resource = list_obj_as_dict(user_resource_obj)
 
     # 获取过期时间： https://github.com/redis/redis-om-python/pull/238
-    _user.resources = [LocalResource(**resource) for resource in user_resource]  # 更新用户资源
+    _user.permission_codes = [resource.permission_code for resource in user_resource_obj]  # 更新用户资源
     expire_time = LocalUser.db().ttl(_user.key())  # 获取过期时间(单独获取, 防止获取不到)
     _user.save().expire(expire_time)  # 更新用户资源
 
-    menu = generate_tree_menu(user_resource)
+    menu = generate_tree_menu(user_resource_obj)
     return Result.success(data=menu)
 
 
-@router.get("/users", dependencies=[Depends(check_permission(["sys:user:list"]))])
+@router.get("/list", dependencies=[Depends(check_permission(["sys:user:list"]))])
 def users(db: Session = Depends(get_db)) -> ResultSchema[list[UserOut]]:
     """ 获取用户列表 """
     users_obj = user_crud.get_all(db)

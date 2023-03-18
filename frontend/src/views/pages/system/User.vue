@@ -32,14 +32,8 @@ onMounted(async () => {
 
 <style scoped lang="less">
 .page {
-  width: calc(100% - 40px);
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-
   .header {
-    padding: 20px;
-    background-color: #f5f7fa;
+    padding-bottom: 20px;
   }
 
   .el-table {
@@ -47,10 +41,9 @@ onMounted(async () => {
   }
 
   .el-pagination {
-    padding: 20px 0px;
+    padding-top: 20px;
     display: flex;
     justify-content: flex-end;
-    background-color: #f5f7fa;
   }
 }
 </style>

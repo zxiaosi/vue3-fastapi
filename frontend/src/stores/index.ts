@@ -6,7 +6,6 @@ import { LayoutPage } from "@/assets/js/global";
 export const useUserStore = defineStore("userStore", () => {
   const user = ref<any>({}); // 用户信息
   const menu = ref<any>([]); // 菜单列表
-  const isOpenSidebar = ref<boolean>(true); // 是否展开侧边栏
 
   // const doubleCount = computed(() => count.value * 2)
 
@@ -26,12 +25,6 @@ export const useUserStore = defineStore("userStore", () => {
     // console.log("router", router.getRoutes());
   }
 
-  /**
-   * 切换侧边栏
-   */
-  function toggleSidebar() {
-    isOpenSidebar.value = !isOpenSidebar.value;
-  }
 
-  return { user, menu, isOpenSidebar, addRoutes, toggleSidebar };
+  return { user, menu, addRoutes };
 });

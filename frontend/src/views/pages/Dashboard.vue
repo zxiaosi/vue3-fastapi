@@ -65,80 +65,82 @@ const processData = (data: any) => {
 </script>
 
 <template>
-  <el-card class="card-left" shadow="hover">
-    <template #header>
-      <div class="card-header">用户信息</div>
-    </template>
-    <ul class="user-info">
-      <li>
-        <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
-      </li>
-      <li>
-        <div class="key">用户名称</div>
-        <div class="value">{{ _user.name }}</div>
-      </li>
-      <li>
-        <div class="key">用户性别</div>
-        <div class="value">{{ _user.sex == 0 ? "保密" : _user.sex == 1 ? "男" : "女" }}</div>
-      </li>
-    </ul>
-  </el-card>
+  <div class="pages">
+    <el-card class="card-left" shadow="hover">
+      <template #header>
+        <div class="card-header">用户信息</div>
+      </template>
+      <ul class="user-info">
+        <li>
+          <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+        </li>
+        <li>
+          <div class="key">用户名称</div>
+          <div class="value">{{ _user.name }}</div>
+        </li>
+        <li>
+          <div class="key">用户性别</div>
+          <div class="value">{{ _user.sex == 0 ? "保密" : _user.sex == 1 ? "男" : "女" }}</div>
+        </li>
+      </ul>
+    </el-card>
 
-  <el-card class="card-right" shadow="hover">
-    <template #header>
-      <div class="card-header">代码仓库</div>
-    </template>
-    <div id="line"></div>
-  </el-card>
+    <el-card class="card-right" shadow="hover">
+      <template #header>
+        <div class="card-header">代码仓库</div>
+      </template>
+      <div id="line"></div>
+    </el-card>
+  </div>
 </template>
 
 <style scoped lang="less">
-.card-left {
-  width: 500px;
+.pages {
+  display: flex;
 
-  .user-info {
-    list-style: none;
+  .card-left {
+    width: 500px;
 
-    li {
+    .user-info {
+      list-style: none;
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+
+        .el-image {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          border: 1px solid #ccc;
+        }
+
+        .key {
+          margin-right: 20px;
+        }
+      }
+
+      li:nth-child(2) {
+        border-top: 2px dashed #ccc;
+        padding-top: 20px;
+      }
+    }
+  }
+
+  .card-right {
+    flex: 1;
+
+    .card-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-
-      .el-image {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 1px solid #ccc;
-      }
-
-      .key {
-        margin-right: 20px;
-      }
     }
 
-    li:nth-child(2) {
-      border-top: 2px dashed #ccc;
-      padding-top: 20px;
+    #line {
+      width: 100%;
+      height: 80vh;
     }
-  }
-}
-
-.card-right {
-  flex: 1;
-
-  .card-header {
-    display: flex;
-    align-items: center;
-
-    span {
-      margin-right: 20px;
-    }
-  }
-
-  #line {
-    width: 100%;
-    height: 80vh;
   }
 }
 </style>

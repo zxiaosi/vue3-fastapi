@@ -5,19 +5,24 @@
 # @desc : 依赖项
 from fastapi import Depends
 from redis_om import NotFoundError
+from sqlalchemy.orm import Session
 from starlette import status
 from starlette.requests import Request
 
 from core.config import settings
-from core.init_db import Session
+from core.init_db import SessionLocal
+from crud import resource_crud
 from models import LocalUser
 from utils.custom_exc import BadCredentials, UserErrors
 
 
 def get_db():
     """ 得到数据库的会话 """
-    with Session() as session:  # 会话工厂(工厂对象帮助我们管理)
-        yield session
+    db = SessionLocal()  # 会话工厂(工厂对象帮助我们管理)
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 def check_cookie(request: Request):
@@ -36,11 +41,16 @@ def check_cookie(request: Request):
 def check_permission(code: list[str] = None):
     """ 校验权限code -- 权限"""
 
-    def wrapper(user: LocalUser = Depends(check_cookie)):
-        # TODO 获取 JsonModel 里面的数据是真的麻烦 eg: resource.json()
-        resources = [resource.permission_code for resource in user.resources]
-        # 判断一个列表中是否包含另一个列表中的元素
-        if not set(code).issubset(set(resources)):
-            raise UserErrors(code=status.HTTP_403_FORBIDDEN, err_desc="没有权限")
+    def wrapper(request: Request, db: Session = Depends(get_db), user: LocalUser = Depends(check_cookie)):
+        if request.get("path") in settings.PERMISSION_NOT_CHECK:  # 不校验权限
+            return
+
+        if not code:
+            resource = resource_crud.get_resource_by_url(db, request.get("path").replace(settings.API_PREFIX, ""))
+            if resource is None or resource.permission_code not in user.permission_codes:
+                raise UserErrors(code=status.HTTP_403_FORBIDDEN, err_desc="没有权限")
+        else:
+            if not set(code).issubset(set(user.permission_codes)):  # 判断一个列表中是否包含另一个列表中的元素
+                raise UserErrors(code=status.HTTP_403_FORBIDDEN, err_desc="没有权限")
 
     return wrapper

@@ -33,11 +33,7 @@ class LogRoute(APIRoute):
             duration = time.time() - before
             response.headers["X-Response-Time"] = str(duration)
 
-            # 可以在这里将日志保存到数据库
-            request_params = await get_request_params(request)
-            current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-            my_logger.info("访问记录: url:{}, method:{}, params:{}, ip:{}, spend_time:{}, create_date:{}.".format(
-                request.url, request.method, request_params, request.client.host, duration, current_time))
+            await save_log(request, duration)  # 可以在这里将日志保存到数据库
 
             return response
 
@@ -79,6 +75,9 @@ async def get_request_params(request: Request) -> dict:
     return params
 
 
-# 保存日志
-def save_log(request: Request, response: Response):
-    pass
+async def save_log(request: Request, duration: float):
+    """ 保存日志 """
+    request_params = await get_request_params(request)
+    current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    my_logger.info("访问记录: url:{}, method:{}, params:{}, ip:{}, spend_time:{}, create_date:{}.".format(
+        request.url, request.method, request_params, request.client.host, duration, current_time))

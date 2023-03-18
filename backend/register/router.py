@@ -6,7 +6,7 @@
 from fastapi import FastAPI, Depends
 
 from apis import hello, user
-from common import check_cookie
+from common import check_cookie, check_permission
 from core.config import settings
 
 
@@ -16,4 +16,7 @@ def register_router(app: FastAPI):
     app.include_router(hello.router, prefix=settings.API_PREFIX, tags=["Hello"])
 
     app.include_router(user.router, prefix=settings.API_PREFIX + "/user", tags=["User"],
-                       dependencies=[Depends(check_cookie)])
+                       dependencies=[
+                           Depends(check_cookie, use_cache=True),
+                           Depends(check_permission([]), use_cache=True)
+                       ])

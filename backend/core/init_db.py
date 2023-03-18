@@ -20,7 +20,7 @@ engine = create_engine(
 )
 
 # 会话创建器
-Session = sessionmaker(engine, expire_on_commit=False, autoflush=False)
+SessionLocal = sessionmaker(engine, expire_on_commit=False, autoflush=False)
 
 
 def init_table(is_drop: bool = True):
@@ -45,7 +45,7 @@ def drop_table():
 
 def init_data():
     """ 初始化表数据 """
-    with Session() as session:
+    with SessionLocal() as session:
         user1 = User(name="admin", password="30780cc6f2e56945aaf9c9578c932e22")
         user2 = User(name="user", password="30780cc6f2e56945aaf9c9578c932e22", sex=1)
         user3 = User(name="guest", password="30780cc6f2e56945aaf9c9578c932e22", sex=2)

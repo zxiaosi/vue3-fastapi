@@ -30,3 +30,12 @@ export const uriToFileName = (uri: string) => {
   let prefix = uri.replace(fileName, "");
   return `${prefix + fileName[0]?.toUpperCase() + fileName?.slice(1)}`;
 }
+
+/**
+ * 跳转页面
+ * @param router 路由对象
+ * @param path 跳转路径
+ */
+export const pageTo = (router: any, path: string) => {
+  router.push(path);
+}
