@@ -2,25 +2,25 @@
 # -*- coding: utf-8 -*-
 # @Time : 2023/1/30 10:48
 # @Author : zxiaosi
-# @desc : 用户相关接口
-from fastapi import Depends, APIRouter, Response
+# @desc : 用户接口
+from fastapi import APIRouter
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import Session
+from starlette.responses import Response
 
-from common import get_db, ResultSchema, Result, LogRoute, check_cookie, check_permission
+from common import LogRoute, CheckCookie, ResultSchema, Result, GetDB
 from core.security import rsa_decrypt_password, verify_password
-from crud import user_crud, resource_crud, user_role_crud
+from crud import resource_crud, user_crud, user_role_crud
 from models import LocalUser
-from schemas import UserLogin, UserOut, MenuOut, UserRoleIn
+from schemas import MenuOut, UserOut, UserLogin, UserRoleIn
 from utils.custom_exc import UserErrors
-from utils.handle_cookie import set_cookie, clear_cookie
+from utils.handle_cookie import clear_cookie, set_cookie
 from utils.handle_object import generate_tree_menu
 
 router = APIRouter(route_class=LogRoute)
 
 
 @router.post("/login")
-async def user_login(user: UserLogin, response: Response, db: Session = Depends(get_db)) -> ResultSchema[UserOut]:
+async def user_login(user: UserLogin, response: Response, db: GetDB) -> ResultSchema[UserOut]:
     """ 登录 """
     try:
         user_obj = user_crud.get_user_by_name(db, user.name)  # 获取用户信息 (NoResultFound)
@@ -36,7 +36,7 @@ async def user_login(user: UserLogin, response: Response, db: Session = Depends(
 
 
 @router.post("/signup")
-async def user_signup(user: UserLogin, response: Response, db: Session = Depends(get_db)) -> ResultSchema[UserOut]:
+async def user_signup(user: UserLogin, response: Response, db: GetDB) -> ResultSchema[UserOut]:
     """ 注册 """
     try:
         user_obj = user_crud.get_user_by_name(db, user.name)  # 获取用户信息 (NoResultFound)
@@ -52,7 +52,7 @@ async def user_signup(user: UserLogin, response: Response, db: Session = Depends
 
 
 @router.post("/logout")
-async def user_logout(response: Response, _user: LocalUser = Depends(check_cookie)) -> ResultSchema:
+async def user_logout(response: Response, _user: CheckCookie) -> ResultSchema:
     """ 退出登录 """
     LocalUser.delete(_user.pk)  # 删除redis中的用户信息
     clear_cookie(response)  # 清除cookie
@@ -60,7 +60,7 @@ async def user_logout(response: Response, _user: LocalUser = Depends(check_cooki
 
 
 @router.get("/menu")
-def user_menu(db: Session = Depends(get_db), _user: LocalUser = Depends(check_cookie)) -> ResultSchema[list[MenuOut]]:
+def user_menu(db: GetDB, _user: CheckCookie) -> ResultSchema[list[MenuOut]]:
     """ 获取用户菜单 """
     user_resource_obj = resource_crud.get_resource_by_user_id(db, _user.id)
 
@@ -73,8 +73,9 @@ def user_menu(db: Session = Depends(get_db), _user: LocalUser = Depends(check_co
     return Result.success(data=menu)
 
 
-@router.get("/list", dependencies=[Depends(check_permission(["sys:user:list"]))])
-def users(db: Session = Depends(get_db)) -> ResultSchema[list[UserOut]]:
+# @router.get("/list", dependencies=[Depends(check_permission(["sys:user:list"]))])
+@router.get("/list")
+def users(db: GetDB) -> ResultSchema[list[UserOut]]:
     """ 获取用户列表 """
     users_obj = user_crud.get_all(db)
     return Result.success(data=users_obj, total=len(users_obj))

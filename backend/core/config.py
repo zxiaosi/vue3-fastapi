@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     COOKIE_KEY: str = "sessionId"  # Cookie key name
     COOKIE_MAX_AGE: int = 24 * 60 * 60  # Cookie 有效时间
     COOKIE_NOT_CHECK: list[str] = ["/api/user/login", "/api/user/signup"]  # 不校验 Cookie
-    PERMISSION_NOT_CHECK: list[str] = ["/api/user/login", "/api/user/signup", "/api/user/menu"]  # 不校验 权限
 
     REDIS_URI: str = "redis://:123456@localhost:6379/0"  # Redis
     REDIS_EXPIRE: int = 24 * 60 * 60  # Redis 过期时长

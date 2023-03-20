@@ -16,6 +16,7 @@ const handleLogout = async () => {
   await userLogout();
   clearLocal();
   router.push("/login");
+  userStore.menu = [];
 };
 </script>
 
@@ -79,7 +80,7 @@ const handleLogout = async () => {
                 <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
                   <el-dropdown-item>项目仓库</el-dropdown-item>
                 </a>
-                <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+                <el-dropdown-item divided @click="handleLogout()">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>

@@ -31,7 +31,7 @@ axios.interceptors.request.use(
 
 // 响应拦截器(全局配置)
 axios.interceptors.response.use(
-  (response: AxiosResponse) => { // status >= 200 && status < 300 (HTTP 成功)
+  (response: AxiosResponse<IResponseData>) => { // status >= 200 && status < 300 (HTTP 成功)
     const { data: { code, msg }, config } = response;
     const { isShowLoading, isShowFailToast, isThrowError } = config as IRequestOption; // 请求配置
 
@@ -73,7 +73,7 @@ export interface IRequestData {
 }
 
 /** 自定义响应体 */
-export interface IResponseData<T> {
+export interface IResponseData<T = any> {
   code: number;
   msg: string;
   data: T;
@@ -81,7 +81,7 @@ export interface IResponseData<T> {
 }
 
 /** 自定义配置项 */
-export interface IRequestOption extends Partial<AxiosRequestConfig<string | IRequestData>> {
+export interface IRequestOption extends Partial<AxiosRequestConfig<IRequestData>> {
   /**
    * 是否显示Loading遮罩层
    * @default false
@@ -103,15 +103,14 @@ export interface IRequestOption extends Partial<AxiosRequestConfig<string | IReq
 
 // 封装请求类
 class Http {
-  defaultOptions: IRequestOption = {
-    // 自定义配置项默认值
+  defaultOptions: IRequestOption = { // 自定义配置项默认值
     isShowLoading: false,
     isShowFailToast: true,
     isThrowError: true,
   };
 
   // 请求配置 https://www.axios-http.cn/docs/req_config
-  request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<AxiosResponse<string | IResponseData<T>>> {
+  request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<IResponseData<T>> {
     const withCredentials = true; // 是否携带cookie (放到实例配置中)
     const requestUrl = url;
     const requestData = this.transformParam(options, data);
