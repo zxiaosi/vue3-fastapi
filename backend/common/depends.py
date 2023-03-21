@@ -41,7 +41,7 @@ def check_cookie(request: Request):
 
 
 def check_permission(code: list[str] | None = None):
-    """ 校验权限code -- 权限"""
+    """ 校验权限code -- 鉴权"""
 
     def wrapper(request: Request, db: GetDB, user: CheckCookie):
         if not code:

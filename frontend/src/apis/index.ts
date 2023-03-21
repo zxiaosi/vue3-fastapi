@@ -21,7 +21,6 @@ export const getUsers = (): Promise<any> => get("/user/list");
 /**
  * 仓库获取语言详情
  */
-export const getLangList = async (): Promise<any> => {
-  // https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?sha=master&since=2022-07-01T07:06:23Z
-  return await axios.get("https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?per_page=100");
+export const getLangList = async (page: number): Promise<any> => {
+  return await axios.get(`https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?page=${page}`);
 };

@@ -10,13 +10,21 @@ let chart: any;
 const userStore = useUserStore();
 const _user = getLocal("userInfo") || userStore.user;
 
+let echartDatas = [] as any
+
 onMounted(async () => {
-  const { data } = await getLangList();
-  const obj = processData(data);
+  let pages = [1, 2, 3]
+  await Promise.all(pages.map((item) => {
+    return (async () => {
+      const { data } = await getLangList(item)
+      const obj = processData(data, getCommitDate(data[data.length - 1]), getCommitDate(data[0]));
+      echartDatas = { ...obj, ...echartDatas }
+    })()
+  }))
 
   // @ts-ignore
   chart = echarts.init(document.getElementById("line"));
-  eachartConfig(obj);
+  eachartConfig();
 });
 
 // 销毁echarts
@@ -27,14 +35,14 @@ onUnmounted(() => {
 /**
  * echarts-bar(柱状图)
  */
-const eachartConfig = (data: any) => {
+const eachartConfig = () => {
   chart.setOption({
     title: { text: "提交次数", left: "center" },
     legend: { show: true },
     tooltip: { trigger: "item", formatter: "{b} : commit {c} 次" },
-    xAxis: { type: "category", data: Object.keys(data) },
+    xAxis: { type: "category", data: Object.keys(echartDatas) },
     yAxis: { type: "value" },
-    series: [{ type: "line", data: Object.values(data) }],
+    series: [{ type: "line", data: Object.values(echartDatas) }],
   });
   // 自适应
   window.onresize = function () {
@@ -43,24 +51,32 @@ const eachartConfig = (data: any) => {
 };
 
 /**
- * 统计从 new Date("2021-09") 到 new("2023-03") 每个月的提交次数
+ * 统计从 startDate 到 endDate 每个月的提交次数 eg: new Date("2021-09") new("2023-03")
+ * @param data 遍历的数据
+ * @param startDate 开始时间
+ * @param endDate 结束时间
  */
-const processData = (data: any) => {
+const processData = (data: any, startDate: string, endDate: string) => {
   const obj = {} as any;
 
-  const start = new Date("2021-09");
-  const end = new Date("2023-03");
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
   while (start <= end) {
     const year = start.getFullYear();
     const month = start.getMonth() + 1;
     const date = `${year}-${month < 10 ? "0" + month : month}`;
-    const count = data.filter((item: any) => item.commit.author.date.slice(0, 7) == date).length;
+    const count = data.filter((item: any) => getCommitDate(item) == date).length;
     obj[date] = count;
     start.setMonth(month);
   }
 
   return obj;
+};
+
+/** 获取提交日志中的时间 */
+const getCommitDate = (data: any) => {
+  return data.commit.author.date.slice(0, 7);
 };
 </script>
 
