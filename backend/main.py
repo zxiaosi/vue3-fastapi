@@ -22,8 +22,8 @@ register_exception(app)  # 注册异常捕获
 
 # register_middleware(app)  # 注册请求响应拦截
 
-# init_table()  # 初始化表
-# init_data()  # 初始化表数据
+init_table()  # 初始化表
+init_data()  # 初始化表数据
 
 my_logger.info("项目启动成功！！！")
 
