@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 18/03/2023 19:24:24
+ Date: 23/03/2023 00:14:49
 */
 
 SET NAMES utf8mb4;
@@ -34,21 +34,21 @@ CREATE TABLE `resource`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of resource
 -- ----------------------------
-INSERT INTO `resource` VALUES (1, '仪表盘', 1, 0, 'VBr0B.png', '/dashboard', '/user/menu', 'dashboard', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (2, '系统管理', 0, 0, 'VBr0B.png', '/system/index', '/system', 'sys', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (3, '用户管理', 1, 2, 'VBclq.png', '/system/user', '/user', 'sys:user', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (4, '用户列表', 2, 3, NULL, NULL, '/user/list', 'sys:user:list', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (5, '新增用户', 2, 3, NULL, NULL, '/user/add', 'sys:user:add', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (6, '编辑用户', 2, 3, NULL, NULL, '/user/update', 'sys:user:update', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (7, '角色管理', 1, 2, 'VBsBc.png', '/system/role', '/role', 'sys:role', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (8, '资源管理', 1, 2, 'VBr0B.png', '/system/resource', '/resource', 'sys:resource', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (9, '公告通知', 1, 0, 'VBr0B.png', '/notice', '/notice', 'notice', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `resource` VALUES (10, '日志记录', 1, 0, 'VBr0B.png', '/log', '/log', 'log', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
+INSERT INTO `resource` VALUES (1, '仪表盘', 1, 0, 'VBr0B.png', '/dashboard', '/', '', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (2, '系统管理', 0, 0, 'VBr0B.png', '/system/index', '/system', 'sys', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (3, '用户管理', 1, 2, 'VBclq.png', '/system/user', '/user', 'sys:user', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (4, '用户列表', 2, 3, NULL, NULL, '/user/list', 'sys:user:list', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (5, '新增用户', 2, 3, NULL, NULL, '/user/add', 'sys:user:add', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (6, '编辑用户', 2, 3, NULL, NULL, '/user/update', 'sys:user:update', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (7, '角色管理', 1, 2, 'VBsBc.png', '/system/role', '/role', 'sys:role', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (8, '资源管理', 1, 2, 'VBr0B.png', '/system/resource', '/resource', 'sys:resource', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (9, '公告通知', 1, 0, 'VBr0B.png', '/notice', '/notice', 'notice', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `resource` VALUES (10, '日志记录', 1, 0, 'VBr0B.png', '/log', '/log', 'log', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
 
 -- ----------------------------
 -- Table structure for role
@@ -68,9 +68,9 @@ CREATE TABLE `role`  (
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (1, '超级管理员', 'ROLE_ADMIN', '管理员', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `role` VALUES (2, '管理员', 'ROLE_USER', '普通用户', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `role` VALUES (3, '游客', 'ROLE_GUEST', '普通用户', 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
+INSERT INTO `role` VALUES (1, '超级管理员', 'ROLE_ADMIN', '管理员', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `role` VALUES (2, '管理员', 'ROLE_USER', '普通用户', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `role` VALUES (3, '游客', 'ROLE_GUEST', '普通用户', 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
 
 -- ----------------------------
 -- Table structure for role_resource
@@ -104,6 +104,26 @@ INSERT INTO `role_resource` VALUES (11, 2, 1);
 INSERT INTO `role_resource` VALUES (12, 3, 1);
 
 -- ----------------------------
+-- Table structure for sys_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_log`;
+CREATE TABLE `sys_log`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `url` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求url',
+  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求方法',
+  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求ip',
+  `params` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求参数',
+  `spend_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '响应时间',
+  `create_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建时间',
+  `is_deleted` smallint NULL DEFAULT 0 COMMENT '是否删除: 0 未删除 1 已删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -118,17 +138,14 @@ CREATE TABLE `user`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `user` VALUES (2, 'user', '30780cc6f2e56945aaf9c9578c932e22', NULL, 1, NULL, 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `user` VALUES (3, 'guest', '30780cc6f2e56945aaf9c9578c932e22', NULL, 2, NULL, 0, '2023-03-11 18:54:27', '2023-03-11 18:54:27');
-INSERT INTO `user` VALUES (4, 'zxiaosi', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 0, '2023-03-11 23:59:33', '2023-03-11 23:59:33');
-INSERT INTO `user` VALUES (5, 'ce', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 0, '2023-03-12 00:00:17', '2023-03-12 00:00:17');
-INSERT INTO `user` VALUES (6, 'xll', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 0, '2023-03-12 00:01:46', '2023-03-12 00:01:46');
+INSERT INTO `user` VALUES (1, 'admin', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `user` VALUES (2, 'user', '30780cc6f2e56945aaf9c9578c932e22', NULL, 1, NULL, 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
+INSERT INTO `user` VALUES (3, 'guest', '30780cc6f2e56945aaf9c9578c932e22', NULL, 2, NULL, 0, '2023-03-23 00:14:29', '2023-03-23 00:14:29');
 
 -- ----------------------------
 -- Table structure for user_role

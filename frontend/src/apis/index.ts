@@ -1,6 +1,6 @@
 import { get, post } from "@/request";
 import axios from "axios";
-import type { SignUp, Login } from "./model";
+import type { SignUp, Login, List } from "./model";
 
 /** 注册 */
 export const userSignUp = (data: SignUp): Promise<any> => post("/user/signup", { ...data });
@@ -16,7 +16,10 @@ export const userLogout = (): Promise<any> => post("/user/logout");
 export const getMenus = (): Promise<any> => get("/user/menu");
 
 /** 得到所有用户 */
-export const getUsers = (): Promise<any> => get("/user/list");
+export const getUsers = (list: List): Promise<any> => get("/user/list", { ...list });
+
+/** 得到所有日志 */
+export const getLogs = (list: List): Promise<any> => get("/log/list", { ...list });
 
 /**
  * 仓库获取语言详情

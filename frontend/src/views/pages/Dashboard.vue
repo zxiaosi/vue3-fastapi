@@ -10,7 +10,7 @@ let chart: any;
 const userStore = useUserStore();
 const _user = getLocal("userInfo") || userStore.user;
 
-let echartDatas = [] as any
+let echartDatas = {}
 
 onMounted(async () => {
   let pages = [1, 2, 3]
@@ -62,14 +62,14 @@ const processData = (data: any, startDate: string, endDate: string) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  while (start <= end) {
+  do {
     const year = start.getFullYear();
     const month = start.getMonth() + 1;
     const date = `${year}-${month < 10 ? "0" + month : month}`;
     const count = data.filter((item: any) => getCommitDate(item) == date).length;
     obj[date] = count;
     start.setMonth(month);
-  }
+  } while (start <= end);
 
   return obj;
 };

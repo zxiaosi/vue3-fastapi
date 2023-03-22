@@ -7,7 +7,7 @@ from fastapi import APIRouter
 from sqlalchemy.exc import NoResultFound
 from starlette.responses import Response
 
-from common import LogRoute, CheckCookie, ResultSchema, Result, GetDB
+from common import LogRoute, CheckCookie, ResultSchema, Result, GetDB, QueryParams
 from core.security import rsa_decrypt_password, verify_password
 from crud import resource_crud, user_crud, user_role_crud
 from models import LocalUser
@@ -75,7 +75,8 @@ def user_menu(db: GetDB, _user: CheckCookie) -> ResultSchema[list[MenuOut]]:
 
 # @router.get("/list", dependencies=[Depends(check_permission(["sys:user:list"]))])
 @router.get("/list")
-def users(db: GetDB) -> ResultSchema[list[UserOut]]:
+def users(db: GetDB, query: QueryParams) -> ResultSchema[list[UserOut]]:
     """ 获取用户列表 """
-    users_obj = user_crud.get_all(db)
-    return Result.success(data=users_obj, total=len(users_obj))
+    users_obj = user_crud.get_all(db, query)
+    total = user_crud.get_count(db)
+    return Result.success(data=users_obj, total=total)

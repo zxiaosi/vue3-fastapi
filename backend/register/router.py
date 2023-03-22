@@ -5,7 +5,7 @@
 # @desc : 注册路由
 from fastapi import FastAPI, Depends
 
-from apis import hello, user
+from apis import hello, user, sys_log
 from common import check_permission
 from core.config import settings
 
@@ -16,4 +16,7 @@ def register_router(app: FastAPI):
     app.include_router(hello.router, prefix=settings.API_PREFIX, tags=["Hello"])
 
     app.include_router(user.router, prefix=settings.API_PREFIX + "/user", tags=["User"],
+                       dependencies=[Depends(check_permission([]))])
+
+    app.include_router(sys_log.router, prefix=settings.API_PREFIX + "/log", tags=["Log"],
                        dependencies=[Depends(check_permission([]))])

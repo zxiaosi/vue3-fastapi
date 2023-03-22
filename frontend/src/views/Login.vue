@@ -33,12 +33,13 @@ const submitForm = async (formEl: FormInstance | undefined, type: "login" | "sig
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       let params = { name: userInfo.name, password: encryptContent(userInfo.password) };
-      let resp: any;
-      if (type == "login") resp = await userLogin(params);
-      if (type == "signup") resp = await userSignUp(params);
 
-      userStore.user = resp.data.data;
-      setLocal("userInfo", resp.data.data);
+      let resp: any;
+      type == "login" && ({ data: { data: resp } } = await userLogin(params));
+      type == "signup" && ({ data: { data: resp } } = await userSignUp(params));
+      userStore.user = resp;
+      setLocal("userInfo", resp);
+
       router.push("/");
     } else {
       ElMessage.warning("数据校验失败!");

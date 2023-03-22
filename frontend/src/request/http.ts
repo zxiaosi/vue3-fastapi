@@ -36,9 +36,9 @@ axios.interceptors.response.use(
     const { isShowLoading, isShowFailToast, isThrowError } = config as IRequestOption; // 请求配置
 
     if (code == 0) { // 业务成功 (后端定义的成功)
-      if (isShowLoading) ElMessage.success("请求成功！");
+      isShowLoading && ElMessage.success("请求成功！");
     } else { // 业务失败 (后端定义的失败)
-      if (isShowLoading || isShowFailToast) ElMessage.error(msg);
+      (isShowLoading || isShowFailToast) && ElMessage.error(msg);
       if (isThrowError) throw new Error(`后端返回的错误信息-- ${msg}`); // 抛出错误, 阻止程序向下执行 (默认配置)
     }
 
@@ -61,7 +61,7 @@ axios.interceptors.response.use(
       errMsg = "请求超时或服务器异常，请检查网络或联系管理员！";
     }
 
-    if (isShowLoading || isShowFailToast) ElMessage.error(errMsg);
+    (isShowLoading || isShowFailToast) && ElMessage.error(errMsg);
 
     return Promise.reject(isThrowError ? new Error(`请求失败 -- ${errMsg}`) : error);
   }
@@ -112,8 +112,7 @@ class Http {
   // 请求配置 https://www.axios-http.cn/docs/req_config
   request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<IResponseData<T>> {
     const withCredentials = true; // 是否携带cookie (放到实例配置中)
-    const requestUrl = url;
-    const requestData = this.transformParam(options, data);
+    const { url: requestUrl, params: requestData } = this.transformParam(options, data, url);
     const requestOptions = { ...this.defaultOptions, ...options };
     const config = { withCredentials, url: requestUrl, data: requestData, ...requestOptions };
 
@@ -121,7 +120,7 @@ class Http {
   }
 
   /** 处理请求参数 */
-  transformParam(options: IRequestOption, param: any) {
+  transformParam(options: IRequestOption, param: any, url: string) {
     if (options.method == "GET" || options.method == "DELETE") {
       let paramStr = "";
       for (const i in param) {
@@ -129,9 +128,9 @@ class Http {
         if (paramStr === "") paramStr += "?" + i + "=" + encodeURIComponent(param[i]);
         else paramStr += "&" + i + "=" + encodeURIComponent(param[i]);
       }
-      return paramStr;
+      return { url: url + paramStr, params: {} };
     } else {
-      return param;
+      return { url: url, params: param };
     }
   }
 }

@@ -8,12 +8,15 @@ from datetime import datetime
 from typing import Callable
 from urllib.parse import parse_qsl
 
+from fastapi.encoders import jsonable_encoder
 from fastapi.routing import APIRoute
 from redis_om import NotFoundError
 from starlette.requests import Request
 from starlette.responses import Response
 
-from models import RequestIp
+from core.init_db import SessionLocal
+from crud import sys_log_crud
+from models import RequestIp, SysLog
 from utils.custom_log import my_logger
 from utils.custom_exc import DuplicateRequests
 
@@ -79,5 +82,11 @@ async def save_log(request: Request, duration: float):
     """ 保存日志 """
     request_params = await get_request_params(request)
     current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-    my_logger.info("访问记录: url:{}, method:{}, params:{}, ip:{}, spend_time:{}, create_date:{}.".format(
-        request.url, request.method, request_params, request.client.host, duration, current_time))
+    sys_log = SysLog(url=request.get("path"), method=request.method, ip=request.client.host, params=request_params,
+                     spend_time=duration, create_time=current_time)
+
+    my_logger.info(f"访问记录: {jsonable_encoder(sys_log)}.")
+
+    if request.get("path") != "/api/log/list":  # 排除日志列表接口
+        with SessionLocal() as db:
+            sys_log_crud.create(db, sys_log)

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models import User, UserRole
+from models import User
 from schemas import UserCreate, UserUpdate
 
 
