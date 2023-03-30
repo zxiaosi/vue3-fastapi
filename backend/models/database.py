@@ -119,5 +119,3 @@ class SysLog(Base):
     params: Mapped[str | None] = mapped_column(String(255), comment="请求参数")
     spend_time: Mapped[str | None] = mapped_column(String(30), comment="响应时间")
     create_time: Mapped[str | None] = mapped_column(String(30), comment="创建时间")
-    is_deleted: Mapped[int | None] = \
-        mapped_column(SmallInteger, server_default=text('0'), comment="是否删除: 0 未删除 1 已删除")

@@ -15,7 +15,7 @@ from core.config import settings
 from core.init_db import SessionLocal
 from crud import resource_crud
 from models import LocalUser
-from schemas import QuerySchema, OrderSchema
+from schemas import PageSchema
 from utils.custom_exc import BadCredentials, UserErrors
 
 
@@ -56,18 +56,12 @@ def check_permission(code: list[str] | None = None):
     return wrapper
 
 
-def query_params(q: str | None = None, page: int = 1, page_size: int = 10):
+def page_query(page: int = 1, page_size: int = 10):
     """ 获取查询参数 """
-    return QuerySchema(q=q, page=page, page_size=page_size)
-
-
-def order_params(order_by: str | None = None, order: str | None = "desc"):
-    """ 获取排序参数 """
-    return OrderSchema(field=order_by, type=order)
+    return PageSchema(page=page, page_size=page_size)
 
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/
 GetDB = Annotated[Session, Depends(get_db)]
 CheckCookie = Annotated[LocalUser, Depends(check_cookie)]
-QueryParams = Annotated[QuerySchema, Depends(query_params)]
-OrderParams = Annotated[OrderSchema, Depends(order_params)]
+PageQuery = Annotated[PageSchema, Depends(page_query)]

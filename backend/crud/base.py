@@ -7,11 +7,11 @@ from typing import Generic, TypeVar, Type, Any
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import select, update, asc, desc
+from sqlalchemy import select, update, asc, desc, Select
 from sqlalchemy.orm import Session
 
 from models import Base
-from schemas import QuerySchema, OrderSchema
+from schemas import PageSchema
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -27,20 +27,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, db: Session, id: Any) -> ModelType | None:
         return db.get(self.model, id)
 
-    def get_all(self, db: Session, query: QuerySchema | None = None, order: OrderSchema | None = None) \
-            -> list[ModelType | None]:
+    def get_all(self, db: Session, page: PageSchema, sql: Select = None, *args) -> list[ModelType | None]:
         """ 获取所有对象 """
-        stmt = select(self.model).where(self.model.is_deleted == 0)
-
-        if query.q is not None:
-            stmt = stmt.where(self.model[query.q] == query.q)
-
-        if query.page and query.page_size:
-            stmt = stmt.offset((query.page - 1) * query.page_size).limit(query.page_size)
-
-        if order is not None:
-            stmt = stmt.order_by(desc(order.field) if order.type == "desc" else asc(order.field))
-
+        stmt = select(self.model) if sql is None else sql
+        stmt = stmt.offset((page.page - 1) * page.page_size).limit(page.page_size).order_by(desc(self.model.id))
         return db.scalars(stmt).all()  # type: ignore
 
     def create(self, db: Session, obj_in: CreateSchemaType) -> ModelType:

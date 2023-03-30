@@ -87,6 +87,5 @@ async def save_log(request: Request, duration: float):
 
     my_logger.info(f"访问记录: {jsonable_encoder(sys_log)}.")
 
-    if request.get("path") != "/api/log/list":  # 排除日志列表接口
-        with SessionLocal() as db:
-            sys_log_crud.create(db, sys_log)
+    with SessionLocal() as db:
+        sys_log_crud.create(db, sys_log)

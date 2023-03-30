@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { iterateMenu } from "@/utils/handle_data";
 import { LayoutPage } from "@/assets/js/global";
+import { setLocal } from "@/request/auth";
 
 export const useUserStore = defineStore("userStore", () => {
   const user = ref<any>({}); // 用户信息
@@ -15,6 +16,7 @@ export const useUserStore = defineStore("userStore", () => {
    * @param router 路由实例
    */
   function addRoutes(data: any, router: any) {
+    setLocal("menus", data);
     menu.value = iterateMenu(data);
     menu.value.forEach((item: any) => router.addRoute(LayoutPage, item));
 
@@ -24,7 +26,6 @@ export const useUserStore = defineStore("userStore", () => {
      */
     // console.log("router", router.getRoutes());
   }
-
 
   return { user, menu, addRoutes };
 });

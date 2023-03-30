@@ -15,8 +15,8 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(ElementPlus, { locale: zhCn });
-Object.keys(ElementPlusIconsVue).forEach((key) => {
-  app.component(key, ElementPlusIconsVue[key as keyof typeof ElementPlusIconsVue]);
-});
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 
 app.mount("#app");

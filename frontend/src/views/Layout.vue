@@ -64,7 +64,8 @@ const handleLogout = async () => {
         <div class="header-left">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item v-for="item in router.currentRoute.value.matched" :key="item.path">
-              <router-link :to="{ path: item.path }">{{ item.meta.title }}</router-link>
+              <!-- <router-link :to="{ path: item.path }">{{ item.meta.title }}</router-link> -->
+              <span>{{ item.meta.title }}</span>
             </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -160,6 +161,11 @@ const handleLogout = async () => {
           color: #fff;
           font-weight: 400;
         }
+      }
+
+      span {
+        color: #fff;
+        font-weight: 400;
       }
     }
 
