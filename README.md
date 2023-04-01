@@ -3,6 +3,69 @@
 ### 1.项目目录
 
 ```sh
+-- backend										# 后端
+	-- api									    # 接口文件夹
+  -- common                   # 公共文件夹
+  -- core                     # 核心文件夹
+    -- config.py              # 配置文件夹
+  -- crud                     # 数据库增删改查文件夹
+  -- models                   
+    -- database               # mysql 表模型
+    -- redis                  # redis 表模型
+  -- register                 # 注册中心
+  -- schemas                  # 模型文件夹 (Java中的实体类或者VO视图类)
+  -- static                   # 静态文件夹
+  -- utils                    # 工具文件夹
+  -- Dockerfile               # 后端服务部署文件
+  -- main.py                  # 项目启动文件
+  -- requirements.txt         # 所需的包
+-- frontend
+  -- src
+    -- apis                   # 接口文件夹
+    -- assets                 # 静态资源文件夹
+      -- js
+        -- global.js          # 全局配置文件
+    -- components             # 封装的组件
+    -- request                # 封装的axios
+    -- router                 # 路由
+    -- stores                 # 状态管理
+    -- utils                  # 工具类
+    -- views                  # 页面
+      -- pages                # 布局页面中的 内容
+      -- Login.vue            # 布局页面
+    -- App.vue
+    -- main.ts                
+  -- index.html               # 项目入口
+-- demo.sql                   # 数据库 (backend中config.py)
+-- docker-compose.yml         # 所有项目部署配置 (nginx, mysql, redis, backend)
+```
+
+### 2.项目启动
+
++ 后端
+
+  ```sh
+  # 安装包 (进入到 backend 文件夹)
+  pip install -r ./requirements.txt
+  
+  # 找到 main.py 中的 主函数, 右键启动
+  ```
+
++ 前端
+
+  ```sh
+  # 安装包 (进入到 frontend 文件夹)
+  npm install
+  
+  # 启动项目
+  npm run start
+  ```
+
+## 部署相关
+
+### 1.项目目录
+
+```sh
 -- 服务器
 	-- ...
 	-- root

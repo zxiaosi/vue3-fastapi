@@ -3,13 +3,15 @@
 
 interface Columns {
   type?: "selection" | "index" | "expand"; // 多选框 | 索引 | 可展开
-  prop?: string; // 列内容的字段名
+  prop: string; // 列内容的字段名
   label?: string; // 显示的标题
   width?: string | number; // 对应列的宽度(不设置则按按比例)
   align?: "left" | "center" | "right"; // 对齐方式
   fixed?: "left" | "right"; // 固定在左侧或者右侧
-  renderHeader?: ({ column, index }: any) => any; // 列标题 Label 区域渲染使用的 Function
-  renderColumn?: ({ row, column, index }: any) => any; // 列 Column 区域渲染使用的 Function
+  slotHeader?: boolean | string; // 列表插槽 Label
+  slotColumn?: boolean | string; // 列表插槽列 Column
+  renderHeader?: ({ column, index }: any) => any; // 列表 Label 区域渲染使用的 Function
+  renderColumn?: ({ row, column, index }: any) => any; // 列表 Column 区域渲染使用的 Function
 }
 
 interface Props {
@@ -41,12 +43,43 @@ const props = withDefaults(defineProps<Props>(), {});
           :fixed="item.fixed"
           show-overflow-tooltip
         >
-          <template v-if="item.renderHeader" #header="{ column, $index }">
-            <component :is="item.renderHeader" :column="column" :index="$index" />
+          <template #header="{ column, $index }">
+            <!-- 插槽方式 (写在 <MyTable></MyTable> 标签里面) -->
+            <slot
+              v-if="item.slotHeader"
+              :name="(item.slotHeader != true && item.slotHeader) || item.prop + '_header'"
+              :column="column"
+              :index="$index"
+            ></slot>
+
+            <!-- 组件方式 (返回 值 或者 h()) -->
+            <component v-else-if="item.renderHeader" :is="item.renderHeader" :column="column" :index="$index" />
+
+            <!-- 默认展示方式 -->
+            <div v-else :style="{ textAlign: item.align }">{{ column.label }}</div>
           </template>
 
-          <template v-if="item.renderColumn" #default="{ row, column, $index }">
-            <component :is="item.renderColumn" :row="row" :column="column" :index="$index" />
+          <template #default="{ row, column, $index }">
+            <!-- 插槽方式 (写在 <MyTable></MyTable> 标签里面) -->
+            <slot
+              v-if="item.slotColumn"
+              :name="(item.slotColumn != true && item.slotColumn) || item.prop + '_column'"
+              :row="row"
+              :column="column"
+              :index="$index"
+            ></slot>
+
+            <!-- 组件方式 (返回 值 或者 h()) -->
+            <component
+              v-else-if="item.renderColumn"
+              :is="item.renderColumn"
+              :row="row"
+              :column="column"
+              :index="$index"
+            />
+
+            <!-- 默认展示方式 (这里可不写, 用默认就好) -->
+            <!-- <div v-else :style="{ textAlign: item.align }">{{ row[item.prop] }}</div> -->
           </template>
         </el-table-column>
       </template>
@@ -71,8 +104,7 @@ const props = withDefaults(defineProps<Props>(), {});
 <style scoped lang="less">
 .mytable {
   .el-table {
-    display: flex;
-    flex: 1;
+    width: 100%;
   }
 
   .el-pagination {

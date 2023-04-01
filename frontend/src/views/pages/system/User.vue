@@ -15,7 +15,7 @@ const state = reactive({
 });
 
 /** 渲染手机号头 */
-const renderPhoneHeader = ({ column, index }: any) => {
+const renderPhone = ({ column, index }: any) => {
   // console.log(column, index);
 
   /**
@@ -32,32 +32,43 @@ const renderPhoneHeader = ({ column, index }: any) => {
    */
   const myText = h("div", { style: { marginRight: "5px" } }, "手机号");
   const myIcon = h(ElIcon, null, { default: () => h(Warning) });
-  const myTooltip = h(ElTooltip, { content: "测试", placement: "top" }, { default: () => myIcon });
+  const myTooltip = h(ElTooltip, { content: "手机号", placement: "top" }, { default: () => myIcon });
   return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "center" } }, [myText, myTooltip]);
 };
 
-/** 渲染状态 */
-const renderStatus = ({ row, column, index }: any) => {
+/** 渲染性别 */
+const renderSex = ({ row, column, index }: any) => {
   // console.log(row, column, index);
-  if (row.is_deleted == 0) return h(ElTag, { type: "success" }, { default: () => "正常" });
-  else return h(ElTag, { type: "danger" }, { default: () => "禁用" });
+  let sexOption = [
+    { id: 0, key: "未知" },
+    { id: 1, key: "男" },
+    { id: 2, key: "女" },
+  ];
+  return sexOption.filter((item) => item.id == row.sex)[0]?.key;
 };
 
 const columnOptions = [
-  { prop: "id", label: "Id", width: 40 },
-  { prop: "name", label: "姓名", width: 120 },
-  { prop: "sex", label: "性别", width: 120 },
-  { prop: "avatar", label: "头像", width: 120 },
-  { prop: "phone", label: "手机号", width: 120, renderHeader: (record: any) => renderPhoneHeader(record) },
+  { prop: "id", label: "Id", align: "center", width: 60 },
+  { prop: "name", label: "姓名", align: "center", width: 160 },
+  { prop: "sex", label: "性别", align: "center", width: 120, renderColumn: (record: any) => renderSex(record) },
+  { prop: "avatar", label: "头像", align: "center", width: 120 },
+  {
+    prop: "phone",
+    label: "手机号",
+    width: 200,
+    align: "center",
+    renderHeader: (record: any) => renderPhone(record),
+  },
   {
     prop: "is_deleted",
     label: "状态",
-    width: 120,
+    width: 140,
     align: "center",
-    renderColumn: (record: any) => renderStatus(record),
+    slotHeader: true,
+    slotColumn: true,
   },
-  { prop: "create_time", label: "创建时间" },
-  { prop: "update_time", label: "更新时间" },
+  { prop: "create_time", label: "创建时间", align: "center" },
+  { prop: "update_time", label: "更新时间", align: "center" },
 ] as any;
 
 onMounted(async () => {
@@ -87,7 +98,24 @@ const handlePageChange = (value: number) => {
       :page-size="state.tableData.page_size"
       :total="state.tableData.total"
       :on-page-change="handlePageChange"
-    />
+    >
+      <template #is_deleted_header="{ column, index }">
+        <div class="status">
+          <div>{{ column.label }}</div>
+          <el-tooltip content="状态" placement="top">
+            <el-icon>
+              <Warning />
+            </el-icon>
+          </el-tooltip>
+        </div>
+      </template>
+
+      <template #is_deleted_column="{ row, column, index }">
+        <el-tag :type="row.is_deleted == 0 ? 'success' : 'danger'">
+          {{ row.is_deleted == 0 ? "正常" : "禁用" }}
+        </el-tag>
+      </template>
+    </MyTable>
   </div>
 </template>
 
@@ -95,6 +123,16 @@ const handlePageChange = (value: number) => {
 .page {
   .header {
     padding-bottom: 20px;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    div {
+      margin-right: 5px;
+    }
   }
 }
 </style>

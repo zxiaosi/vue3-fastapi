@@ -13,7 +13,7 @@ class UserIn(BaseModel):
     name: str = Field(example='用户名')
     avatar: str | None = Field(example='头像')
     sex: int | None = Field(default=0, ge=0, le=2, example='性别: 0 未知 1 男 2 女')
-    phone: str | None = Field(regex=r'(^\s{0}$)|^(0\d{2,3}-\d{7,8})|(1[34578]\d{9})$', example='手机号')
+    phone: str | None = Field(example='手机号')
 
 
 class UserCreate(UserIn):

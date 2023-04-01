@@ -13,13 +13,13 @@ const state = reactive({
 });
 
 const columnOptions = [
-  { prop: "id", label: "Id" },
-  { prop: "url", label: "请求Url" },
-  { prop: "ip", label: "请求ip" },
-  { prop: "params", label: "请求参数" },
-  { prop: "spend_time", label: "响应时间" },
-  { prop: "create_time", label: "创建时间" },
-];
+  { prop: "id", label: "Id", align: "center", width: 80 },
+  { prop: "url", label: "请求Url", align: "center", width: 200 },
+  { prop: "ip", label: "请求ip", align: "center", width: 160 },
+  { prop: "params", label: "请求参数", align: "center" },
+  { prop: "spend_time", label: "响应时间", align: "center" },
+  { prop: "create_time", label: "创建时间", align: "center" },
+] as any;
 
 onMounted(async () => {
   requestList({ page: 1, page_size: 10 });
@@ -27,7 +27,9 @@ onMounted(async () => {
 
 const requestList = async (params: any) => {
   const { page, page_size } = params;
-  const { data: { data, total }} = await getLogs({ ...params });
+  const {
+    data: { data, total },
+  } = await getLogs({ ...params });
   state.tableData = { list: data, total: total, page, page_size };
 };
 
