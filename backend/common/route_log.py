@@ -19,6 +19,7 @@ from crud import sys_log_crud
 from models import RequestIp, SysLog
 from utils.custom_log import my_logger
 from utils.custom_exc import DuplicateRequests
+from utils.ip_utils import IPUtils
 
 
 # 详见: https://fastapi.tiangolo.com/advanced/custom-request-and-route/#custom-apiroute-class-in-a-router
@@ -82,7 +83,7 @@ async def save_log(request: Request, duration: float):
     """ 保存日志 """
     request_params = await get_request_params(request)
     current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-    sys_log = SysLog(url=request.get("path"), method=request.method, ip=request.client.host, params=request_params,
+    sys_log = SysLog(url=request.get("path"), method=request.method, ip=IPUtils.get_ip(request), params=request_params,
                      spend_time=duration, create_time=current_time)
 
     my_logger.info(f"访问记录: {jsonable_encoder(sys_log)}.")

@@ -51,7 +51,7 @@ class User(Base, CommonMixin):
     """ 用户表 """
 
     id: Mapped[idPk]
-    name: Mapped[str] = mapped_column(String(60), comment="用户名")
+    name: Mapped[str] = mapped_column(String(60), unique=True, comment="用户名")
     password: Mapped[str] = mapped_column(String(64), comment="密码")
     avatar: Mapped[str | None] = mapped_column(String(60), comment="头像")
     sex: Mapped[int | None] = mapped_column(SmallInteger, server_default=text('0'), comment="性别: 0 未知 1 男 2 女")

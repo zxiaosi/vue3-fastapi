@@ -30,6 +30,7 @@ class UserOut(UserIn, GMT):
     """ 查询数据的数据模型 """
     id: int
     is_deleted: int
+    role_name: str | None = Field(example='角色名')
 
     class Config:
         orm_mode = True  # 支持映射到ORM对象的模型
@@ -39,3 +40,12 @@ class UserLogin(BaseModel):
     """ 登录 """
     name: str = Field(example='用户名')
     password: str = Field(example='密码')
+
+
+class LocalUserSchema(UserOut):
+    """ 本地用户模型 """
+    password: str | None
+    permission_codes: list[str] | None = Field(default=[])
+
+    class Config:
+        orm_mode = True

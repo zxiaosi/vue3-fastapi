@@ -22,8 +22,11 @@ export const getUsers = (list: List): Promise<any> => get("/user/list", { ...lis
 export const getLogs = (list: List): Promise<any> => get("/log/list", { ...list });
 
 /**
- * 仓库获取语言详情
+ * 仓库获取语言详情(github被封了, 暂时用不了)
  */
-export const getLangList = async (page: number): Promise<any> => {
-  return await axios.get(`https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?page=${page}`);
-};
+// export const getLangList = async (page: number): Promise<any> => {
+//   return await axios.get(`https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?page=${page}`);
+// };
+
+/** 仓库获取语言详情 */
+export const getLangList = (): Promise<any> => get("/lang/list");

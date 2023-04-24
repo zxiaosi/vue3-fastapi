@@ -10,7 +10,7 @@ let chart: any;
 const userStore = useUserStore();
 const _user = getLocal("userInfo") || userStore.user;
 
-let echartDatas = {}
+let echartDatas = {};
 
 onMounted(async () => {
   // let pages = [1, 2, 3]
@@ -23,23 +23,9 @@ onMounted(async () => {
   // }))
   // echartDatas = { ...data3, ...data2, ...data1 }
 
-  echartDatas = {
-    "2022-01": 2,
-    "2022-02": 8,
-    "2022-03": 5,
-    "2022-04": 5,
-    "2022-05": 6,
-    "2022-06": 10,
-    "2022-07": 1,
-    "2022-08": 2,
-    "2022-09": 0,
-    "2022-10": 5,
-    "2022-11": 8,
-    "2022-12": 2,
-    "2023-01": 0,
-    "2023-02": 4,
-    "2023-03": 7,
-  }
+  // 模拟数据
+  const { data: { data } } = await getLangList();
+  echartDatas = data;
 
   // @ts-ignore
   chart = echarts.init(document.getElementById("line"));
@@ -117,6 +103,10 @@ const getCommitDate = (data: any) => {
           <div class="key">用户性别</div>
           <div class="value">{{ _user.sex == 0 ? "保密" : _user.sex == 1 ? "男" : "女" }}</div>
         </li>
+        <li>
+          <div class="key">用户角色</div>
+          <div class="value">{{ _user.role_name }}</div>
+        </li>
       </ul>
     </el-card>
 
@@ -174,7 +164,7 @@ const getCommitDate = (data: any) => {
 
     #line {
       width: 100%;
-      height: 80vh;
+      height: 74vh;
     }
   }
 }

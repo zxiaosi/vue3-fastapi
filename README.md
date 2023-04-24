@@ -162,7 +162,7 @@ server {
         proxy_pass http://fastapi:8000; # 这里 localhost -> 对应的容器名
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr; 
-        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
     
     # 可选

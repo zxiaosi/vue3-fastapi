@@ -3,13 +3,14 @@ import { useUserStore } from "@/stores";
 import { IMAGE_URL } from "@/assets/js/global";
 import { useRouter } from "vue-router";
 import { userLogout } from "@/apis";
-import { clearLocal } from "@/request/auth";
+import { clearLocal, getLocal } from "@/request/auth";
 import { TITLE } from "@/assets/js/global";
 import { pageTo } from "@/utils/handle_data";
 import world from "@/assets/img/logo.png";
 
 const router = useRouter();
 const userStore = useUserStore();
+const userINfo = getLocal("userInfo") || {};
 
 /** 退出登录 */
 const handleLogout = async () => {
@@ -24,7 +25,7 @@ const handleLogout = async () => {
   <el-container class="pages">
     <el-aside>
       <div class="logo" @click="pageTo(router, '/')">
-        <img :src="world">
+        <img :src="world" />
         <span>{{ TITLE }}</span>
       </div>
 
@@ -74,7 +75,7 @@ const handleLogout = async () => {
           <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
 
           <el-dropdown>
-            <span class="el-dropdown-link"> {{ "zxiaosi" }}</span>
+            <span class="el-dropdown-link"> {{ userINfo.name || "zxiaosi" }}</span>
 
             <template #dropdown>
               <el-dropdown-menu>
@@ -198,7 +199,7 @@ const handleLogout = async () => {
 
   .content {
     padding: 0;
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
     overflow-y: auto;
     max-height: calc(100vh - 60px);
 

@@ -7,14 +7,35 @@ from sqlalchemy import select, insert
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
-from models import Resource, UserRole, RoleResource
+from models import Resource, UserRole, RoleResource, Role
 from schemas import UserCreate, UserUpdate
 
 
 class CRUDResource(CRUDBase[Resource, UserCreate, UserUpdate]):
 
+    def get_resource_by_role_id(self, db: Session, role_id: int) -> list[Resource] | None:
+        """ 根据角色id得到资源 """
+        stmt = (
+            select(self.model)
+            .join(RoleResource, self.model.id == RoleResource.resource_id)
+            .where(RoleResource.role_id == role_id)
+            .where(self.model.is_deleted == 0)
+        )
+        return db.scalars(stmt).all()  # type: ignore
+
+    def get_resource_by_role_code(self, db: Session, role_code: str) -> list[Resource] | None:
+        """ 根据角色code得到资源 """
+        stmt = (
+            select(self.model)
+            .join(RoleResource, self.model.id == RoleResource.resource_id)
+            .join(Role, Role.id == RoleResource.role_id)
+            .where(Role.code == role_code)
+            .where(self.model.is_deleted == 0)
+        )
+        return db.scalars(stmt).all()  # type: ignore
+
     def get_resource_by_user_id(self, db: Session, user_id: int) -> list[Resource] | None:
-        """ 得到用户资源 """
+        """ 根据用户id得到资源 """
         stmt = (
             select(self.model)
             .join(RoleResource, self.model.id == RoleResource.resource_id)

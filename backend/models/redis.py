@@ -56,6 +56,7 @@ class LocalUser(JsonModel):
     is_deleted: int | None
     create_time: datetime | None
     update_time: datetime | None
+    role_name: str | None  # 用户角色名称
     permission_codes: list[str] = Field(default=[])  # 用户可以访问的权限列表
     # resources: list[LocalResource] = Field(default=[])  # 用户可以访问的资源列表
 

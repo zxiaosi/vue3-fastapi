@@ -5,13 +5,13 @@
 # @desc : 用户表的增删改查
 from typing import Any
 
-from sqlalchemy import select, insert, Select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from crud.base import CRUDBase
-from models import User
-from schemas import UserCreate, UserUpdate, PageSchema
+from models import User, Role, UserRole
+from schemas import UserCreate, UserUpdate, PageSchema, LocalUserSchema
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -28,9 +28,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         setattr(obj_in, 'password', get_password_hash(obj_in.password))
         return super().create(db, obj_in=obj_in)
 
-    def get_user_by_name(self, db: Session, name: Any) -> User | None:
-        stmt = select(self.model).where(self.model.name == name).where(self.model.is_deleted == 0)
-        return db.scalars(stmt).one()
+    def get_user_by_name(self, db: Session, name: Any) -> LocalUserSchema | None:
+        """ 通过用户名获取用户 """
+        stmt = (
+            select(self.model.__table__.c, Role.name.label('role_name'))
+            .join(UserRole, UserRole.user_id == self.model.id, isouter=True)
+            .join(Role, Role.id == UserRole.role_id, isouter=True)
+            .where(self.model.name == name)
+            .where(self.model.is_deleted == 0)
+        )
+        result = db.execute(stmt).first()
+        return LocalUserSchema.from_orm(result) if result else None
 
 
 user_crud = CRUDUser(User)
