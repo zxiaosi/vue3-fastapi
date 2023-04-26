@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
-from models import Role, UserRole, User
+from models import Role, UserRole
 from schemas import RoleIn
 
 

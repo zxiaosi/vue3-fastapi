@@ -92,8 +92,8 @@ const props = withDefaults(defineProps<Props>(), {});
         :total="props.total"
         :current-page="props.page"
         :page-size="props.pageSize"
-        v-on:current-change="props?.onPageChange"
-        v-on:size-change="props?.onSizeChange"
+        @current-change="props?.onPageChange"
+        @size-change="props?.onSizeChange"
       >
         第 {{ (props.page - 1) * props.pageSize + 1 }}-{{ props.page * props.pageSize }} 条 / 共 {{ props.total }} 条
       </el-pagination>

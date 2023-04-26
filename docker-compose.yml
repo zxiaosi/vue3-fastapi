@@ -60,8 +60,8 @@ services:
       - /opt/docker/mysql/data/:/var/lib/mysql             # 数据文件夹 (宿主机:容器)
       - /opt/docker/mysql/logs:/logs                       # 日志文件夹 (宿主机:容器)
     environment:
-      MYSQL_ROOT_PASSWORD: 123456                          # root用户密码 (自定义)
-      TZ: Asia/Shanghai                                    # mysql时区
+      - MYSQL_ROOT_PASSWORD=123456                         # root用户密码 (自定义)
+      - TZ=Asia/Shanghai                                   # mysql时区
     command:
       # MySQL8的密码验证方式默认是 caching_sha2_password，但是很多的连接工具还不支持该方式
       # 就需要手动设置下mysql的密码认证方式为以前的 mysql_native_password 方式

@@ -13,7 +13,7 @@ router = APIRouter(route_class=LogRoute)
 
 
 @router.get("/list")
-async def root(db: GetDB, page: PageQuery) -> ResultSchema[SysLogOut]:
+async def root(db: GetDB, page: PageQuery) -> ResultSchema[list[SysLogOut]]:
     data = sys_log_crud.get_all(db, page)
     total = sys_log_crud.get_count(db)
     return Result.success(data=data, total=total)

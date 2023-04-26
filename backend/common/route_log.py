@@ -19,6 +19,7 @@ from crud import sys_log_crud
 from models import RequestIp, SysLog
 from utils.custom_log import my_logger
 from utils.custom_exc import DuplicateRequests
+from utils.handle_date import get_current_time
 from utils.ip_utils import IPUtils
 
 
@@ -49,7 +50,7 @@ def prevent_duplicate_requests(request: Request):
     key = f"{request.client.host}+{request.get('path')}"
     try:
         request_obj = RequestIp.get(key)
-        if request_obj.num >= 5:
+        if request_obj.num >= 10:
             raise DuplicateRequests()
         else:
             RequestIp(num=request_obj.num + 1, pk=key).update()
@@ -82,11 +83,13 @@ async def get_request_params(request: Request) -> dict:
 async def save_log(request: Request, duration: float):
     """ 保存日志 """
     request_params = await get_request_params(request)
-    current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     sys_log = SysLog(url=request.get("path"), method=request.method, ip=IPUtils.get_ip(request), params=request_params,
-                     spend_time=duration, create_time=current_time)
+                     spend_time=duration, create_time=get_current_time())
 
     my_logger.info(f"访问记录: {jsonable_encoder(sys_log)}.")
+
+    if request.get("path") == "/api/log/list":  # 排除日志接口
+        return
 
     with SessionLocal() as db:
         sys_log_crud.create(db, sys_log)

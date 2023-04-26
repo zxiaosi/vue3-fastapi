@@ -10,8 +10,8 @@ from pydantic import BaseModel, validator
 
 class GMT(BaseModel):
     """ 时间字段处理 """
-    create_time: datetime
-    update_time: datetime
+    create_time: datetime | None
+    update_time: datetime | None
 
     @validator("create_time", "update_time")
     def format_time(cls, value: datetime) -> str:
