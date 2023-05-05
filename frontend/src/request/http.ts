@@ -1,8 +1,7 @@
 import axios, { AxiosError } from "axios";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
-import { API_URL_DEVELOPMENT, API_URL_PRODUCTION } from "@/assets/js/global";
-import { clearLocal } from "./auth";
+import { API_URL } from "@/assets/js/global";
 
 /**
  * 错误处理: https://www.axios-http.cn/docs/handling_errors
@@ -11,11 +10,8 @@ import { clearLocal } from "./auth";
  * ③ 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
  */
 
-// 是否是开发环境
-const isDev: boolean = true;
-
 // Axios全局配置 https://axios-http.com/docs/config_defaults
-axios.defaults.baseURL = isDev ? API_URL_DEVELOPMENT : API_URL_PRODUCTION;
+axios.defaults.baseURL = API_URL;
 
 // 请求拦截器(全局配置)
 axios.interceptors.request.use(

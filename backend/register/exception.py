@@ -14,9 +14,10 @@ from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from common import get_request_params, Result, ResultSchema
-from utils.custom_exc import CustomException
-from utils.custom_log import my_logger
+from common.custom_exc import CustomException
+from common.custom_log import my_logger
+from common.result import ResultSchema, Result
+from common.route_log import get_request_params
 
 """
     {

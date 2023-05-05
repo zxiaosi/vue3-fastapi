@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores";
-import { IMAGE_URL } from "@/assets/js/global";
+import { ICON_URL, IMAGE_URL } from "@/assets/js/global";
 import { useRouter } from "vue-router";
 import { userLogout } from "@/apis";
 import { clearLocal, getLocal } from "@/request/auth";
@@ -10,7 +10,7 @@ import world from "@/assets/img/logo.png";
 
 const router = useRouter();
 const userStore = useUserStore();
-const userINfo = getLocal("userInfo") || {};
+const userInfo = getLocal("userInfo") || {};
 
 /** 退出登录 */
 const handleLogout = async () => {
@@ -36,13 +36,13 @@ const handleLogout = async () => {
           <template v-if="item.children.length > 0">
             <el-sub-menu :index="item.path">
               <template #title>
-                <el-image :src="IMAGE_URL + item.meta.icon" />
+                <el-image :src="ICON_URL + item.meta.icon" />
                 <span>{{ item.meta.title }}</span>
               </template>
 
               <template v-for="subItem in item.children">
                 <el-menu-item :index="subItem.path">
-                  <el-image :src="IMAGE_URL + subItem.meta.icon" />
+                  <el-image :src="ICON_URL + subItem.meta.icon" />
                   <template #title>{{ subItem.meta.title }}</template>
                 </el-menu-item>
               </template>
@@ -52,7 +52,7 @@ const handleLogout = async () => {
           <!-- 一级菜单 -->
           <template v-else>
             <el-menu-item :index="item.path">
-              <el-image :src="IMAGE_URL + item.meta.icon" />
+              <el-image :src="ICON_URL + item.meta.icon" />
               <template #title>{{ item.meta.title }}</template>
             </el-menu-item>
           </template>
@@ -72,14 +72,15 @@ const handleLogout = async () => {
         </div>
 
         <div class="header-right">
-          <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+          <el-image v-if="userInfo.avatar" :src="IMAGE_URL + userInfo.avatar" />
+          <el-image v-else src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
 
           <el-dropdown>
-            <span class="el-dropdown-link"> {{ userINfo.name || "zxiaosi" }}</span>
+            <span class="el-dropdown-link"> {{ userInfo.name || "未知" }}</span>
 
             <template #dropdown>
               <el-dropdown-menu>
-                <a href="https://github.com/zxiaosi/Vue3-FastAPI" target="_blank">
+                <a href="https://gitee.com/zxiaosi/fast-api.git" target="_blank">
                   <el-dropdown-item>项目仓库</el-dropdown-item>
                 </a>
                 <el-dropdown-item divided @click="handleLogout()">退出登录</el-dropdown-item>

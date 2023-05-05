@@ -42,16 +42,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def update(self, db: Session, id: int, obj_in: UpdateSchemaType | dict[str, Any]) -> ModelType:
+    def update(self, db: Session, db_obj: ModelType, obj_in: UpdateSchemaType | dict[str, Any]) -> ModelType:
         """ 通过 id 更新对象 """
+        obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):  # 判断对象是否为字典类型(更新部分字段)
-            db_obj = obj_in
+            update_data = obj_in
         else:
-            db_obj = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.dict(exclude_unset=True)
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        return db_obj  # type: ignore
+        return db_obj
 
     def remove(self, db: Session, *, id: int) -> ModelType:
         obj = db.query(self.model).get(id)

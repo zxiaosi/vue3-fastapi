@@ -4,11 +4,26 @@
 # @Author : zxiaosi
 # @desc : 存储在Reids中的数据模板
 import abc
+import json
 from datetime import datetime
+from typing import Any
 
-from redis_om import get_redis_connection, Field, HashModel, JsonModel, EmbeddedJsonModel
+from redis_om import get_redis_connection, Field, HashModel, JsonModel, EmbeddedJsonModel, NotFoundError
 
 from core.config import settings
+
+
+class MyJsonModel(JsonModel, abc.ABC):
+    """ json模型 """
+
+    @classmethod
+    def get(cls, pk: Any) -> "JsonModel":
+        """ 重写get方法, 从redis中获取数据 """
+        document = json.dumps(cls.db().json().get(cls.make_key(pk)), ensure_ascii=False)
+        if document == "null":
+            raise NotFoundError
+        return cls.parse_raw(document.encode('raw_unicode_escape').decode('utf-8'))
+
 
 # 参考文档 https://github.com/redis/redis-om-python/blob/main/docs/fastapi_integration.md
 
@@ -45,7 +60,7 @@ class LocalResource(EmbeddedJsonModel):
         model_key_prefix = "resource"  # redis 中 ORM对象 前缀 (默认是 路径+类名)
 
 
-class LocalUser(JsonModel):
+class LocalUser(MyJsonModel):
     """ Redis用户信息 """
     id: int = Field(index=True, full_text_search=True)
     name: str | None
@@ -57,7 +72,8 @@ class LocalUser(JsonModel):
     create_time: datetime | None
     update_time: datetime | None
     role_name: str | None  # 用户角色名称
-    permission_codes: list[str] = Field(default=[])  # 用户可以访问的权限列表
+    permission_codes: list[str] = Field(default=[])  # 用户可以访问的权限code列表
+
     # resources: list[LocalResource] = Field(default=[])  # 用户可以访问的资源列表
 
     class Meta:

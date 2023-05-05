@@ -5,21 +5,35 @@
 export const TITLE: string = "Demo";
 
 /**
- * 环境
- * @type {string}
+ * 是否是开发环境
  */
-export const API_URL_DEVELOPMENT: string = `http://127.0.0.1:8000/api`; // 开发环境
-export const API_URL_PRODUCTION: string = `http://114.115.143.81/api`; // 线上环境
+export const IS_DEV: boolean = true;
 
 /**
- * TODO: 图片地址前缀(暂时)
- * @type {string}
+ * 开发、测试、线上环境
  */
-export const IMAGE_URL: string = "https://i.imgtg.com/2023/02/27/";
+export const DEVELOPMENT: string = "http://127.0.0.1:8000"; // 开发环境
+export const PRODUCTION: string = "http://114.115.143.81"; // 线上环境
+export const BASE_URL: string = IS_DEV ? DEVELOPMENT : PRODUCTION;
+
+/**
+ * API地址
+ */
+export const API_URL: string = BASE_URL + "/api";
+
+/**
+ * TODO: Icon地址前缀(临时)
+ */
+export const ICON_URL: string = "https://i.imgtg.com/2023/02/27/";
+// export const ICON_URL: string = BASE_URL + "/static/icon/";
+
+/**
+ * 用户头像地址前缀
+ */
+export const IMAGE_URL: string = BASE_URL + "/static/avatar/";
 
 /**
  * 公钥
- * @type {string}
  */
 export const PUBLIC_PEM: string = "\
 -----BEGIN RSA PUBLIC KEY-----\
@@ -34,6 +48,5 @@ DsajiPK45iVoHz8pzp+ELwOcLmiuHsFycSMep8FmfVZHhYxrzNqFAgMBAAE=\
  * 修改布局文件步骤:
  *    1. 修改此处
  *    2. 修改 src\view\Layout.vue 文件名
- * @type {string}
  */
 export const LayoutPage: string = "Layout";

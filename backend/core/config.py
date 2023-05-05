@@ -3,9 +3,15 @@
 # @Time : 2023/1/28 17:43
 # @Author : zxiaosi
 # @desc : 配置文件
+import os
+from enum import Enum
+from pathlib import Path
+
 from pydantic import BaseSettings, AnyHttpUrl
 
 IS_DEV = True  # 是否开发环境
+
+current_path = Path().absolute().parent  # 当前路径
 
 
 # https://docs.pydantic.dev/usage/settings/
@@ -14,7 +20,7 @@ class Settings(BaseSettings):
     PROJECT_VERSION: int | str = 1.0  # 版本
     API_PREFIX: str = "/api"  # 接口前缀
 
-    STATIC_DIR: str = 'static'  # 静态文件目录
+    STATIC_DIR: str = "static"  # 静态文件目录
     BASE_URL: AnyHttpUrl = "http://127.0.0.1:8000"  # 开发环境(为了存放图片全路径)
     CORS_ORIGINS: list[AnyHttpUrl] = ["http://127.0.0.1:5173"]  # 跨域请求(务必指定精确ip, 不要用localhost)
 
@@ -55,3 +61,9 @@ class ProductionConfig(Settings):
 
 
 settings = DevelopmentConfig() if IS_DEV else ProductionConfig()
+
+
+class FileDirEnum(Enum):
+    """ 文件类型枚举 """
+    AVATAR = os.path.join(settings.STATIC_DIR, "avatar")  # 头像文件目录
+    ICON = os.path.join(settings.STATIC_DIR, "icon")  # Icon文件目录

@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from core.config import settings
 from models import Base, User, Role, Resource, UserRole, RoleResource
-from utils.custom_log import my_logger
+from common.custom_log import my_logger
 
 # 文档中介绍了四种 创建会话 的方式: https://docs.sqlalchemy.org/en/20/orm/session_basics.html
 

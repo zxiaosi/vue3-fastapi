@@ -7,8 +7,8 @@ from fastapi import FastAPI
 
 from core.config import settings
 from core.init_db import init_table, init_data
-from register import register_mount, register_exception, register_router, register_middleware, register_cors
-from utils.custom_log import my_logger
+from register import register_mount, register_exception, register_router, register_cors
+from common.custom_log import my_logger
 
 app = FastAPI(description=settings.PROJECT_DESC, version=settings.PROJECT_VERSION)
 

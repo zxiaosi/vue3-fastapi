@@ -5,7 +5,9 @@
 # @desc : 日志接口
 from fastapi import APIRouter
 
-from common import LogRoute, ResultSchema, Result, GetDB, PageQuery
+from common.depends import PageQuery, GetDB
+from common.result import ResultSchema, Result
+from common.route_log import LogRoute
 from crud import sys_log_crud
 from schemas import SysLogOut
 

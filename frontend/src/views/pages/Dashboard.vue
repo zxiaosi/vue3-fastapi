@@ -4,11 +4,13 @@ import { useUserStore } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
 import * as echarts from "echarts"; // 引入echarts
 import { getLocal } from "@/request/auth";
+import MyUpload from "@/components/MyUpload.vue";
+import { IMAGE_URL } from "@/assets/js/global";
 
 let chart: any;
 
 const userStore = useUserStore();
-const _user = getLocal("userInfo") || userStore.user;
+const userInfo = getLocal("userInfo") || userStore.user;
 
 let echartDatas = {};
 
@@ -93,21 +95,24 @@ const getCommitDate = (data: any) => {
       </template>
       <ul class="user-info">
         <li>
-          <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+          <el-image v-if="userInfo.avatar" :src="IMAGE_URL + userInfo.avatar" />
+          <el-image v-else src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
         </li>
         <li>
           <div class="key">用户名称</div>
-          <div class="value">{{ _user.name }}</div>
+          <div class="value">{{ userInfo.name }}</div>
         </li>
         <li>
           <div class="key">用户性别</div>
-          <div class="value">{{ _user.sex == 0 ? "保密" : _user.sex == 1 ? "男" : "女" }}</div>
+          <div class="value">{{ userInfo.sex == 0 ? "保密" : userInfo.sex == 1 ? "男" : "女" }}</div>
         </li>
         <li>
           <div class="key">用户角色</div>
-          <div class="value">{{ _user.role_name }}</div>
+          <div class="value">{{ userInfo.role_name }}</div>
         </li>
       </ul>
+
+      <MyUpload />
     </el-card>
 
     <el-card class="card-right" shadow="hover">

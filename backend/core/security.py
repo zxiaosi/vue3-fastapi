@@ -11,7 +11,7 @@ from binascii import Error
 import rsa
 
 from core.config import settings
-from utils.custom_exc import WrongPublicKey
+from common.custom_exc import WrongPublicKey
 
 public_pem = b"""
 -----BEGIN RSA PUBLIC KEY-----

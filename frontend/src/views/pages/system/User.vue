@@ -4,6 +4,7 @@ import { h, onMounted, reactive, ref, render } from "vue";
 import MyTable from "@/components/MyTable.vue";
 import { ElTooltip, ElTag, ElIcon } from "element-plus";
 import { Warning } from "@element-plus/icons-vue";
+import { IMAGE_URL } from "@/assets/js/global";
 
 const state = reactive({
   tableData: {
@@ -51,7 +52,7 @@ const columnOptions = [
   { prop: "id", label: "Id", align: "center", width: 60 },
   { prop: "name", label: "姓名", align: "center", width: 160 },
   { prop: "sex", label: "性别", align: "center", width: 120, renderColumn: (record: any) => renderSex(record) },
-  { prop: "avatar", label: "头像", align: "center", width: 120 },
+  { prop: "avatar", label: "头像", align: "center", width: 120, slotColumn: true },
   {
     prop: "phone",
     label: "手机号",
@@ -99,6 +100,21 @@ const handlePageChange = (value: number) => {
       :total="state.tableData.total"
       :on-page-change="handlePageChange"
     >
+      <!-- 头像列表插槽 -->
+      <template #avatar_column="{ row, column, index }">
+        <div class="avatar">
+          <el-image
+            v-if="row.avatar"
+            :src="IMAGE_URL + row.avatar"
+            :preview-src-list="[IMAGE_URL + row.avatar]"
+            :preview-teleported="true"
+            hide-on-click-modal
+          />
+          <el-image v-else src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+        </div>
+      </template>
+
+      <!-- 状态头部插槽 -->
       <template #is_deleted_header="{ column, index }">
         <div class="status">
           <div>{{ column.label }}</div>
@@ -110,6 +126,7 @@ const handlePageChange = (value: number) => {
         </div>
       </template>
 
+      <!-- 状态列表插槽 -->
       <template #is_deleted_column="{ row, column, index }">
         <el-tag :type="row.is_deleted == 0 ? 'success' : 'danger'">
           {{ row.is_deleted == 0 ? "正常" : "禁用" }}
@@ -125,6 +142,17 @@ const handlePageChange = (value: number) => {
     padding-bottom: 20px;
   }
 
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .el-image {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
   .status {
     display: flex;
     align-items: center;

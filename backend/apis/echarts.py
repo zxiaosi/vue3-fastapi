@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# @Time : 2023/1/31 11:04
+# @Time : 2023/5/4 11:30
 # @Author : zxiaosi
-# @desc : 默认接口
+# @desc : 图表接口
 from fastapi import APIRouter
 
-from common import LogRoute, ResultSchema, Result
+from common.result import ResultSchema, Result
+from common.route_log import LogRoute
 
 router = APIRouter(route_class=LogRoute)
-
-
-@router.get("/")
-async def root() -> dict:
-    return {"message": "Hello World"}
 
 
 @router.get("/lang/list")
