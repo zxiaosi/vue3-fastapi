@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Form
 from fastapi.encoders import jsonable_encoder
 
 from common.depends import GetDB, CheckCookie

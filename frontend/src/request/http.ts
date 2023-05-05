@@ -16,7 +16,6 @@ axios.defaults.baseURL = API_URL;
 // 请求拦截器(全局配置)
 axios.interceptors.request.use(
   (config: any) => {
-    config.headers = { "Content-Type": "application/json;charset=utf-8" }; // 请求头
     return config;
   },
   (error: AxiosError) => { // 发送请求时出了点问题，比如网络错误 https://segmentfault.com/q/1010000020659252
@@ -108,10 +107,10 @@ class Http {
   // 请求配置 https://www.axios-http.cn/docs/req_config
   request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<IResponseData<T>> {
     const withCredentials = true; // 是否携带cookie (放到实例配置中)
+    const headers = { "Content-Type": "application/json;charset=utf-8" }; // 请求头
     const { url: requestUrl, params: requestData } = this.transformParam(options, data, url);
     const requestOptions = { ...this.defaultOptions, ...options };
-    const config = { withCredentials, url: requestUrl, data: requestData, ...requestOptions };
-
+    const config = { withCredentials, headers, url: requestUrl, data: requestData, ...requestOptions };
     return axios.request(config);
   }
 

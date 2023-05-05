@@ -1,5 +1,5 @@
 import { get, post } from "@/request";
-import axios from "axios";
+import type { IRequestOption } from "@/request/http";
 import type { SignUp, Login, List } from "./model";
 
 /** 注册 */
@@ -11,9 +11,11 @@ export const userLogin = (data: Login): Promise<any> => post("/user/login", { ..
 /** 登出 */
 export const userLogout = (): Promise<any> => post("/user/logout");
 
-
 /** 得到菜单 */
 export const getMenus = (): Promise<any> => get("/user/menu");
+
+/** 上传图片 */
+export const uploadImg = (file: any, config: IRequestOption): Promise<any> => post("/upload/", file, { ...config });
 
 /** 得到所有用户 */
 export const getUsers = (list: List): Promise<any> => get("/user/list", { ...list });
