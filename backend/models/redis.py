@@ -3,7 +3,6 @@
 # @Time : 2023/1/28 17:20
 # @Author : zxiaosi
 # @desc : 存储在Reids中的数据模板
-import abc
 import json
 from datetime import datetime
 from typing import Any
@@ -13,8 +12,8 @@ from redis_om import get_redis_connection, Field, HashModel, JsonModel, Embedded
 from core.config import settings
 
 
-class MyJsonModel(JsonModel, abc.ABC):
-    """ json模型 """
+class MyJsonModel(JsonModel):
+    """ json模型 (解决中文乱码问题) """
 
     @classmethod
     def get(cls, pk: Any) -> "JsonModel":
@@ -68,6 +67,7 @@ class LocalUser(MyJsonModel):
     avatar: str | None
     sex: int | None
     phone: str | None
+    version: int | None
     is_deleted: int | None
     create_time: datetime | None
     update_time: datetime | None

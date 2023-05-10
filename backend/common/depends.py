@@ -13,11 +13,13 @@ from starlette.requests import Request
 
 from core.config import settings
 from core.init_db import SessionLocal
-from crud import resource_crud
+from crud import resource_crud, user_crud
 from models import LocalUser
-from schemas import PageSchema
+from schemas import PageSchema, LocalUserSchema
 from common.custom_exc import BadCredentials, UserErrors
 
+
+# Annotated: https://fastapi.tiangolo.com/tutorial/dependencies/
 
 def get_db():
     """ 得到数据库的会话 """
@@ -28,17 +30,34 @@ def get_db():
         db.close()
 
 
-def check_cookie(request: Request):
+GetDB = Annotated[Session, Depends(get_db)]
+
+
+def check_cookie(request: Request, db: GetDB):
     """ 校验cookie -- 认证"""
     if request.get("path") in settings.COOKIE_NOT_CHECK:  # 不校验Cookie
         return
 
     session = request.cookies.get(settings.COOKIE_KEY)
     try:
-        # print("当前登录用户: ", LocalUser.get(session))
-        return LocalUser.get(session)
+        _user = LocalUser.get(session)
+        user_obj = user_crud.get(db, _user.id)  # noqa
+        assert user_obj, "用户不存在"  # 判断 user_obj 是否存在
+
+        old_user = LocalUserSchema(**_user.dict())  # 旧用户信息
+        new_user = LocalUserSchema.from_orm(user_obj)  # 新用户信息
+        assert old_user.version == new_user.version, "用户权限变更"  # 判断用户权限是否变更
+
+        assert old_user.dict() == new_user.dict(), "用户信息变更"  # 判断用户信息是否变更
+
+        return _user
     except NotFoundError:
         raise BadCredentials()
+    except AssertionError as e:
+        raise BadCredentials(err_desc=str(e))
+
+
+CheckCookie = Annotated[LocalUser, Depends(check_cookie)]
 
 
 def check_permission(code: list[str] | None = None):
@@ -61,7 +80,4 @@ def page_query(page: int = 1, page_size: int = 10):
     return PageSchema(page=page, page_size=page_size)
 
 
-# https://fastapi.tiangolo.com/tutorial/dependencies/
-GetDB = Annotated[Session, Depends(get_db)]
-CheckCookie = Annotated[LocalUser, Depends(check_cookie)]
 PageQuery = Annotated[PageSchema, Depends(page_query)]

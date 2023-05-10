@@ -17,13 +17,13 @@ from common.route_log import LogRoute
 from core.config import settings, FileDirEnum
 from crud import user_crud
 from common.custom_log import my_logger
-from schemas import LocalUserSchema
+from schemas import UserOut
 
 router = APIRouter(route_class=LogRoute)
 
 
 @router.post("/")
-async def upload_file(db: GetDB, _user: CheckCookie, file: UploadFile = File(...)) -> ResultSchema[LocalUserSchema]:
+async def upload_file(db: GetDB, _user: CheckCookie, file: UploadFile = File(...)) -> ResultSchema[UserOut]:
     """
     接收上传的文件和表单数据，并保存到本地
     """
@@ -47,6 +47,6 @@ async def upload_file(db: GetDB, _user: CheckCookie, file: UploadFile = File(...
         _user.update(**jsonable_encoder(user_obj))
         _user.save().expire(settings.REDIS_EXPIRE)  # 更新redis
 
-        return Result.success(msg="用户信息变更, 请重新登录", data=_user)
+        return Result.success(data=_user)
     except Exception as e:
         return Result.fail(msg="图片上传失败")

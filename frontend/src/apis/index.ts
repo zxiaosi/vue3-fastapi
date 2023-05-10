@@ -15,7 +15,7 @@ export const userLogout = (): Promise<any> => post("/user/logout");
 export const getMenus = (): Promise<any> => get("/user/menu");
 
 /** 上传图片 */
-export const uploadImg = (file: any, config: IRequestOption): Promise<any> => post("/upload/", file, { ...config });
+export const uploadImg = (file: any): Promise<any> => post("/upload/", file);
 
 /** 得到所有用户 */
 export const getUsers = (list: List): Promise<any> => get("/user/list", { ...list });

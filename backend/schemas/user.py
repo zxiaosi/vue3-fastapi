@@ -29,6 +29,7 @@ class UserUpdate(UserCreate):
 class UserOut(UserIn, GMT):
     """ 查询数据的数据模型 """
     id: int
+    version: int
     is_deleted: int
     role_name: str | None = Field(example='角色名')
 
@@ -42,10 +43,10 @@ class UserLogin(BaseModel):
     password: str = Field(example='密码')
 
 
-class LocalUserSchema(UserOut):
-    """ 本地用户模型 """
-    password: str | None
-    permission_codes: list[str] | None = Field(default=[])
+class LocalUserSchema(UserIn):
+    """ 本地用户模型(用于比较) """
+    version: int
+    is_deleted: int
 
     class Config:
         orm_mode = True

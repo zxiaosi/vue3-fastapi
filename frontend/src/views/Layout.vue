@@ -3,14 +3,15 @@ import { useUserStore } from "@/stores";
 import { ICON_URL, IMAGE_URL } from "@/assets/js/global";
 import { useRouter } from "vue-router";
 import { userLogout } from "@/apis";
-import { clearLocal, getLocal } from "@/request/auth";
+import { clearLocal } from "@/request/auth";
 import { TITLE } from "@/assets/js/global";
 import { pageTo } from "@/utils/handle_data";
 import world from "@/assets/img/logo.png";
+import { computed } from "vue";
 
 const router = useRouter();
 const userStore = useUserStore();
-const userInfo = getLocal("userInfo") || {};
+const userInfo = computed(() => userStore.user);
 
 /** 退出登录 */
 const handleLogout = async () => {
@@ -29,8 +30,15 @@ const handleLogout = async () => {
         <span>{{ TITLE }}</span>
       </div>
 
-      <el-menu router unique-opened background-color="#324157" text-color="#FFFFFF" active-text-color="#409EFF"
-        :collapse-transition="false" :default-active="router.currentRoute.value.path">
+      <el-menu
+        router
+        unique-opened
+        background-color="#324157"
+        text-color="#FFFFFF"
+        active-text-color="#409EFF"
+        :collapse-transition="false"
+        :default-active="router.currentRoute.value.path"
+      >
         <template v-for="item in userStore.menu">
           <!-- 二级菜单 -->
           <template v-if="item.children.length > 0">

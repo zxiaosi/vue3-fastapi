@@ -16,8 +16,8 @@ interface Columns {
 
 interface Props {
   /** 表格配置 */
-  columns: Columns[];
-  dataSource: any[];
+  columns: Columns[]; // 表格列配置
+  dataSource: any[]; // 表格数据源
 
   /** 分页配置 */
   page?: number | any; // 当前页面 (加 any 防止下面 计算报错页数)

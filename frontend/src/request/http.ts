@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
 import { API_URL } from "@/assets/js/global";
+import { clearLocal } from "./auth";
 
 /**
  * 错误处理: https://www.axios-http.cn/docs/handling_errors
@@ -44,19 +45,22 @@ axios.interceptors.response.use(
     const { url, isShowLoading, isShowFailToast, isThrowError } = config as IRequestOption;
 
     let errMsg = ""; // 错误信息
+    let stateMsg: "error" | "warning" = "error"; // 状态码
 
     if (response) { // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
       const { status, data } = response as AxiosResponse;
       errMsg = data.msg || `url:${(url || "").toString()},statusCode:${status}`;
 
       if (status == 401) {// 跳转登录
+        stateMsg = "warning";
+        clearLocal()
         setTimeout(() => { window.location.href = "/login" }, 2000);
       }
     } else { // 请求已经成功发起，但没有收到响应
       errMsg = "请求超时或服务器异常，请检查网络或联系管理员！";
     }
 
-    (isShowLoading || isShowFailToast) && ElMessage.error(errMsg);
+    (isShowLoading || isShowFailToast) && ElMessage[stateMsg](errMsg);
 
     return Promise.reject(isThrowError ? new Error(`请求失败 -- ${errMsg}`) : error);
   }
@@ -106,11 +110,11 @@ class Http {
 
   // 请求配置 https://www.axios-http.cn/docs/req_config
   request<T>(url: string, data: string | object = {}, options: IRequestOption): Promise<IResponseData<T>> {
+    // 请求头中的 Content-Type , axios 默认会自动设置合适的 Content-Type
     const withCredentials = true; // 是否携带cookie (放到实例配置中)
-    const headers = { "Content-Type": "application/json;charset=utf-8" }; // 请求头
     const { url: requestUrl, params: requestData } = this.transformParam(options, data, url);
     const requestOptions = { ...this.defaultOptions, ...options };
-    const config = { withCredentials, headers, url: requestUrl, data: requestData, ...requestOptions };
+    const config = { withCredentials, url: requestUrl, data: requestData, ...requestOptions };
     return axios.request(config);
   }
 

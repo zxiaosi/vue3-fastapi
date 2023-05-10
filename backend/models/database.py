@@ -13,7 +13,7 @@
 import re
 from datetime import datetime
 
-from sqlalchemy import String, SmallInteger, ForeignKey, func, text
+from sqlalchemy import String, Integer, SmallInteger, ForeignKey, func, text
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship, Mapped, declared_attr
 from typing_extensions import Annotated
 
@@ -56,6 +56,7 @@ class User(Base, CommonMixin):
     avatar: Mapped[str | None] = mapped_column(String(60), comment="头像")
     sex: Mapped[int | None] = mapped_column(SmallInteger, server_default=text('0'), comment="性别: 0 未知 1 男 2 女")
     phone: Mapped[str | None] = mapped_column(String(30), comment="手机号")
+    version: Mapped[int] = mapped_column(Integer, server_default=text('1'), comment="版本号")
 
     user_role = relationship("UserRole", back_populates="user")
 

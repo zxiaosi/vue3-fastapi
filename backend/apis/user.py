@@ -12,7 +12,7 @@ from common.route_log import LogRoute
 from core.security import rsa_decrypt_password, verify_password
 from crud import resource_crud, user_crud, role_crud
 from models import LocalUser
-from schemas import MenuOut, UserOut, UserLogin, LocalUserSchema
+from schemas import MenuOut, UserOut, UserLogin
 from common.custom_exc import UserErrors
 from utils.handle_cookie import clear_cookie, set_cookie
 from utils.handle_menu import generate_tree_menu
@@ -37,7 +37,7 @@ async def user_login(user: UserLogin, response: Response, db: GetDB) -> ResultSc
     user_schema.permission_codes = [resource.permission_code for resource in user_resource_obj]  # 更新用户权限
 
     set_cookie(user.name, user_schema, response)  # 设置 Cookie
-    return Result.success(data=user_schema)
+    return Result.success(data=UserOut.from_orm(user_schema))
 
 
 @router.post("/signup")
@@ -49,12 +49,12 @@ async def user_signup(user: UserLogin, response: Response, db: GetDB) -> ResultS
     else:
         user.password = rsa_decrypt_password(user.password)  # 解密密码 (已在方法内抛出 Error)
         user_obj = user_crud.create(db, user)  # 创建用户
-        user_schema = LocalUserSchema.from_orm(user_obj)  # 将用户信息转换为 LocalUserSchema
+        user_schema = LocalUser.from_orm(user_obj)  # 将用户信息转换为 LocalUser
         role_obj = role_crud.get_role_by_code(db, "ROLE_GUEST")  # 获取游客角色
         user_schema.role_name = role_obj.name  # 设置用户角色名(游客不插入数据)
 
         set_cookie(user.name, user_schema, response)  # 设置 Cookie
-        return Result.success(data=user_schema)
+        return Result.success(data=UserOut.from_orm(user_schema))
 
 
 @router.post("/logout")

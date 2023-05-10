@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { uploadImg } from "@/apis";
-import { clearLocal } from "@/request/auth";
+import { clearLocal, setLocal } from "@/request/auth";
+import { useUserStore } from "@/stores";
 import { ElMessage, type UploadFile, type UploadFiles, type UploadRequestOptions } from "element-plus";
 import { ref } from "vue";
+
+const userStore = useUserStore();
 
 const isDisabled = ref(false); // 是否禁用上传
 
@@ -30,20 +33,22 @@ const customUpload = async (options: UploadRequestOptions) => {
   const formData = new FormData();
   formData.append("file", options.file);
   formData.append("filename", options.file.name);
-  const resp = await uploadImg(formData, { headers: { "Content-Type": "multipart/form-data" } });
+  const resp = await uploadImg(formData);
   return resp;
 };
 
 /** 上传成功回调 */
-const onSuccess = ({ data: { code, msg } }: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+const onSuccess = ({ data: { code, data, msg } }: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
   // console.log(code, msg);
   if (code == 0) {
     isDisabled.value = true;
-    ElMessage.warning(msg);
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 2000);
-    clearLocal();
+    // ElMessage.warning(msg);
+    // setTimeout(() => {
+    //   window.location.href = "/login";
+    // }, 2000);
+    // clearLocal();
+    setLocal("userInfo", data);
+    userStore.updateUser(data);
   } else {
     ElMessage.error(msg);
   }

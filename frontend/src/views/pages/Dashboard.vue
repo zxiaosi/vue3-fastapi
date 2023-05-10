@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { getLangList } from "@/apis";
 import { useUserStore } from "@/stores";
-import { onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import * as echarts from "echarts"; // 引入echarts
-import { getLocal } from "@/request/auth";
 import MyUpload from "@/components/MyUpload.vue";
 import { IMAGE_URL } from "@/assets/js/global";
 
 let chart: any;
 
 const userStore = useUserStore();
-const userInfo = getLocal("userInfo") || userStore.user;
+const userInfo = computed(() => userStore.user);
 
 let echartDatas = {};
 
@@ -26,7 +25,9 @@ onMounted(async () => {
   // echartDatas = { ...data3, ...data2, ...data1 }
 
   // 模拟数据
-  const { data: { data } } = await getLangList();
+  const {
+    data: { data },
+  } = await getLangList();
   echartDatas = data;
 
   // @ts-ignore
