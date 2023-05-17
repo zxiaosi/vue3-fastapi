@@ -2,29 +2,44 @@
 /** 参考: https://blog.csdn.net/weixin_45291937/article/details/125523244 */
 
 interface Columns {
-  type?: "selection" | "index" | "expand"; // 多选框 | 索引 | 可展开
-  prop: string; // 列内容的字段名
-  label?: string; // 显示的标题
-  width?: string | number; // 对应列的宽度(不设置则按按比例)
-  align?: "left" | "center" | "right"; // 对齐方式
-  fixed?: "left" | "right"; // 固定在左侧或者右侧
-  slotHeader?: boolean | string; // 列表插槽 Label
-  slotColumn?: boolean | string; // 列表插槽列 Column
-  renderHeader?: ({ column, index }: any) => any; // 列表 Label 区域渲染使用的 Function
-  renderColumn?: ({ row, column, index }: any) => any; // 列表 Column 区域渲染使用的 Function
+  /** 多选框 | 索引 | 可展开 */
+  type?: "selection" | "index" | "expand";
+  /** 列内容的字段名 */
+  prop: string;
+  /** 显示的标题 */
+  label?: string;
+  /** 对应列的宽度(不设置则按按比例) */
+  width?: string | number;
+  /** 对齐方式 */
+  align?: "left" | "center" | "right";
+  /** 固定在左侧或者右侧 */
+  fixed?: "left" | "right";
+  /** 列表插槽 Label */
+  slotHeader?: boolean | string;
+  /** 列表插槽列 Column */
+  slotColumn?: boolean | string;
+  /** 列表 Label 区域渲染使用的 Function */
+  renderHeader?: ({ column, index }: any) => any;
+  /** 列表 Column 区域渲染使用的 Function */
+  renderColumn?: ({ row, column, index }: any) => any;
 }
 
 interface Props {
-  /** 表格配置 */
-  columns: Columns[]; // 表格列配置
-  dataSource: any[]; // 表格数据源
+  /** 表格列配置 */
+  columns: Columns[];
+  /** 表格数据源 */
+  dataSource: any[];
 
-  /** 分页配置 */
-  page?: number | any; // 当前页面 (加 any 防止下面 计算报错页数)
-  pageSize?: number | any; // 每页显示条数 (加 any 防止下面 计算报错页数)
-  total?: number; // 总条数 (如果total存在则显示分页器, 否则则不显示)
-  onPageChange?: (page: number) => void; // 分页变化时触发
-  onSizeChange?: (size: number) => void; // 每页个数发生变化时触发
+  /** 当前页面 (加 any 防止下面 计算报错页数) */
+  page?: number | any;
+  /** 每页显示条数 (加 any 防止下面 计算报错页数) */
+  pageSize?: number | any;
+  /** 总条数 (如果total存在则显示分页器, 否则则不显示) */
+  total?: number;
+  /** 分页变化时触发 */
+  onPageChange?: (page: number) => void;
+  /** 每页个数发生变化时触发 */
+  onSizeChange?: (size: number) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {});

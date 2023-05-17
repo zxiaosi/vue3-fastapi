@@ -1,79 +1,118 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { getUsers } from "@/apis";
-import { h, onMounted, reactive, ref, render } from "vue";
-import MyTable from "@/components/MyTable.vue";
-import { ElTooltip, ElTag, ElIcon } from "element-plus";
+import { onMounted, ref } from "vue";
+import MyTableV2 from "@/components/MyTableV2.vue";
+import { type Column } from "element-plus";
 import { Warning } from "@element-plus/icons-vue";
 import { IMAGE_URL } from "@/assets/js/global";
 
-const state = reactive({
-  tableData: {
-    page: 1,
-    page_size: 10,
-    list: [] as any,
-    total: 0,
-  },
+const tableData = ref({
+  page: 1,
+  page_size: 10,
+  list: [],
+  total: 0,
 });
 
-/** 渲染手机号头 */
-const renderPhone = ({ column, index }: any) => {
-  // console.log(column, index);
-
-  /**
-   *
-   * <div style="display: flex, align-items: center, justify-content: center">
-   *   <div style="margin-right: "5px"">手机号</div>
-   *   <el-tooltip content="测试" placement="top">
-   *     <el-icon>
-   *       <Warning />
-   *     </el-icon>
-   *   </el-tooltip>
-   * </div>
-   *
-   */
-  const myText = h("div", { style: { marginRight: "5px" } }, "手机号");
-  const myIcon = h(ElIcon, null, { default: () => h(Warning) });
-  const myTooltip = h(ElTooltip, { content: "手机号", placement: "top" }, { default: () => myIcon });
-  return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "center" } }, [myText, myTooltip]);
-};
-
 /** 渲染性别 */
-const renderSex = ({ row, column, index }: any) => {
-  // console.log(row, column, index);
-  let sexOption = [
+const renderSex = ({ cellData }: any) => {
+  const options = [
     { id: 0, key: "未知" },
     { id: 1, key: "男" },
     { id: 2, key: "女" },
   ];
-  return sexOption.filter((item) => item.id == row.sex)[0]?.key;
+  return <div>{options.filter((item) => item.id == cellData)[0]?.key}</div>;
 };
 
-const columnOptions = [
-  { prop: "id", label: "Id", align: "center", width: 60 },
-  { prop: "name", label: "姓名", align: "center", width: 160 },
-  { prop: "sex", label: "性别", align: "center", width: 120, renderColumn: (record: any) => renderSex(record) },
-  { prop: "avatar", label: "头像", align: "center", width: 120, slotColumn: true },
+/** 渲染用户头像 */
+const renderAvatar = ({ cellData }: any) => {
+  return (
+    <div class={"user-view-avatar"}>
+      {cellData ? (
+        <el-image
+          src={IMAGE_URL + cellData}
+          preview-src-list={[IMAGE_URL + cellData]}
+          preview-teleported="true"
+          hide-on-click-modal
+        />
+      ) : (
+        <el-image src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
+      )}
+    </div>
+  );
+};
+
+/** 渲染状态 */
+const renderSatus = ({ cellData }: any) => {
+  const options = [
+    { id: 0, type: "success", text: "正常" },
+    { id: 1, type: "danger", text: "禁用" },
+  ];
+  return <el-tag type={options[cellData].type}>{options[cellData].text}</el-tag>;
+};
+
+/** 渲染状态头部 */
+const renderSatusHeader = ({ column: { title } }: any) => {
+  return (
+    <div class={"user-view-status"}>
+      <div>{title}</div>
+      <el-tooltip content="状态" placement="top">
+        <el-icon>
+          <Warning />
+        </el-icon>
+      </el-tooltip>
+    </div>
+  );
+};
+
+const columnOptions: Column[] = [
+  { key: "id", dataKey: "id", title: "Id", align: "center", width: 80 },
+  { key: "name", dataKey: "name", title: "姓名", align: "center", width: 160 },
   {
-    prop: "phone",
-    label: "手机号",
+    key: "sex",
+    dataKey: "sex",
+    title: "性别",
+    align: "center",
+    width: 120,
+    cellRenderer: (record) => renderSex(record),
+  },
+  {
+    key: "avatar",
+    dataKey: "avatar",
+    title: "头像",
+    align: "center",
+    width: 120,
+    cellRenderer: (record) => renderAvatar(record),
+  },
+  { key: "phone", dataKey: "phone", title: "手机号", align: "center", width: 200 },
+  {
+    key: "is_deleted",
+    dataKey: "is_deleted",
+    title: "状态",
+    align: "center",
+    width: 120,
+    cellRenderer: (record) => renderSatus(record),
+    headerCellRenderer: (record) => renderSatusHeader(record),
+  },
+  {
+    key: "create_time",
+    dataKey: "create_time",
+    title: "创建时间",
+    align: "center",
     width: 200,
-    align: "center",
-    renderHeader: (record: any) => renderPhone(record),
+    flexGrow: 1,
   },
   {
-    prop: "is_deleted",
-    label: "状态",
-    width: 140,
+    key: "update_time",
+    dataKey: "update_time",
+    title: "更新时间",
     align: "center",
-    slotHeader: true,
-    slotColumn: true,
+    width: 200,
+    flexGrow: 1,
   },
-  { prop: "create_time", label: "创建时间", align: "center" },
-  { prop: "update_time", label: "更新时间", align: "center" },
-] as any;
+];
 
 onMounted(async () => {
-  requestList({ page: 1, page_size: 10 });
+  requestList({ page: 1, page_size: tableData.value.page_size });
 });
 
 const requestList = async (params: any) => {
@@ -81,58 +120,26 @@ const requestList = async (params: any) => {
   const {
     data: { data, total },
   } = await getUsers({ ...params });
-  state.tableData = { list: data, total: total, page, page_size };
+  tableData.value = { list: data, total, page, page_size };
 };
 
 const handlePageChange = (value: number) => {
-  requestList({ page: value, page_size: state.tableData.page_size });
+  requestList({ page: value, page_size: tableData.value.page_size });
 };
 </script>
 
 <template>
   <div class="page">
     <div class="header">搜索条件</div>
-    <MyTable
+
+    <MyTableV2
       :columns="columnOptions"
-      :data-source="state.tableData.list"
-      :page="state.tableData.page"
-      :page-size="state.tableData.page_size"
-      :total="state.tableData.total"
+      :data-source="tableData.list"
+      :page="tableData.page"
+      :page-size="tableData.page_size"
+      :total="tableData.total"
       :on-page-change="handlePageChange"
-    >
-      <!-- 头像列表插槽 -->
-      <template #avatar_column="{ row, column, index }">
-        <div class="avatar">
-          <el-image
-            v-if="row.avatar"
-            :src="IMAGE_URL + row.avatar"
-            :preview-src-list="[IMAGE_URL + row.avatar]"
-            :preview-teleported="true"
-            hide-on-click-modal
-          />
-          <el-image v-else src="https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg" />
-        </div>
-      </template>
-
-      <!-- 状态头部插槽 -->
-      <template #is_deleted_header="{ column, index }">
-        <div class="status">
-          <div>{{ column.label }}</div>
-          <el-tooltip content="状态" placement="top">
-            <el-icon>
-              <Warning />
-            </el-icon>
-          </el-tooltip>
-        </div>
-      </template>
-
-      <!-- 状态列表插槽 -->
-      <template #is_deleted_column="{ row, column, index }">
-        <el-tag :type="row.is_deleted == 0 ? 'success' : 'danger'">
-          {{ row.is_deleted == 0 ? "正常" : "禁用" }}
-        </el-tag>
-      </template>
-    </MyTable>
+    />
   </div>
 </template>
 
@@ -142,7 +149,7 @@ const handlePageChange = (value: number) => {
     padding-bottom: 20px;
   }
 
-  .avatar {
+  :deep(.user-view-avatar) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -153,13 +160,14 @@ const handlePageChange = (value: number) => {
       border-radius: 50%;
     }
   }
-  .status {
+
+  :deep(.user-view-status) {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    div {
-      margin-right: 5px;
+    .el-icon {
+      margin-left: 5px;
     }
   }
 }

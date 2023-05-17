@@ -42,13 +42,12 @@ const onSuccess = ({ data: { code, data, msg } }: any, uploadFile: UploadFile, u
   // console.log(code, msg);
   if (code == 0) {
     isDisabled.value = true;
-    // ElMessage.warning(msg);
-    // setTimeout(() => {
-    //   window.location.href = "/login";
-    // }, 2000);
-    // clearLocal();
     setLocal("userInfo", data);
     userStore.updateUser(data);
+
+    setTimeout(() => {
+      isDisabled.value = false;
+    }, 60 * 1000);
   } else {
     ElMessage.error(msg);
   }
@@ -57,7 +56,6 @@ const onSuccess = ({ data: { code, data, msg } }: any, uploadFile: UploadFile, u
 /** 上传失败回调 */
 const onError = (err: Error, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
   console.log(err);
-  ElMessage.error("上传失败");
 };
 </script>
 
@@ -72,14 +70,18 @@ const onError = (err: Error, uploadFile: UploadFile, uploadFiles: UploadFiles) =
     @success="onSuccess"
     @error="onError"
   >
-    <el-button type="primary">点击上传头像</el-button>
+    <el-button type="primary">
+      <div v-if="!isDisabled">点击上传头像</div>
+      <el-countdown v-else title="" format="HH:mm:ss" :value="Date.now() + 60 * 1000" value-style="color: #fff" />
+    </el-button>
   </el-upload>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .upload {
   width: 100%;
   height: 100%;
+  color: #fff;
   text-align: center;
   cursor: pointer;
   font-size: 14px;

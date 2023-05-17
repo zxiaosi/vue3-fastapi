@@ -156,6 +156,10 @@ server {
         index  index.html index.htm;
         try_files $uri $uri/ /index.html; # 防止页面刷新404
     }
+    
+     location /static/avatar/ {
+        proxy_pass http://fastapi:8000/static/avatar/;
+    }
 
     location /api {
         client_max_body_size 5m;
