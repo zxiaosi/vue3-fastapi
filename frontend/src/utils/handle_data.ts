@@ -39,3 +39,27 @@ export const uriToFileName = (uri: string) => {
 export const pageTo = (router: any, path: string) => {
   router.push(path);
 }
+
+/**
+ * 数组转树形结构
+ * @param items 数组
+ */
+export const arrayToTree = (items: any) => {
+  let result = [] as any; // 存放结果集
+  let itemMap = {} as any; // 用来记录每个节点的孩子节点
+
+  for (const item of items) {
+    const id = item.id;
+    const pid = item.pid;
+
+    if (!itemMap[id]) itemMap[id] = { children: [] }; // 初始化 children 的值
+
+    itemMap[id] = { ...item, children: itemMap[id]["children"] };
+
+    const treeItem = itemMap[id];
+    if (pid === 0) result.push(treeItem);
+    else itemMap[pid].children.push(treeItem);
+  }
+
+  return result;
+}

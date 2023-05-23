@@ -8,10 +8,17 @@ from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
 from models import Role, UserRole
-from schemas import RoleIn
+from schemas import RoleIn, PageSchema
 
 
 class CRUDUserRole(CRUDBase[Role, RoleIn, RoleIn]):
+
+    def get_all(self, db: Session, page: PageSchema, name: str = None, *args) -> list[Role | None]:
+        stmt = select(self.model)
+        if name is not None:
+            stmt.where(self.model.name == name)
+
+        return super().get_all(db=db, page=page, sql=stmt)
 
     def get_role_by_user_id(self, db: Session, user_id: int) -> Role | None:
         """ 通过用户id获取角色 """

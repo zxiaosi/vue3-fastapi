@@ -1,11 +1,20 @@
 <script setup lang="tsx">
-import type { Column, HeaderClassNameGetter, RowClassNameGetter } from "element-plus";
+import type {
+  Column,
+  ExpandedRowsChangeHandler,
+  HeaderClassNameGetter,
+  RowClassNameGetter,
+  RowExpandHandler,
+} from "element-plus";
+import { computed } from "vue";
 
 interface Props {
   /** 表格列配置 */
   columns: Column<any>[];
   /** 表格数据源 */
   dataSource: any[];
+  /** 列表长度 */
+  dataLength?: number;
   /** 自定义类名 */
   className?: string;
 
@@ -19,9 +28,24 @@ interface Props {
   onPageChange?: (page: number) => void;
   /** 每页个数发生变化时触发 */
   onSizeChange?: (size: number) => void;
+
+  /** 树形数据 -- 列的 key 来标记哪个行可以被展开 */
+  expandColumnKey?: string;
+  /** 树形数据 -- 存放行展开状态的 key 的数组 */
+  expandedRowKeys?: Array<string | number | symbol>;
+  /** 树形数据 -- 点击箭头图标展开/折叠树节点时触发 */
+  onRowExpanded?: (row: Parameters<RowExpandHandler>[0]) => void;
+  /** 树形数据 -- 行展开状态改变时触发 */
+  onExpandedRowsChange?: (expandedKeys: Parameters<ExpandedRowsChangeHandler>[0]) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {});
+
+/** 表格高度 */
+const tableHeight = computed(() => {
+  const length = props.dataLength || props.dataSource.length;
+  return length > 0 ? length * 50 + 50 : 344;
+});
 
 /** header 部分的自定义 class 名 */
 const headerClass = (param: Parameters<HeaderClassNameGetter<any>>) => "table-header-bg";
@@ -47,7 +71,11 @@ const rowClass = ({ rowIndex }: Parameters<RowClassNameGetter<any>>[0]) => {
             :header-class="headerClass"
             :row-class="rowClass"
             :width="width"
-            :height="dataSource ? (dataSource.length + 1) * 50 : height"
+            :height="tableHeight || height"
+            :expand-column-key="expandColumnKey"
+            :expanded-row-keys="expandedRowKeys"
+            @row-expand="props?.onRowExpanded"
+            @expanded-rows-change="props?.onExpandedRowsChange"
           />
         </template>
       </el-auto-resizer>
@@ -60,8 +88,8 @@ const rowClass = ({ rowIndex }: Parameters<RowClassNameGetter<any>>[0]) => {
         :total="total"
         :current-page="page"
         :page-size="pageSize"
-        @current-change="(val) => onPageChange?.(val)"
-        @size-change="(val) => onSizeChange?.(val)"
+        @current-change="props.onPageChange"
+        @size-change="props.onSizeChange"
       >
         第 {{ (page - 1) * pageSize + 1 }}-{{ page * pageSize }} 条 / 共 {{ total }} 条
       </el-pagination>
@@ -72,8 +100,7 @@ const rowClass = ({ rowIndex }: Parameters<RowClassNameGetter<any>>[0]) => {
 <style scoped lang="less">
 .myTable {
   .el-table-v2 {
-    height: max-content;
-    min-height: 344px; // 空列表时, 保证表格高度
+    // min-height: 344px; // 空列表时, 保证表格高度
   }
 
   .el-pagination {

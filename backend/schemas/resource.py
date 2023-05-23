@@ -32,6 +32,7 @@ class ResourceUpdate(ResourceCreate):
 class ResourceOut(ResourceIn, GMT):
     """ 查询数据的数据模型 """
     id: int
+    is_deleted: int
 
     class Config:
         orm_mode = True  # 支持映射到ORM对象的模型

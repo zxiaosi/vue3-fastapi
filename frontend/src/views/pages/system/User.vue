@@ -43,11 +43,8 @@ const renderAvatar = ({ cellData }: any) => {
 
 /** 渲染状态 */
 const renderSatus = ({ cellData }: any) => {
-  const options = [
-    { id: 0, type: "success", text: "正常" },
-    { id: 1, type: "danger", text: "禁用" },
-  ];
-  return <el-tag type={options[cellData].type}>{options[cellData].text}</el-tag>;
+  cellData = Boolean(1 - cellData);
+  return <el-switch v-model={cellData} />;
 };
 
 /** 渲染状态头部 */
@@ -84,6 +81,8 @@ const columnOptions: Column[] = [
     cellRenderer: (record) => renderAvatar(record),
   },
   { key: "phone", dataKey: "phone", title: "手机号", align: "center", width: 200 },
+  { key: "create_time", dataKey: "create_time", title: "创建时间", align: "center", width: 200, flexGrow: 1 },
+  { key: "update_time", dataKey: "update_time", title: "更新时间", align: "center", width: 200, flexGrow: 1 },
   {
     key: "is_deleted",
     dataKey: "is_deleted",
@@ -93,28 +92,13 @@ const columnOptions: Column[] = [
     cellRenderer: (record) => renderSatus(record),
     headerCellRenderer: (record) => renderSatusHeader(record),
   },
-  {
-    key: "create_time",
-    dataKey: "create_time",
-    title: "创建时间",
-    align: "center",
-    width: 200,
-    flexGrow: 1,
-  },
-  {
-    key: "update_time",
-    dataKey: "update_time",
-    title: "更新时间",
-    align: "center",
-    width: 200,
-    flexGrow: 1,
-  },
 ];
 
 onMounted(async () => {
   requestList({ page: 1, page_size: tableData.value.page_size });
 });
 
+/** 请求表格数据 */
 const requestList = async (params: any) => {
   const { page, page_size } = params;
   const {
@@ -123,8 +107,14 @@ const requestList = async (params: any) => {
   tableData.value = { list: data, total, page, page_size };
 };
 
+/** 分页变化时触发 */
 const handlePageChange = (value: number) => {
   requestList({ page: value, page_size: tableData.value.page_size });
+};
+
+/** 每页个数发生变化时触发 */
+const handleSizeChange = (value: number) => {
+  requestList({ page: tableData.value.page, page_size: value });
 };
 </script>
 
@@ -139,6 +129,7 @@ const handlePageChange = (value: number) => {
       :page-size="tableData.page_size"
       :total="tableData.total"
       :on-page-change="handlePageChange"
+      :on-size-change="handleSizeChange"
     />
   </div>
 </template>

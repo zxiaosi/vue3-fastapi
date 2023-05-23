@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 10/05/2023 16:00:39
+ Date: 23/05/2023 15:47:15
 */
 
 SET NAMES utf8mb4;
@@ -39,16 +39,16 @@ CREATE TABLE `resource`  (
 -- ----------------------------
 -- Records of resource
 -- ----------------------------
-INSERT INTO `resource` VALUES (1, '仪表盘', 1, 0, 'VBr0B.png', '/dashboard', '/', '', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (2, '系统管理', 0, 0, 'VBr0B.png', '/system/index', '/system', 'sys', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (3, '用户管理', 1, 2, 'VBclq.png', '/system/user', '/user', 'sys:user', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (4, '用户列表', 2, 3, NULL, NULL, '/user/list', 'sys:user:list', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (5, '新增用户', 2, 3, NULL, NULL, '/user/add', 'sys:user:add', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (6, '编辑用户', 2, 3, NULL, NULL, '/user/update', 'sys:user:update', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (7, '角色管理', 1, 2, 'VBsBc.png', '/system/role', '/role', 'sys:role', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (8, '资源管理', 1, 2, 'VBr0B.png', '/system/resource', '/resource', 'sys:resource', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (9, '公告通知', 1, 0, 'VBr0B.png', '/notice', '/notice', 'notice', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `resource` VALUES (10, '日志记录', 1, 0, 'VBr0B.png', '/log', '/log', 'log', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
+INSERT INTO `resource` VALUES (1, '仪表盘', 1, 0, 'VBr0B.png', '/dashboard', '/', '', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (2, '系统管理', 0, 0, 'VBr0B.png', '/system/index', '/system', 'sys', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (3, '用户管理', 1, 2, 'VBclq.png', '/system/user', '/user', 'sys:user', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (4, '用户列表', 2, 3, NULL, NULL, '/user/list', 'sys:user:list', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (5, '新增用户', 2, 3, NULL, NULL, '/user/add', 'sys:user:add', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (6, '编辑用户', 2, 3, NULL, NULL, '/user/update', 'sys:user:update', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (7, '角色管理', 1, 2, 'VBsBc.png', '/system/role', '/role', 'sys:role', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (8, '资源管理', 1, 2, 'VBr0B.png', '/system/resource', '/resource', 'sys:resource', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (9, '公告通知', 1, 0, 'VBr0B.png', '/notice', '/notice', 'notice', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `resource` VALUES (10, '日志记录', 1, 0, 'VBr0B.png', '/log', '/log', 'log', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
 
 -- ----------------------------
 -- Table structure for role
@@ -68,9 +68,9 @@ CREATE TABLE `role`  (
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (1, '超级管理员', 'ROLE_ADMIN', '管理员', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `role` VALUES (2, '管理员', 'ROLE_USER', '普通用户', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `role` VALUES (3, '游客', 'ROLE_GUEST', '普通用户', 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
+INSERT INTO `role` VALUES (1, '超级管理员', 'ROLE_ADMIN', '管理员', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `role` VALUES (2, '管理员', 'ROLE_USER', '普通用户', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `role` VALUES (3, '游客', 'ROLE_GUEST', '普通用户', 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
 
 -- ----------------------------
 -- Table structure for role_resource
@@ -144,9 +144,9 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 1, 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `user` VALUES (2, 'user', '30780cc6f2e56945aaf9c9578c932e22', NULL, 1, NULL, 1, 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
-INSERT INTO `user` VALUES (3, 'guest', '30780cc6f2e56945aaf9c9578c932e22', NULL, 2, NULL, 1, 0, '2023-05-10 16:00:06', '2023-05-10 16:00:06');
+INSERT INTO `user` VALUES (1, 'admin', '30780cc6f2e56945aaf9c9578c932e22', NULL, 0, NULL, 1, 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `user` VALUES (2, 'user', '30780cc6f2e56945aaf9c9578c932e22', NULL, 1, NULL, 1, 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
+INSERT INTO `user` VALUES (3, 'guest', '30780cc6f2e56945aaf9c9578c932e22', NULL, 2, NULL, 1, 0, '2023-05-23 15:45:24', '2023-05-23 15:45:24');
 
 -- ----------------------------
 -- Table structure for user_role

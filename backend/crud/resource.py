@@ -8,10 +8,18 @@ from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
 from models import Resource, UserRole, RoleResource, Role
-from schemas import UserCreate, UserUpdate
+from schemas import UserCreate, UserUpdate, PageSchema
 
 
 class CRUDResource(CRUDBase[Resource, UserCreate, UserUpdate]):
+
+    def get_all(self, db: Session, page: PageSchema, name: str = None, *args) -> list[Role | None]:
+        stmt = select(self.model)
+        if name is not None:
+            stmt.where(self.model.name == name)
+
+        stmt = stmt.offset((page.page - 1) * page.page_size).limit(page.page_size)
+        return db.scalars(stmt).all()  # type: ignore
 
     def get_resource_by_role_id(self, db: Session, role_id: int) -> list[Resource] | None:
         """ 根据角色id得到资源 """
