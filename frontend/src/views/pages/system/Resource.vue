@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { getResources } from "@/apis";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 import MyTableV2 from "@/components/MyTableV2.vue";
 import { ExpandedRowsChangeHandler, RowExpandHandler, type Column } from "element-plus";
 import { arrayToTree } from "@/utils/handle_data";
