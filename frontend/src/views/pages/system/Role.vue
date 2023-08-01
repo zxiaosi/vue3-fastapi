@@ -2,7 +2,7 @@
 import { getRoles } from "@/apis";
 import { onMounted, ref } from "vue";
 import MyTableV2 from "@/components/MyTableV2.vue";
-import { type Column } from "element-plus";
+import type { Column } from "element-plus";
 
 const tableData = ref({
   page: 1,
@@ -12,7 +12,7 @@ const tableData = ref({
 });
 
 /** 渲染状态 */
-const renderSatus = ({ cellData }: any) => {
+const renderStatus = ({ cellData }: any) => {
   cellData = Boolean(1 - cellData);
   return <el-switch v-model={cellData} />;
 };
@@ -30,7 +30,7 @@ const columnOptions: Column[] = [
     title: "状态",
     align: "center",
     width: 120,
-    cellRenderer: (record) => renderSatus(record),
+    cellRenderer: (record) => renderStatus(record),
   },
 ];
 

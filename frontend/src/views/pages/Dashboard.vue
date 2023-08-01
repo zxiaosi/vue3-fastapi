@@ -14,21 +14,17 @@ const userInfo = computed(() => userStore.user);
 let echartDatas = {};
 
 onMounted(async () => {
-  // let pages = [1, 2, 3]
-  // const [data1, data2, data3] = await Promise.all(pages.map((item) => {
-  //   return (async () => {
-  //     const { data } = await getLangList(item)
-  //     const obj = processData(data, getCommitDate(data[data.length - 1]), getCommitDate(data[0]));
-  //     return obj
-  //   })()
-  // }))
-  // echartDatas = { ...data3, ...data2, ...data1 }
-
-  // 模拟数据
-  const {
-    data: { data },
-  } = await getLangList();
-  echartDatas = data;
+  let pages = [1, 2, 3];
+  const [data1, data2, data3] = await Promise.all(
+    pages.map((item) => {
+      return (async () => {
+        const { data } = await getLangList(item);
+        const obj = processData(data, getCommitDate(data[data.length - 1]), getCommitDate(data[0]));
+        return obj;
+      })();
+    })
+  );
+  echartDatas = { ...data3, ...data2, ...data1 };
 
   // @ts-ignore
   chart = echarts.init(document.getElementById("line"));

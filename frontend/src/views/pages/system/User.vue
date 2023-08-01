@@ -2,15 +2,22 @@
 import { getUsers } from "@/apis";
 import { onMounted, ref } from "vue";
 import MyTableV2 from "@/components/MyTableV2.vue";
-import { type Column } from "element-plus";
+import type { Column } from "element-plus";
 import { Warning } from "@element-plus/icons-vue";
 import { IMAGE_URL } from "@/assets/js/global";
 
+// 表格数据
 const tableData = ref({
   page: 1,
   page_size: 10,
   list: [],
   total: 0,
+});
+
+// 表格中状态数据
+const switchData = ref({
+  data: false,
+  loading: false,
 });
 
 /** 渲染性别 */
@@ -42,13 +49,14 @@ const renderAvatar = ({ cellData }: any) => {
 };
 
 /** 渲染状态 */
-const renderSatus = ({ cellData }: any) => {
-  cellData = Boolean(1 - cellData);
-  return <el-switch v-model={cellData} />;
+const renderStatus = ({ cellData }: any) => {
+  switchData.value.data = Boolean(1 - cellData);
+  const { data, loading } = switchData.value;
+  return <el-switch v-model={data} loading={loading} before-change={() => beforeChange()} />;
 };
 
 /** 渲染状态头部 */
-const renderSatusHeader = ({ column: { title } }: any) => {
+const renderStatusHeader = ({ column: { title } }: any) => {
   return (
     <div class={"user-view-status"}>
       <div>{title}</div>
@@ -89,8 +97,8 @@ const columnOptions: Column[] = [
     title: "状态",
     align: "center",
     width: 120,
-    cellRenderer: (record) => renderSatus(record),
-    headerCellRenderer: (record) => renderSatusHeader(record),
+    cellRenderer: (record) => renderStatus(record),
+    headerCellRenderer: (record) => renderStatusHeader(record),
   },
 ];
 
@@ -115,6 +123,17 @@ const handlePageChange = (value: number) => {
 /** 每页个数发生变化时触发 */
 const handleSizeChange = (value: number) => {
   requestList({ page: tableData.value.page, page_size: value });
+};
+
+const beforeChange = () => {
+  switchData.value.loading = true;
+  // return new Promise((resolve) => {
+  //   // setTimeout(() => {
+  //   //   switchData.value.loading = false;
+  //   //   ElMessage.success("Switch success");
+  //   //   return resolve(true);
+  //   // }, 1000);
+  // });
 };
 </script>
 

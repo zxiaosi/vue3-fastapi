@@ -2,7 +2,7 @@
 import { getLogs } from "@/apis";
 import { onMounted, ref } from "vue";
 import MyTableV2 from "@/components/MyTableV2.vue";
-import { type Column } from "element-plus";
+import type { Column } from "element-plus";
 
 const tableData = ref({
   page: 1,

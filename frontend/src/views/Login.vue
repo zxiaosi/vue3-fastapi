@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage, type FormInstance, type FormRules } from "element-plus";
+import type { FormInstance, FormRules } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 import { userLogin, userSignUp } from "@/apis/index";
 import { encryptContent } from "@/utils/encryption";
@@ -35,8 +35,14 @@ const submitForm = async (formEl: FormInstance | undefined, type: "login" | "sig
       let params = { name: userInfo.name, password: encryptContent(userInfo.password) };
 
       let resp: any;
-      type == "login" && ({ data: { data: resp } } = await userLogin(params));
-      type == "signup" && ({ data: { data: resp } } = await userSignUp(params));
+      type == "login" &&
+        ({
+          data: { data: resp },
+        } = await userLogin(params));
+      type == "signup" &&
+        ({
+          data: { data: resp },
+        } = await userSignUp(params));
       userStore.user = resp;
       setLocal("userInfo", resp);
 

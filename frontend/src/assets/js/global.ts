@@ -13,7 +13,7 @@ export const IS_DEV: boolean = true;
  * 开发、测试、线上环境
  */
 export const DEVELOPMENT: string = "http://127.0.0.1:8000"; // 开发环境
-export const PRODUCTION: string = "http://114.115.143.81"; // 线上环境
+export const PRODUCTION: string = "http://150.158.87.218"; // 线上环境
 export const BASE_URL: string = IS_DEV ? DEVELOPMENT : PRODUCTION;
 
 /**

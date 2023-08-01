@@ -2,7 +2,7 @@
 import { getResources } from "@/apis";
 import { computed, onMounted, ref } from "vue";
 import MyTableV2 from "@/components/MyTableV2.vue";
-import { ExpandedRowsChangeHandler, RowExpandHandler, type Column } from "element-plus";
+import type { ExpandedRowsChangeHandler, RowExpandHandler, Column } from "element-plus";
 import { arrayToTree } from "@/utils/handle_data";
 
 /** 表格数据 */
@@ -26,7 +26,7 @@ const renderLevel = ({ cellData }: any) => {
 };
 
 /** 渲染状态 */
-const renderSatus = ({ cellData }: any) => {
+const renderStatus = ({ cellData }: any) => {
   cellData = Boolean(1 - cellData);
   return <el-switch v-model={cellData} />;
 };
@@ -51,7 +51,7 @@ const columnOptions: Column[] = [
     title: "状态",
     align: "center",
     width: 120,
-    cellRenderer: (record) => renderSatus(record),
+    cellRenderer: (record) => renderStatus(record),
   },
 ];
 

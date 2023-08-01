@@ -2,7 +2,7 @@
 import { uploadImg } from "@/apis";
 import { clearLocal, setLocal } from "@/request/auth";
 import { useUserStore } from "@/stores";
-import { ElMessage, type UploadFile, type UploadFiles, type UploadRequestOptions } from "element-plus";
+import type { UploadFile, UploadFiles, UploadRequestOptions } from "element-plus";
 import { ref } from "vue";
 
 const userStore = useUserStore();

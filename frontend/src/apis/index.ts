@@ -1,5 +1,6 @@
 import { get, post } from "@/request";
 import type { IRequestOption } from "@/request/http";
+import axios from "axios";
 import type { SignUp, Login, List } from "./model";
 
 /** 注册 */
@@ -26,12 +27,9 @@ export const getLogs = (list: List): Promise<any> => get("/log/list", { ...list 
 /**
  * 仓库获取语言详情(github被封了, 暂时用不了)
  */
-// export const getLangList = async (page: number): Promise<any> => {
-//   return await axios.get(`https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?page=${page}`);
-// };
-
-/** 仓库获取语言详情 */
-export const getLangList = (): Promise<any> => get("/lang/list", {}, { isShowLoading: true });
+export const getLangList = async (page: number): Promise<any> => {
+  return await axios.get(`https://api.github.com/repos/zxiaosi/Vue3-FastAPI/commits?page=${page}`);
+};
 
 /** 得到所有角色 */
 export const getRoles = (list: List): Promise<any> => get("/role/list", { ...list }, { isShowLoading: true });
